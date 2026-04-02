@@ -1,11 +1,15 @@
-# @wave/mcp-server
+# @wave-av/mcp-server
+
+[![npm version](https://img.shields.io/npm/v/@wave-av/mcp-server.svg)](https://www.npmjs.com/package/@wave-av/mcp-server)
+[![npm downloads](https://img.shields.io/npm/dm/@wave-av/mcp-server.svg)](https://www.npmjs.com/package/@wave-av/mcp-server)
+[![license](https://img.shields.io/npm/l/@wave-av/mcp-server.svg)](https://github.com/wave-av/mcp-server/blob/main/LICENSE)
 
 MCP (Model Context Protocol) server that exposes WAVE streaming APIs as tools for AI coding assistants.
 
-## Quick Start
+## Quick start
 
 ```bash
-npx @wave/mcp-server
+npx @wave-av/mcp-server
 ```
 
 ## Setup
@@ -28,7 +32,7 @@ Add to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.):
   "mcpServers": {
     "wave": {
       "command": "npx",
-      "args": ["-y", "@wave/mcp-server"],
+      "args": ["-y", "@wave-av/mcp-server"],
       "env": {
         "WAVE_API_KEY": "wave_live_..."
       }
@@ -37,7 +41,7 @@ Add to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.):
 }
 ```
 
-## Available Tools
+## Available tools
 
 ### Streams
 
@@ -77,7 +81,7 @@ Access WAVE entities directly via the `wave://` URI scheme:
 - `wave://streams/{id}` - Stream configuration and status
 - `wave://productions/{id}` - Studio production details
 
-## Environment Variables
+## Environment variables
 
 | Variable        | Required | Default               | Description       |
 | --------------- | -------- | --------------------- | ----------------- |
