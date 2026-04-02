@@ -1,0 +1,57 @@
+{
+  "name": "@wave-av/mcp-server",
+  "version": "0.1.2",
+  "description": "WAVE MCP Server - Exposes WAVE streaming APIs as tools for AI agents",
+  "main": "./dist/index.js",
+  "type": "module",
+  "bin": {
+    "wave-mcp-server": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "wave",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "streaming",
+    "tools"
+  ],
+  "author": "WAVE Inc. <mcp@wave.online>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wave-av/wave-surfer-connect.git",
+    "directory": "packages/mcp-server"
+  },
+  "homepage": "https://docs.wave.online/mcp",
+  "bugs": {
+    "url": "https://github.com/wave-av/wave-surfer-connect/issues"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.9.0"
+  }
+}
