@@ -14,7 +14,7 @@ npx @wave-av/mcp-server
 
 ## Setup
 
-### 1. Get an API Key
+### 1. Get an API key
 
 ```bash
 # Via CLI
@@ -23,7 +23,7 @@ wave auth login
 # Or create at https://wave.online/settings/api-keys
 ```
 
-### 2. Configure Your AI Tool
+### 2. Configure your AI tool
 
 Add to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.):
 
@@ -88,14 +88,74 @@ Access WAVE entities directly via the `wave://` URI scheme:
 | `WAVE_API_KEY`  | Yes      | -                     | Your WAVE API key |
 | `WAVE_BASE_URL` | No       | `https://wave.online` | API base URL      |
 
+## Setup for other AI tools
+
+### Cursor
+
+Add to `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "wave": {
+      "command": "npx",
+      "args": ["-y", "@wave-av/mcp-server"],
+      "env": { "WAVE_API_KEY": "wave_live_..." }
+    }
+  }
+}
+```
+
+### Windsurf
+
+Add to Windsurf MCP settings with the same configuration.
+
+## Troubleshooting
+
+### Server not starting
+
+Verify your API key is set:
+
+```bash
+echo $WAVE_API_KEY
+```
+
+### Tools not appearing
+
+Restart your AI tool after adding the MCP configuration. Most tools require a restart to detect new MCP servers.
+
+### Connection errors
+
+The MCP server uses stdio transport (no network listener). If you see connection errors, check that `npx` can run successfully:
+
+```bash
+npx @wave-av/mcp-server --version
+```
+
+### Testing the server
+
+Send a JSON-RPC initialize request to verify:
+
+```bash
+echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0.0"}}}' | npx @wave-av/mcp-server
+```
+
+## Related packages
+
+- [@wave-av/sdk](https://www.npmjs.com/package/@wave-av/sdk) — TypeScript SDK (34 API modules)
+- [@wave-av/adk](https://www.npmjs.com/package/@wave-av/adk) — Agent Developer Kit
+- [@wave-av/cli](https://www.npmjs.com/package/@wave-av/cli) — Command-line interface
+- [@wave-av/create-app](https://www.npmjs.com/package/@wave-av/create-app) — Scaffold a new project
+- [OpenAPI spec](https://github.com/wave-av/api-spec) — Full API specification
+
 ## Development
 
 ```bash
 cd packages/mcp-server
 pnpm install
-pnpm run build    # Build with tsup
-pnpm run dev      # Watch mode
-pnpm run type-check  # TypeScript check
+pnpm run build
+pnpm run dev       # Watch mode
+pnpm run type-check
 ```
 
 ## License
