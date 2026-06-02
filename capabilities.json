@@ -1,25 +1,48 @@
 {
   "schemaVersion": "1",
   "repo": "wave-av/mcp-server",
-  "version": "0.5.0",
+  "version": "0.1.5",
   "lifecycle": "beta",
   "planeLayer": null,
   "foundationPin": "v1",
-  "maintainers": [{ "team": "agent-ops" }],
+  "maintainers": [
+    {
+      "team": "agent-ops"
+    }
+  ],
   "exposes": {
     "mcpTools": [
-      { "name": "wave_dispatch" },
-      { "name": "wave_clip" },
-      { "name": "wave_transcribe" },
-      { "name": "wave_caption" },
-      { "name": "wave_chapter" }
+      {
+        "name": "wave_dispatch"
+      },
+      {
+        "name": "wave_clip"
+      },
+      {
+        "name": "wave_transcribe"
+      },
+      {
+        "name": "wave_caption"
+      },
+      {
+        "name": "wave_chapter"
+      }
     ]
   },
   "consumes": {
     "waveProducts": [
-      { "repo": "wave-av/wave-gateway" }
+      {
+        "repo": "wave-av/wave-gateway"
+      }
     ],
-    "foundationFrameworks": ["frameworks/platform-registry"]
+    "foundationFrameworks": [
+      "frameworks/platform-registry"
+    ]
   },
-  "tags": ["mcp-server", "public", "19-tools", "agent-ops"]
+  "tags": [
+    "mcp-server",
+    "public",
+    "19-tools",
+    "agent-ops"
+  ]
 }
