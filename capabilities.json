@@ -10,25 +10,7 @@
       "team": "agent-ops"
     }
   ],
-  "exposes": {
-    "mcpTools": [
-      {
-        "name": "wave_dispatch"
-      },
-      {
-        "name": "wave_clip"
-      },
-      {
-        "name": "wave_transcribe"
-      },
-      {
-        "name": "wave_caption"
-      },
-      {
-        "name": "wave_chapter"
-      }
-    ]
-  },
+  "exposes": {},
   "consumes": {
     "waveProducts": [
       {
