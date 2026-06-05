@@ -10,7 +10,28 @@
       "team": "agent-ops"
     }
   ],
-  "exposes": {},
+  "exposes": {
+    "mcpTools": [
+      { "name": "wave_list_streams" },
+      { "name": "wave_create_stream" },
+      { "name": "wave_start_stream" },
+      { "name": "wave_stop_stream" },
+      { "name": "wave_get_stream_health" },
+      { "name": "wave_list_productions" },
+      { "name": "wave_create_production" },
+      { "name": "wave_get_viewers" },
+      { "name": "wave_get_stream_metrics" },
+      { "name": "wave_get_subscription" },
+      { "name": "wave_get_usage" },
+      { "name": "wave_switch_camera" },
+      { "name": "wave_create_clip" },
+      { "name": "wave_show_graphic" },
+      { "name": "wave_control_camera" },
+      { "name": "wave_moderate_chat" },
+      { "name": "wave_start_captions" },
+      { "name": "wave_mark_highlight" }
+    ]
+  },
   "consumes": {
     "waveProducts": [
       {
