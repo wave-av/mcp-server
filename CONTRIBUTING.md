@@ -31,10 +31,10 @@ pnpm type-check
 
 ## Adding a new tool
 
-1. Create the tool definition in `src/tools/`
-2. Add Zod schema for input validation
-3. Register in `src/sdk-server.ts`
-4. Update README.md with the new tool
+1. Create the tool definition in `src/tools/` (export a `register<Area>Tools(server)` fn)
+2. Add a Zod schema for input validation
+3. Call your `register<Area>Tools(server)` from `startServer()` in `src/server.ts`
+4. Update `README.md` and `capabilities.json` (`exposes.mcpTools`) with the new tool
 5. Test with a real AI client (Claude, Cursor, or Windsurf)
 
 ## Code standards
