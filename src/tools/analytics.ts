@@ -1,39 +1,12 @@
 import { z } from "zod";
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getAuthHeaders, getBaseUrl } from "../auth.js";
+import { defineTool, errorContent, textContent, waveFetch, type WaveToolDef } from "./shared.js";
 
-async function waveFetch(
-  path: string,
-  init?: RequestInit,
-): Promise<{ ok: boolean; status: number; body: string }> {
-  const url = `${getBaseUrl()}${path}`;
-  const res = await fetch(url, {
-    ...init,
-    headers: {
-      ...getAuthHeaders(),
-      ...init?.headers,
-    },
-  });
-  const body = await res.text();
-  return { ok: res.ok, status: res.status, body };
-}
-
-function textContent(text: string): { content: Array<{ type: "text"; text: string }> } {
-  return { content: [{ type: "text" as const, text }] };
-}
-
-function errorContent(
-  status: number,
-  body: string,
-): { content: Array<{ type: "text"; text: string }> } {
-  return textContent(`Error ${status}: ${body}`);
-}
-
-export function registerAnalyticsTools(server: McpServer): void {
-  server.tool(
-    "wave_get_viewers",
-    "Get current viewer count and viewer demographics for a stream or across all streams",
-    {
+export const analyticsTools: WaveToolDef[] = [
+  defineTool({
+    name: "wave_get_viewers",
+    description:
+      "Get current viewer count and viewer demographics for a stream or across all streams",
+    inputSchema: {
       stream_id: z
         .string()
         .uuid()
@@ -44,7 +17,7 @@ export function registerAnalyticsTools(server: McpServer): void {
         .optional()
         .describe("Include geographic and device breakdown (default: false)"),
     },
-    async ({ stream_id, include_demographics }) => {
+    handler: async ({ stream_id, include_demographics }) => {
       const params = new URLSearchParams();
       if (stream_id) params.set("stream_id", stream_id);
       if (include_demographics) params.set("include_demographics", "true");
@@ -56,12 +29,13 @@ export function registerAnalyticsTools(server: McpServer): void {
 
       return textContent(res.body);
     },
-  );
+  }),
 
-  server.tool(
-    "wave_get_stream_metrics",
-    "Get detailed performance metrics for a stream including bitrate, latency, quality scores, and error rates",
-    {
+  defineTool({
+    name: "wave_get_stream_metrics",
+    description:
+      "Get detailed performance metrics for a stream including bitrate, latency, quality scores, and error rates",
+    inputSchema: {
       stream_id: z.string().uuid().describe("The UUID of the stream"),
       period: z
         .enum(["1h", "6h", "24h", "7d", "30d"])
@@ -72,7 +46,7 @@ export function registerAnalyticsTools(server: McpServer): void {
         .optional()
         .describe("Data point granularity (default: 5m)"),
     },
-    async ({ stream_id, period, granularity }) => {
+    handler: async ({ stream_id, period, granularity }) => {
       const params = new URLSearchParams();
       if (period) params.set("period", period);
       if (granularity) params.set("granularity", granularity);
@@ -84,5 +58,5 @@ export function registerAnalyticsTools(server: McpServer): void {
 
       return textContent(res.body);
     },
-  );
-}
+  }),
+];

@@ -88,6 +88,33 @@ Access WAVE entities directly via the `wave://` URI scheme:
 | `WAVE_API_KEY`  | Yes      | -                     | Your WAVE API key |
 | `WAVE_BASE_URL` | No       | `https://wave.online` | API base URL      |
 
+## In-process (Claude Agent SDK) mode
+
+For consumers already running inside a [Claude Agent SDK](https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk)
+session, the same tools are available in-process — skipping the stdio subprocess
+hop (~50 ms vs ~500 ms cold start). The tool list is shared with the stdio
+server (`src/tools/index.ts`), so the two transports never drift.
+
+`@anthropic-ai/claude-agent-sdk` is an **optional peer dependency**: stdio users
+never need it. Install it only for this mode:
+
+```bash
+npm install @wave-av/mcp-server @anthropic-ai/claude-agent-sdk
+```
+
+```ts
+import { query } from "@anthropic-ai/claude-agent-sdk";
+import { createWaveSdkMcpServer } from "@wave-av/mcp-server/sdk-server";
+
+const wave = await createWaveSdkMcpServer();
+for await (const message of query({
+  prompt: "List my active streams",
+  options: { mcpServers: { wave }, env: { WAVE_API_KEY: process.env.WAVE_API_KEY } },
+})) {
+  // handle messages
+}
+```
+
 ## Setup for other AI tools
 
 ### Cursor

@@ -2,30 +2,31 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
-import { registerStreamTools } from "./tools/streams.js";
-import { registerStudioTools } from "./tools/studio.js";
-import { registerAnalyticsTools } from "./tools/analytics.js";
-import { registerBillingTools } from "./tools/billing.js";
-import { registerProductionTools } from "./tools/production.js";
+import { allTools } from "./tools/index.js";
 import { registerStreamResources } from "./resources/streams.js";
 import { registerProductionResources } from "./resources/productions.js";
 
-export async function startServer(): Promise<void> {
+/** Build an McpServer with every WAVE tool + resource registered (no transport). */
+export function buildServer(): McpServer {
   const server = new McpServer({
     name: "wave-mcp-server",
     version: "0.1.0",
   });
 
-  // Register tools
-  registerStreamTools(server);
-  registerStudioTools(server);
-  registerAnalyticsTools(server);
-  registerBillingTools(server);
-  registerProductionTools(server);
+  // Register tools from the single source of truth (src/tools/index.ts).
+  for (const tool of allTools) {
+    server.tool(tool.name, tool.description, tool.inputSchema, tool.handler);
+  }
 
   // Register resources (wave:// URI scheme)
   registerStreamResources(server);
   registerProductionResources(server);
+
+  return server;
+}
+
+export async function startServer(): Promise<void> {
+  const server = buildServer();
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
