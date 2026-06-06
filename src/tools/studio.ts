@@ -1,39 +1,11 @@
 import { z } from "zod";
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getAuthHeaders, getBaseUrl } from "../auth.js";
+import { defineTool, errorContent, textContent, waveFetch, type WaveToolDef } from "./shared.js";
 
-async function waveFetch(
-  path: string,
-  init?: RequestInit,
-): Promise<{ ok: boolean; status: number; body: string }> {
-  const url = `${getBaseUrl()}${path}`;
-  const res = await fetch(url, {
-    ...init,
-    headers: {
-      ...getAuthHeaders(),
-      ...init?.headers,
-    },
-  });
-  const body = await res.text();
-  return { ok: res.ok, status: res.status, body };
-}
-
-function textContent(text: string): { content: Array<{ type: "text"; text: string }> } {
-  return { content: [{ type: "text" as const, text }] };
-}
-
-function errorContent(
-  status: number,
-  body: string,
-): { content: Array<{ type: "text"; text: string }> } {
-  return textContent(`Error ${status}: ${body}`);
-}
-
-export function registerStudioTools(server: McpServer): void {
-  server.tool(
-    "wave_list_productions",
-    "List all studio productions in your WAVE account",
-    {
+export const studioTools: WaveToolDef[] = [
+  defineTool({
+    name: "wave_list_productions",
+    description: "List all studio productions in your WAVE account",
+    inputSchema: {
       limit: z
         .number()
         .int()
@@ -52,7 +24,7 @@ export function registerStudioTools(server: McpServer): void {
         .optional()
         .describe("Filter by production status"),
     },
-    async ({ limit, offset, status }) => {
+    handler: async ({ limit, offset, status }) => {
       const params = new URLSearchParams();
       params.set("limit", String(limit ?? 25));
       params.set("offset", String(offset ?? 0));
@@ -65,12 +37,12 @@ export function registerStudioTools(server: McpServer): void {
 
       return textContent(res.body);
     },
-  );
+  }),
 
-  server.tool(
-    "wave_create_production",
-    "Create a new studio production with multi-camera support",
-    {
+  defineTool({
+    name: "wave_create_production",
+    description: "Create a new studio production with multi-camera support",
+    inputSchema: {
       title: z.string().min(1).max(255).describe("Production title"),
       description: z.string().max(2000).optional().describe("Production description"),
       layout: z
@@ -86,7 +58,7 @@ export function registerStudioTools(server: McpServer): void {
         .optional()
         .describe("Enable recording for this production (default: false)"),
     },
-    async ({ title, description, layout, stream_ids, record }) => {
+    handler: async ({ title, description, layout, stream_ids, record }) => {
       const payload: Record<string, unknown> = { title };
       if (description !== undefined) payload["description"] = description;
       if (layout !== undefined) payload["layout"] = layout;
@@ -101,5 +73,5 @@ export function registerStudioTools(server: McpServer): void {
 
       return textContent(res.body);
     },
-  );
-}
+  }),
+];

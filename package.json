@@ -1,6 +1,6 @@
 {
   "name": "@wave-av/mcp-server",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "WAVE MCP Server - Exposes WAVE streaming APIs as tools for AI agents",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -10,6 +10,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./sdk-server": {
+      "types": "./dist/sdk-server.d.ts",
+      "import": "./dist/sdk-server.js",
+      "default": "./dist/sdk-server.js"
     }
   },
   "bin": {
@@ -60,7 +65,16 @@
     "@modelcontextprotocol/sdk": "^1.0.0",
     "zod": "^4.4.3"
   },
+  "peerDependencies": {
+    "@anthropic-ai/claude-agent-sdk": ">=0.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@anthropic-ai/claude-agent-sdk": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.167",
     "@eslint/js": "^9.39.4",
     "@types/node": "^25.9.1",
     "eslint": "^9.39.4",

@@ -1,39 +1,11 @@
 import { z } from "zod";
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getAuthHeaders, getBaseUrl } from "../auth.js";
+import { defineTool, errorContent, textContent, waveFetch, type WaveToolDef } from "./shared.js";
 
-async function waveFetch(
-  path: string,
-  init?: RequestInit,
-): Promise<{ ok: boolean; status: number; body: string }> {
-  const url = `${getBaseUrl()}${path}`;
-  const res = await fetch(url, {
-    ...init,
-    headers: {
-      ...getAuthHeaders(),
-      ...init?.headers,
-    },
-  });
-  const body = await res.text();
-  return { ok: res.ok, status: res.status, body };
-}
-
-function textContent(text: string): { content: Array<{ type: "text"; text: string }> } {
-  return { content: [{ type: "text" as const, text }] };
-}
-
-function errorContent(
-  status: number,
-  body: string,
-): { content: Array<{ type: "text"; text: string }> } {
-  return textContent(`Error ${status}: ${body}`);
-}
-
-export function registerStreamTools(server: McpServer): void {
-  server.tool(
-    "wave_list_streams",
-    "List all streams in your WAVE account with pagination support",
-    {
+export const streamTools: WaveToolDef[] = [
+  defineTool({
+    name: "wave_list_streams",
+    description: "List all streams in your WAVE account with pagination support",
+    inputSchema: {
       limit: z
         .number()
         .int()
@@ -52,7 +24,7 @@ export function registerStreamTools(server: McpServer): void {
         .optional()
         .describe("Filter by stream status"),
     },
-    async ({ limit, offset, status }) => {
+    handler: async ({ limit, offset, status }) => {
       const params = new URLSearchParams();
       params.set("limit", String(limit ?? 25));
       params.set("offset", String(offset ?? 0));
@@ -65,12 +37,12 @@ export function registerStreamTools(server: McpServer): void {
 
       return textContent(res.body);
     },
-  );
+  }),
 
-  server.tool(
-    "wave_create_stream",
-    "Create a new stream in your WAVE account",
-    {
+  defineTool({
+    name: "wave_create_stream",
+    description: "Create a new stream in your WAVE account",
+    inputSchema: {
       title: z.string().min(1).max(255).describe("Stream title"),
       description: z.string().max(2000).optional().describe("Stream description"),
       protocol: z
@@ -83,7 +55,7 @@ export function registerStreamTools(server: McpServer): void {
         .optional()
         .describe("Preferred ingest region (e.g., us-east-1, eu-west-1)"),
     },
-    async ({ title, description, protocol, record, region }) => {
+    handler: async ({ title, description, protocol, record, region }) => {
       const payload: Record<string, unknown> = { title };
       if (description !== undefined) payload["description"] = description;
       if (protocol !== undefined) payload["protocol"] = protocol;
@@ -98,15 +70,15 @@ export function registerStreamTools(server: McpServer): void {
 
       return textContent(res.body);
     },
-  );
+  }),
 
-  server.tool(
-    "wave_start_stream",
-    "Start a stream by its ID, transitioning it to the active state",
-    {
+  defineTool({
+    name: "wave_start_stream",
+    description: "Start a stream by its ID, transitioning it to the active state",
+    inputSchema: {
       stream_id: z.string().uuid().describe("The UUID of the stream to start"),
     },
-    async ({ stream_id }) => {
+    handler: async ({ stream_id }) => {
       const res = await waveFetch(`/api/v1/streams/${stream_id}/start`, {
         method: "POST",
       });
@@ -114,15 +86,15 @@ export function registerStreamTools(server: McpServer): void {
 
       return textContent(res.body);
     },
-  );
+  }),
 
-  server.tool(
-    "wave_stop_stream",
-    "Stop an active stream by its ID",
-    {
+  defineTool({
+    name: "wave_stop_stream",
+    description: "Stop an active stream by its ID",
+    inputSchema: {
       stream_id: z.string().uuid().describe("The UUID of the stream to stop"),
     },
-    async ({ stream_id }) => {
+    handler: async ({ stream_id }) => {
       const res = await waveFetch(`/api/v1/streams/${stream_id}/stop`, {
         method: "POST",
       });
@@ -130,19 +102,20 @@ export function registerStreamTools(server: McpServer): void {
 
       return textContent(res.body);
     },
-  );
+  }),
 
-  server.tool(
-    "wave_get_stream_health",
-    "Get real-time health metrics for a stream including bitrate, frame rate, and latency",
-    {
+  defineTool({
+    name: "wave_get_stream_health",
+    description:
+      "Get real-time health metrics for a stream including bitrate, frame rate, and latency",
+    inputSchema: {
       stream_id: z.string().uuid().describe("The UUID of the stream to check"),
     },
-    async ({ stream_id }) => {
+    handler: async ({ stream_id }) => {
       const res = await waveFetch(`/api/v1/streams/${stream_id}/health`);
       if (!res.ok) return errorContent(res.status, res.body);
 
       return textContent(res.body);
     },
-  );
-}
+  }),
+];
