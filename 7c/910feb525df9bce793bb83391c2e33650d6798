@@ -1,0 +1,21 @@
+.wave/repo.json
+  s_e2e3e43d0638c5::t_b681a51adac0d2 8-15,26-115,118-315,318-321,331-483
+README.md
+  s_e2e3e43d0638c5::t_237ee7c2f2dc70 1-2,5,7,9,11,13-15,17,19,21-22,39-52,54,56-62,64,66-68,71,73-75,78,80-81,83,94-97,199-267
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "7c910feb525df9bce793bb83391c2e33650d6798",
+  "prompts": {},
+  "sessions": {
+    "s_e2e3e43d0638c5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1c78a7f2-132a-470e-8dae-4f28336b528f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
