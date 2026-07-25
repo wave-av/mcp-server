@@ -5,7 +5,14 @@
   "purpose": "MCP (Model Context Protocol) server that exposes WAVE streaming APIs as tools for AI coding assistants (Claude Code, Cursor, Windsurf).",
   "visibility": "public",
   "primaryLanguage": "TypeScript",
-  "topics": ["wave", "mcp", "model-context-protocol", "ai", "streaming", "tools"],
+  "topics": [
+    "wave",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "streaming",
+    "tools"
+  ],
   "product": {
     "id": "wave-mcp-server",
     "surface": "docs.wave.online/mcp",
@@ -16,51 +23,302 @@
     "transport": "stdio"
   },
   "capabilities": [
-    { "id": "wave_list_streams", "does": "List all streams in the WAVE account with pagination and status filtering.", "status": "preview" },
-    { "id": "wave_create_stream", "does": "Create a new stream (protocol, recording, region options).", "status": "preview" },
-    { "id": "wave_start_stream", "does": "Start a stream by ID, transitioning it to the active state.", "status": "preview" },
-    { "id": "wave_stop_stream", "does": "Stop an active stream by ID.", "status": "preview" },
-    { "id": "wave_get_stream_health", "does": "Get real-time stream health metrics (bitrate, frame rate, latency).", "status": "preview" },
-    { "id": "wave_list_productions", "does": "List all studio productions in the WAVE account.", "status": "preview" },
-    { "id": "wave_create_production", "does": "Create a new multi-camera studio production.", "status": "preview" },
-    { "id": "wave_get_viewers", "does": "Get current viewer count and viewer demographics for a stream or account-wide.", "status": "preview" },
-    { "id": "wave_get_stream_metrics", "does": "Get detailed stream performance metrics (bitrate, latency, quality, error rates).", "status": "preview" },
-    { "id": "wave_get_subscription", "does": "Get current subscription plan, billing cycle, and feature entitlements.", "status": "preview" },
-    { "id": "wave_get_usage", "does": "Get current billing-period usage (streaming minutes, storage, bandwidth).", "status": "preview" },
-    { "id": "wave_switch_camera", "does": "Switch the live program output to a different camera/source in a Cloud Switcher session.", "status": "preview" },
-    { "id": "wave_create_clip", "does": "Create a clip from a recorded stream, optionally exporting to social platforms.", "status": "preview" },
-    { "id": "wave_show_graphic", "does": "Show, hide, or update an HTML5 graphics overlay on a production.", "status": "preview" },
-    { "id": "wave_control_camera", "does": "Control a PTZ camera (pan, tilt, zoom, focus, preset recall/store).", "status": "preview" },
-    { "id": "wave_moderate_chat", "does": "Moderate a chat message in a live stream (block, flag, or allow).", "status": "preview" },
-    { "id": "wave_start_captions", "does": "Start real-time captions/transcription on a stream.", "status": "preview" },
-    { "id": "wave_mark_highlight", "does": "Mark a moment in a stream as a highlight for later clipping.", "status": "preview" }
+    {
+      "id": "wave_list_streams",
+      "does": "List all streams in the WAVE account with pagination and status filtering.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_create_stream",
+      "does": "Create a new stream (protocol, recording, region options).",
+      "status": "preview"
+    },
+    {
+      "id": "wave_start_stream",
+      "does": "Start a stream by ID, transitioning it to the active state.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_stop_stream",
+      "does": "Stop an active stream by ID.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_get_stream_health",
+      "does": "Get real-time stream health metrics (bitrate, frame rate, latency).",
+      "status": "preview"
+    },
+    {
+      "id": "wave_list_productions",
+      "does": "List all studio productions in the WAVE account.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_create_production",
+      "does": "Create a new multi-camera studio production.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_get_viewers",
+      "does": "Get current viewer count and viewer demographics for a stream or account-wide.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_get_stream_metrics",
+      "does": "Get detailed stream performance metrics (bitrate, latency, quality, error rates).",
+      "status": "preview"
+    },
+    {
+      "id": "wave_get_subscription",
+      "does": "Get current subscription plan, billing cycle, and feature entitlements.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_get_usage",
+      "does": "Get current billing-period usage (streaming minutes, storage, bandwidth).",
+      "status": "preview"
+    },
+    {
+      "id": "wave_switch_camera",
+      "does": "Switch the live program output to a different camera/source in a Cloud Switcher session.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_create_clip",
+      "does": "Create a clip from a recorded stream, optionally exporting to social platforms.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_show_graphic",
+      "does": "Show, hide, or update an HTML5 graphics overlay on a production.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_control_camera",
+      "does": "Control a PTZ camera (pan, tilt, zoom, focus, preset recall/store).",
+      "status": "preview"
+    },
+    {
+      "id": "wave_moderate_chat",
+      "does": "Moderate a chat message in a live stream (block, flag, or allow).",
+      "status": "preview"
+    },
+    {
+      "id": "wave_start_captions",
+      "does": "Start real-time captions/transcription on a stream.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_mark_highlight",
+      "does": "Mark a moment in a stream as a highlight for later clipping.",
+      "status": "preview"
+    }
   ],
   "claims": [
-    { "id": "claim-tool-count", "text": "Exposes 18 MCP tools", "resolver": { "type": "grep", "target": "capabilities.json", "expect": "18-tools" } },
-    { "id": "claim-transport-stdio", "text": "Server connects via stdio transport (no network listener)", "resolver": { "type": "grep", "target": "src/server.ts", "expect": "StdioServerTransport" } },
-    { "id": "claim-pkg-name", "text": "Published npm package name is @wave-av/mcp-server", "resolver": { "type": "grep", "target": "package.json", "expect": "@wave-av/mcp-server" } },
-    { "id": "claim-docs-surface", "text": "Documentation surface is docs.wave.online/mcp", "resolver": { "type": "grep", "target": "package.json", "expect": "docs.wave.online/mcp" } },
-    { "id": "claim-tool-list-streams", "text": "wave_list_streams tool defined in src/tools/streams.ts", "resolver": { "type": "grep", "target": "src/tools/streams.ts", "expect": "wave_list_streams" } },
-    { "id": "claim-tool-create-stream", "text": "wave_create_stream tool defined in src/tools/streams.ts", "resolver": { "type": "grep", "target": "src/tools/streams.ts", "expect": "wave_create_stream" } },
-    { "id": "claim-tool-start-stream", "text": "wave_start_stream tool defined in src/tools/streams.ts", "resolver": { "type": "grep", "target": "src/tools/streams.ts", "expect": "wave_start_stream" } },
-    { "id": "claim-tool-stop-stream", "text": "wave_stop_stream tool defined in src/tools/streams.ts", "resolver": { "type": "grep", "target": "src/tools/streams.ts", "expect": "wave_stop_stream" } },
-    { "id": "claim-tool-stream-health", "text": "wave_get_stream_health tool defined in src/tools/streams.ts", "resolver": { "type": "grep", "target": "src/tools/streams.ts", "expect": "wave_get_stream_health" } },
-    { "id": "claim-tool-list-productions", "text": "wave_list_productions tool defined in src/tools/studio.ts", "resolver": { "type": "grep", "target": "src/tools/studio.ts", "expect": "wave_list_productions" } },
-    { "id": "claim-tool-create-production", "text": "wave_create_production tool defined in src/tools/studio.ts", "resolver": { "type": "grep", "target": "src/tools/studio.ts", "expect": "wave_create_production" } },
-    { "id": "claim-tool-get-viewers", "text": "wave_get_viewers tool defined in src/tools/analytics.ts", "resolver": { "type": "grep", "target": "src/tools/analytics.ts", "expect": "wave_get_viewers" } },
-    { "id": "claim-tool-stream-metrics", "text": "wave_get_stream_metrics tool defined in src/tools/analytics.ts", "resolver": { "type": "grep", "target": "src/tools/analytics.ts", "expect": "wave_get_stream_metrics" } },
-    { "id": "claim-tool-subscription", "text": "wave_get_subscription tool defined in src/tools/billing.ts", "resolver": { "type": "grep", "target": "src/tools/billing.ts", "expect": "wave_get_subscription" } },
-    { "id": "claim-tool-usage", "text": "wave_get_usage tool defined in src/tools/billing.ts", "resolver": { "type": "grep", "target": "src/tools/billing.ts", "expect": "wave_get_usage" } },
-    { "id": "claim-tool-switch-camera", "text": "wave_switch_camera tool defined in src/tools/production.ts", "resolver": { "type": "grep", "target": "src/tools/production.ts", "expect": "wave_switch_camera" } },
-    { "id": "claim-tool-create-clip", "text": "wave_create_clip tool defined in src/tools/production.ts", "resolver": { "type": "grep", "target": "src/tools/production.ts", "expect": "wave_create_clip" } },
-    { "id": "claim-tool-show-graphic", "text": "wave_show_graphic tool defined in src/tools/production.ts", "resolver": { "type": "grep", "target": "src/tools/production.ts", "expect": "wave_show_graphic" } },
-    { "id": "claim-tool-control-camera", "text": "wave_control_camera tool defined in src/tools/production.ts", "resolver": { "type": "grep", "target": "src/tools/production.ts", "expect": "wave_control_camera" } },
-    { "id": "claim-tool-moderate-chat", "text": "wave_moderate_chat tool defined in src/tools/production.ts", "resolver": { "type": "grep", "target": "src/tools/production.ts", "expect": "wave_moderate_chat" } },
-    { "id": "claim-tool-start-captions", "text": "wave_start_captions tool defined in src/tools/production.ts", "resolver": { "type": "grep", "target": "src/tools/production.ts", "expect": "wave_start_captions" } },
-    { "id": "claim-tool-mark-highlight", "text": "wave_mark_highlight tool defined in src/tools/production.ts", "resolver": { "type": "grep", "target": "src/tools/production.ts", "expect": "wave_mark_highlight" } }
+    {
+      "id": "claim-tool-count",
+      "text": "Exposes 18 MCP tools",
+      "resolver": {
+        "type": "grep",
+        "target": "capabilities.json",
+        "expect": "18-tools"
+      }
+    },
+    {
+      "id": "claim-transport-stdio",
+      "text": "Server connects via stdio transport (no network listener)",
+      "resolver": {
+        "type": "grep",
+        "target": "src/server.ts",
+        "expect": "StdioServerTransport"
+      }
+    },
+    {
+      "id": "claim-pkg-name",
+      "text": "Published npm package name is @wave-av/mcp-server",
+      "resolver": {
+        "type": "grep",
+        "target": "package.json",
+        "expect": "@wave-av/mcp-server"
+      }
+    },
+    {
+      "id": "claim-docs-surface",
+      "text": "Documentation surface is docs.wave.online/mcp",
+      "resolver": {
+        "type": "grep",
+        "target": "package.json",
+        "expect": "docs.wave.online/mcp"
+      }
+    },
+    {
+      "id": "claim-tool-list-streams",
+      "text": "wave_list_streams tool defined in src/tools/streams.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/streams.ts",
+        "expect": "wave_list_streams"
+      }
+    },
+    {
+      "id": "claim-tool-create-stream",
+      "text": "wave_create_stream tool defined in src/tools/streams.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/streams.ts",
+        "expect": "wave_create_stream"
+      }
+    },
+    {
+      "id": "claim-tool-start-stream",
+      "text": "wave_start_stream tool defined in src/tools/streams.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/streams.ts",
+        "expect": "wave_start_stream"
+      }
+    },
+    {
+      "id": "claim-tool-stop-stream",
+      "text": "wave_stop_stream tool defined in src/tools/streams.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/streams.ts",
+        "expect": "wave_stop_stream"
+      }
+    },
+    {
+      "id": "claim-tool-stream-health",
+      "text": "wave_get_stream_health tool defined in src/tools/streams.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/streams.ts",
+        "expect": "wave_get_stream_health"
+      }
+    },
+    {
+      "id": "claim-tool-list-productions",
+      "text": "wave_list_productions tool defined in src/tools/studio.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/studio.ts",
+        "expect": "wave_list_productions"
+      }
+    },
+    {
+      "id": "claim-tool-create-production",
+      "text": "wave_create_production tool defined in src/tools/studio.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/studio.ts",
+        "expect": "wave_create_production"
+      }
+    },
+    {
+      "id": "claim-tool-get-viewers",
+      "text": "wave_get_viewers tool defined in src/tools/analytics.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/analytics.ts",
+        "expect": "wave_get_viewers"
+      }
+    },
+    {
+      "id": "claim-tool-stream-metrics",
+      "text": "wave_get_stream_metrics tool defined in src/tools/analytics.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/analytics.ts",
+        "expect": "wave_get_stream_metrics"
+      }
+    },
+    {
+      "id": "claim-tool-subscription",
+      "text": "wave_get_subscription tool defined in src/tools/billing.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/billing.ts",
+        "expect": "wave_get_subscription"
+      }
+    },
+    {
+      "id": "claim-tool-usage",
+      "text": "wave_get_usage tool defined in src/tools/billing.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/billing.ts",
+        "expect": "wave_get_usage"
+      }
+    },
+    {
+      "id": "claim-tool-switch-camera",
+      "text": "wave_switch_camera tool defined in src/tools/production.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/production.ts",
+        "expect": "wave_switch_camera"
+      }
+    },
+    {
+      "id": "claim-tool-create-clip",
+      "text": "wave_create_clip tool defined in src/tools/production.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/production.ts",
+        "expect": "wave_create_clip"
+      }
+    },
+    {
+      "id": "claim-tool-show-graphic",
+      "text": "wave_show_graphic tool defined in src/tools/production.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/production.ts",
+        "expect": "wave_show_graphic"
+      }
+    },
+    {
+      "id": "claim-tool-control-camera",
+      "text": "wave_control_camera tool defined in src/tools/production.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/production.ts",
+        "expect": "wave_control_camera"
+      }
+    },
+    {
+      "id": "claim-tool-moderate-chat",
+      "text": "wave_moderate_chat tool defined in src/tools/production.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/production.ts",
+        "expect": "wave_moderate_chat"
+      }
+    },
+    {
+      "id": "claim-tool-start-captions",
+      "text": "wave_start_captions tool defined in src/tools/production.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/production.ts",
+        "expect": "wave_start_captions"
+      }
+    },
+    {
+      "id": "claim-tool-mark-highlight",
+      "text": "wave_mark_highlight tool defined in src/tools/production.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/production.ts",
+        "expect": "wave_mark_highlight"
+      }
+    }
   ],
   "install": [
-    { "manager": "npm", "cmd": "npx @wave-av/mcp-server" }
+    {
+      "manager": "npm",
+      "cmd": "npx @wave-av/mcp-server"
+    }
   ],
   "quickstart": {
     "lang": "json",
@@ -70,5 +328,156 @@
     "docs": "docs.wave.online/mcp",
     "npm": "https://www.npmjs.com/package/@wave-av/mcp-server",
     "repo": "https://github.com/wave-av/mcp-server"
-  }
+  },
+  "sections": [
+    {
+      "kind": "prose",
+      "heading": "Setup",
+      "body": "### 1. Get an API key\n\n```bash\n# Via CLI\nwave auth login\n\n# Or create at https://wave.online/settings/api-keys\n```\n\n### 2. Configure your AI tool\n\nAdd to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) — see the Quick start config above."
+    },
+    {
+      "kind": "table",
+      "heading": "Available tools — Streams",
+      "columns": [
+        "Tool",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`wave_list_streams`",
+          "List all streams with pagination and status filtering"
+        ],
+        [
+          "`wave_create_stream`",
+          "Create a new stream with protocol and privacy options"
+        ],
+        [
+          "`wave_start_stream`",
+          "Start streaming on an existing stream"
+        ],
+        [
+          "`wave_stop_stream`",
+          "Stop an active stream"
+        ],
+        [
+          "`wave_get_stream_health`",
+          "Get real-time health metrics for a stream"
+        ]
+      ]
+    },
+    {
+      "kind": "table",
+      "heading": "Available tools — Studio",
+      "columns": [
+        "Tool",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`wave_list_productions`",
+          "List studio production sessions"
+        ],
+        [
+          "`wave_create_production`",
+          "Create a new multi-camera production"
+        ]
+      ]
+    },
+    {
+      "kind": "table",
+      "heading": "Available tools — Analytics",
+      "columns": [
+        "Tool",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`wave_get_viewers`",
+          "Get current viewer count and breakdown"
+        ],
+        [
+          "`wave_get_stream_metrics`",
+          "Get detailed stream performance metrics"
+        ]
+      ]
+    },
+    {
+      "kind": "table",
+      "heading": "Available tools — Billing",
+      "columns": [
+        "Tool",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`wave_get_subscription`",
+          "Get current subscription plan and status"
+        ],
+        [
+          "`wave_get_usage`",
+          "Get current period usage and limits"
+        ]
+      ]
+    },
+    {
+      "kind": "prose",
+      "heading": "Resources",
+      "body": "Access WAVE entities directly via the `wave://` URI scheme:\n\n- `wave://streams/{id}` - Stream configuration and status\n- `wave://productions/{id}` - Studio production details"
+    },
+    {
+      "kind": "table",
+      "heading": "Environment variables",
+      "columns": [
+        "Variable",
+        "Required",
+        "Default",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`WAVE_API_KEY`",
+          "Yes",
+          "-",
+          "Your WAVE API key"
+        ],
+        [
+          "`WAVE_BASE_URL`",
+          "No",
+          "`https://wave.online`",
+          "API base URL"
+        ]
+      ]
+    },
+    {
+      "kind": "prose",
+      "heading": "In-process (Claude Agent SDK) mode",
+      "body": "For consumers already running inside a [Claude Agent SDK](https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk)\nsession, the same tools are available in-process — skipping the stdio subprocess\nhop (~50 ms vs ~500 ms cold start). The tool list is shared with the stdio\nserver (`src/tools/index.ts`), so the two transports never drift.\n\n`@anthropic-ai/claude-agent-sdk` is an **optional peer dependency**: stdio users\nnever need it. Install it only for this mode:\n\n```bash\nnpm install @wave-av/mcp-server @anthropic-ai/claude-agent-sdk\n```\n\n```ts\nimport { query } from \"@anthropic-ai/claude-agent-sdk\";\nimport { createWaveSdkMcpServer } from \"@wave-av/mcp-server/sdk-server\";\n\nconst wave = await createWaveSdkMcpServer();\nfor await (const message of query({\n  prompt: \"List my active streams\",\n  options: { mcpServers: { wave }, env: { WAVE_API_KEY: process.env.WAVE_API_KEY } },\n})) {\n  // handle messages\n}\n```"
+    },
+    {
+      "kind": "prose",
+      "heading": "Setup for other AI tools",
+      "body": "### Cursor\n\nAdd to `.cursor/mcp.json`:\n\n```json\n{\n  \"mcpServers\": {\n    \"wave\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@wave-av/mcp-server\"],\n      \"env\": { \"WAVE_API_KEY\": \"wave_live_...\" }\n    }\n  }\n}\n```\n\n### Windsurf\n\nAdd to Windsurf MCP settings with the same configuration."
+    },
+    {
+      "kind": "prose",
+      "heading": "Troubleshooting",
+      "body": "### Server not starting\n\nVerify your API key is set:\n\n```bash\necho $WAVE_API_KEY\n```\n\n### Tools not appearing\n\nRestart your AI tool after adding the MCP configuration. Most tools require a restart to detect new MCP servers.\n\n### Connection errors\n\nThe MCP server uses stdio transport (no network listener). If you see connection errors, check that `npx` can run successfully:\n\n```bash\nnpx @wave-av/mcp-server --version\n```\n\n### Testing the server\n\nSend a JSON-RPC initialize request to verify:\n\n```bash\necho '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"test\",\"version\":\"1.0.0\"}}}' | npx @wave-av/mcp-server\n```"
+    },
+    {
+      "kind": "prose",
+      "heading": "Related packages",
+      "body": "- [@wave-av/sdk](https://www.npmjs.com/package/@wave-av/sdk) — TypeScript SDK (34 API modules)\n- [@wave-av/adk](https://www.npmjs.com/package/@wave-av/adk) — Agent Developer Kit\n- [@wave-av/cli](https://www.npmjs.com/package/@wave-av/cli) — Command-line interface\n- [@wave-av/create-app](https://www.npmjs.com/package/@wave-av/create-app) — Scaffold a new project\n- [OpenAPI spec](https://github.com/wave-av/api-spec) — Full API specification"
+    },
+    {
+      "kind": "code",
+      "heading": "Development",
+      "lang": "bash",
+      "body": "cd packages/mcp-server\npnpm install\npnpm run build\npnpm run dev       # Watch mode\npnpm run type-check"
+    },
+    {
+      "kind": "prose",
+      "heading": "License",
+      "body": "MIT"
+    }
+  ]
 }
