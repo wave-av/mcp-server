@@ -2,7 +2,7 @@
   "name": "@wave-av/mcp-server",
   "kind": "mcp-server",
   "domain": "agent-ops",
-  "purpose": "MCP (Model Context Protocol) server that exposes WAVE streaming APIs as tools for AI coding assistants (Claude Code, Cursor, Windsurf).",
+  "purpose": "MCP (Model Context Protocol) server that exposes WAVE as tools for AI coding assistants (Claude Code, Cursor, Windsurf): 25 tools spanning streams, studio productions, analytics and billing, the voice/transcribe/captions product spokes, WAVE Dispatch model routing, and the public x402/MPP agent-payment rails.",
   "visibility": "public",
   "primaryLanguage": "TypeScript",
   "topics": [
@@ -112,16 +112,51 @@
       "id": "wave_mark_highlight",
       "does": "Mark a moment in a stream as a highlight for later clipping.",
       "status": "preview"
+    },
+    {
+      "id": "wave_speak",
+      "does": "Synthesize speech from text via POST /v1/voice. Returns a receipt — content type, size, and billed usage — rather than the audio itself, since an MCP tool result is a text block and raw audio cannot travel through one.",
+      "status": "ga"
+    },
+    {
+      "id": "wave_transcribe",
+      "does": "Transcribe audio from a publicly reachable URL via POST /v1/transcribe, returning the JSON transcript. Optional engine (auto/whisper/deepgram/elevenlabs), language hint, and speaker diarization.",
+      "status": "ga"
+    },
+    {
+      "id": "wave_caption",
+      "does": "Generate a caption file from audio at a URL via POST /v1/captions, returning WebVTT, SubRip, or JSON cues as text.",
+      "status": "ga"
+    },
+    {
+      "id": "wave_route",
+      "does": "Classify a prompt with WAVE Dispatch and return the model route it selected plus the reasoning, so an agent can pick the cheapest capable model instead of hardcoding one. Calls Dispatch on its own host, not the product gateway.",
+      "status": "ga"
+    },
+    {
+      "id": "wave_list_routing_profiles",
+      "does": "List WAVE Dispatch's named routing profiles (Fast / Expert / Heavy / Code). Feature-flagged server-side, so it can legitimately report as unavailable in a given environment.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_find_paid_services",
+      "does": "Semantic search over WAVE's MPP directory for machine-payable services an agent can buy from. Public: no API key is sent, because the route takes none.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_payment_schemes",
+      "does": "List the payment schemes and networks WAVE's x402 or MPP facilitator supports, so an agent settles on a scheme WAVE accepts. Public: no API key is sent. Only the read half of the rails is exposed — verify and settle are deliberately not wrapped as tools.",
+      "status": "ga"
     }
   ],
   "claims": [
     {
       "id": "claim-tool-count",
-      "text": "Exposes 18 MCP tools",
+      "text": "Exposes 25 MCP tools",
       "resolver": {
         "type": "grep",
         "target": "capabilities.json",
-        "expect": "18-tools"
+        "expect": "25-tools"
       }
     },
     {
@@ -149,6 +184,69 @@
         "type": "grep",
         "target": "package.json",
         "expect": "docs.wave.online/mcp"
+      }
+    },
+    {
+      "id": "claim-tool-speak",
+      "text": "wave_speak tool defined in src/tools/fleet.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/fleet.ts",
+        "expect": "wave_speak"
+      }
+    },
+    {
+      "id": "claim-tool-transcribe",
+      "text": "wave_transcribe tool defined in src/tools/fleet.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/fleet.ts",
+        "expect": "wave_transcribe"
+      }
+    },
+    {
+      "id": "claim-tool-caption",
+      "text": "wave_caption tool defined in src/tools/fleet.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/fleet.ts",
+        "expect": "wave_caption"
+      }
+    },
+    {
+      "id": "claim-tool-route",
+      "text": "wave_route tool defined in src/tools/dispatch.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/dispatch.ts",
+        "expect": "wave_route"
+      }
+    },
+    {
+      "id": "claim-tool-find-paid-services",
+      "text": "wave_find_paid_services tool defined in src/tools/payments.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/payments.ts",
+        "expect": "wave_find_paid_services"
+      }
+    },
+    {
+      "id": "claim-payments-sends-no-key",
+      "text": "The payment-rail tools send no Authorization header, because those gateway routes are public and a key sent to them would leak for no benefit",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/payments.ts",
+        "expect": "No Authorization header on purpose"
+      }
+    },
+    {
+      "id": "claim-fleet-paths-grounded-in-spokes",
+      "text": "The voice/transcribe/captions paths come from each spoke's own router, not from api-spec/openapi.yaml, which over-declares endpoints that 404 in production",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/fleet.ts",
+        "expect": "api-spec#33"
       }
     },
     {
@@ -420,6 +518,64 @@
       ]
     },
     {
+      "kind": "table",
+      "heading": "Available tools — Fleet products",
+      "columns": [
+        "Tool",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`wave_speak`",
+          "Synthesize speech from text (POST /v1/voice). Returns a receipt — content type, size, billed usage — not the audio, since an MCP tool result is a text block"
+        ],
+        [
+          "`wave_transcribe`",
+          "Transcribe audio from a public URL (POST /v1/transcribe), returning the JSON transcript"
+        ],
+        [
+          "`wave_caption`",
+          "Generate a caption file from audio at a URL (POST /v1/captions) — WebVTT, SubRip, or JSON cues"
+        ]
+      ]
+    },
+    {
+      "kind": "table",
+      "heading": "Available tools — Model routing",
+      "columns": [
+        "Tool",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`wave_route`",
+          "Classify a prompt with WAVE Dispatch and get the selected model route plus its reasoning"
+        ],
+        [
+          "`wave_list_routing_profiles`",
+          "List the named routing profiles (Fast / Expert / Heavy / Code). Feature-flagged server-side"
+        ]
+      ]
+    },
+    {
+      "kind": "table",
+      "heading": "Available tools — Agent payments",
+      "columns": [
+        "Tool",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`wave_find_paid_services`",
+          "Semantic search over the MPP directory for machine-payable services. Public — no API key required"
+        ],
+        [
+          "`wave_payment_schemes`",
+          "Payment schemes and networks the x402 or MPP facilitator supports. Public — no API key required"
+        ]
+      ]
+    },
+    {
       "kind": "prose",
       "heading": "Resources",
       "body": "Access WAVE entities directly via the `wave://` URI scheme:\n\n- `wave://streams/{id}` - Stream configuration and status\n- `wave://productions/{id}` - Studio production details"
@@ -445,6 +601,18 @@
           "No",
           "`https://wave.online`",
           "API base URL"
+        ],
+        [
+          "`WAVE_API_BASE_URL`",
+          "No",
+          "`https://api.wave.online`",
+          "Product gateway front door — fronts the voice/transcribe/captions spokes and the payment rails. Distinct from `WAVE_BASE_URL`, which is the app surface"
+        ],
+        [
+          "`WAVE_DISPATCH_URL`",
+          "No",
+          "`https://dispatch.wave.online`",
+          "WAVE Dispatch host. Dispatch is not behind the gateway"
         ]
       ]
     },
