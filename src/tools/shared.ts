@@ -6,7 +6,7 @@
 // in-process Agent SDK server) with zero drift. See ./index.ts for the registry
 // and ../server.ts / ../sdk-server.ts for the two consumers.
 import type { ZodRawShape, infer as zInfer, ZodObject } from "zod";
-import { getAuthHeaders, getBaseUrl } from "../auth.js";
+import { getApiKey, getAuthHeaders, getApiBaseUrl, getBaseUrl } from "../auth.js";
 
 /**
  * Tool result shape — a single text block. Kept structurally assignable to both
@@ -44,6 +44,51 @@ export async function waveFetch(
   });
   const body = await res.text();
   return { ok: res.ok, status: res.status, body };
+}
+
+/** Result of a gateway product call: the decoded text body plus the usage receipt the spoke stamps
+ *  on its response. `meter`/`usageMinutes` are what the gateway bills on, so surfacing them lets an
+ *  agent see the cost of the call it just made instead of guessing. */
+export interface GatewayResult {
+  ok: boolean;
+  status: number;
+  body: string;
+  contentType: string;
+  meter?: string;
+  usageMinutes?: string;
+}
+
+/** Authenticated call against the GATEWAY front door (api.wave.online), not the app host.
+ *
+ *  Deliberately does NOT reuse `waveFetch`: that one targets `getBaseUrl()` (wave.online) and always
+ *  sends `Content-Type: application/json`, while the product spokes are content-type sensitive — the
+ *  transcribe/captions spokes read the request's content-type to decide how to treat the body, so a
+ *  blanket JSON header on a non-JSON call is wrong. Here the caller owns the content-type. */
+export async function gatewayFetch(path: string, init?: RequestInit): Promise<GatewayResult> {
+  const res = await fetch(`${getApiBaseUrl()}${path}`, {
+    ...init,
+    headers: {
+      Authorization: `Bearer ${getApiKey()}`,
+      "User-Agent": "wave-mcp-server/0.1.0",
+      ...init?.headers,
+    },
+  });
+  return {
+    ok: res.ok,
+    status: res.status,
+    body: await res.text(),
+    contentType: res.headers.get("content-type") ?? "",
+    meter: res.headers.get("x-wave-meter") ?? undefined,
+    usageMinutes: res.headers.get("x-wave-usage-minutes") ?? undefined,
+  };
+}
+
+/** Render the spoke's usage receipt as a trailing line, so every metered tool reports what it cost.
+ *  Empty when the spoke stamped no meter headers (e.g. an error response). */
+export function usageNote(r: GatewayResult): string {
+  if (!r.meter) return "";
+  const mins = r.usageMinutes ? `, ${r.usageMinutes} min` : "";
+  return `\n\n[billed: ${r.meter}${mins}]`;
 }
 
 /**
