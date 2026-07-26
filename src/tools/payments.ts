@@ -1,9 +1,9 @@
 // WAVE's agent-payment rails: x402 and MPP.
 //
 // These routes are PUBLIC BY DESIGN — the gateway serves them with no key auth, only a per-IP rate
-// limit (`wave-gateway/src/facilitator-routes.ts`), because a paying agent has to be able to discover
-// what it can buy and which payment schemes are supported BEFORE it holds a WAVE key. So these tools
-// call the gateway front door directly rather than through the authenticated helper.
+// limit, because a paying agent has to be able to discover what it can buy and which payment schemes
+// are supported BEFORE it holds a WAVE key. So these tools call the gateway front door directly
+// rather than through the authenticated helper.
 //
 //   GET /v1/mpp/services              semantic search over WAVE's MPP service records (Vectorize)
 //   GET /v1/x402/facilitator/supported  payment schemes/networks the x402 facilitator supports
