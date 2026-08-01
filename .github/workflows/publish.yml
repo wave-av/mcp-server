@@ -20,8 +20,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       # Trusted publishing requires npm >= 11.5.1; Node 22 ships npm 10.x, so
-      # without this upgrade the OIDC exchange is simply unavailable.
-      - run: npm install -g npm@latest
+      # without this upgrade the OIDC exchange is simply unavailable. Pinned to
+      # an exact version so this privileged job never runs an unvetted npm
+      # release with its OIDC publishing credentials.
+      - run: npm install -g npm@11.19.0
 
       - run: npm ci
 
