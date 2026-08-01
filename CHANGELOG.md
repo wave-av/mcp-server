@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Changed
+
+- Releases are now published via npm trusted publishing (OIDC) with signed
+  provenance attestations, replacing token-based authentication in CI.
+
 ## [0.2.0]
 
 ### Added
