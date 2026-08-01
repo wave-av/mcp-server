@@ -1,0 +1,21 @@
+.github/workflows/publish.yml
+  s_be40541f6fd98b::t_05d9b6386c10bf 9,15,17,22-25,30-33
+package.json
+  s_be40541f6fd98b::t_c882d456a79c0f 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "9fbaa0d8b0bd34bbc622cf418548b848566126ed",
+  "prompts": {},
+  "sessions": {
+    "s_be40541f6fd98b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d7c9787b-b0d7-48b3-9805-b7c27c79d626",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
