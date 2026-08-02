@@ -28,7 +28,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsup && tsc --emitDeclarationOnly",
+    "build": "tsup && tsc --emitDeclarationOnly --declarationMap false",
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit",
     "lint": "eslint src/ --max-warnings 0",
