@@ -12,7 +12,11 @@ All notable changes to this project are documented here. The format is based on
   `dist/sdk-server.d.ts`) that `package.json` has been advertising via `types`
   and the `exports` map. Previously consumers silently resolved to `any`. The
   release workflow now verifies the declared types entries exist in the packed
-  tarball before publishing.
+  tarball before publishing. Note: `dist/sdk-server.d.ts` type-references the
+  optional `@anthropic-ai/claude-agent-sdk` peer dependency, so type-checking
+  an import of `@wave-av/mcp-server/sdk-server` without that package installed
+  now fails with TS2307 (instead of silently resolving to `any`); install the
+  peer dependency to consume that subpath.
 
 ### Changed
 
