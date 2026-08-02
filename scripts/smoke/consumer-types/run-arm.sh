@@ -7,8 +7,9 @@
 # installed (plus, for the ./sdk-server arm, the optional peer) and a
 # `typecheck/` copy of this directory.
 #
-# Scope of the failure signal: this gate fails ONLY on diagnostics that name
-# @wave-av/mcp-server or one of the probe files. tsconfig.base.json turns
+# Scope of the failure signal: this gate fails on everything EXCEPT diagnostics
+# located inside a dependency's own declarations under node_modules. Those --
+# and only those -- are downgraded to warnings. tsconfig.base.json turns
 # skipLibCheck OFF -- which is the whole point, it is what makes tsc look
 # inside the tarball's declarations -- but that also makes it visit the
 # declarations of @modelcontextprotocol/sdk and zod. An upstream regression in
@@ -43,11 +44,17 @@ RC=$?
 
 OURS="$(printf '%s\n' "$OUT" | grep -E "$OURS_RE" || true)"
 
-# A dependency diagnostic carries a file location ("path(line,col): error TS").
-# A global error does not (TS18003 no inputs found, TS5083 cannot read file, an
-# unknown compiler option): those mean the arm itself is mis-wired, not that
-# somebody else's declarations regressed, and they must never be excused.
-readonly DEP_DIAG_RE='^[^(]+\([0-9]+,[0-9]+\): error TS'
+# Only a diagnostic located INSIDE node_modules is somebody else's to fix. The
+# bucket is an allowlist, not "anything that carries a file location": tsc does
+# report the arm's own mis-wiring with a location, e.g.
+#   tsconfig.base.json(4,5): error TS5023: Unknown compiler option 'foo'.
+# so keying the excuse on "has a location" excused exactly the setup errors that
+# mean the arm type-checked nothing -- it warned, left GLOBAL empty, and exited
+# 0 with "type resolution ok" (same for TS5024/TS6046/TS5012). Default is now
+# fatal: a line is excused only if it names a path under node_modules.
+# node_modules/ is anchored to a directory boundary so a sibling directory that
+# merely ends in the name -- my-node_modules/app.ts(1,1) -- is not excused.
+readonly DEP_DIAG_RE='^([^(]*/)?node_modules/[^(]*\([0-9]+,[0-9]+\): error TS'
 OTHERS="$(printf '%s\n' "$OUT" | grep -vE "$OURS_RE" | grep -E "$DEP_DIAG_RE" || true)"
 GLOBAL="$(printf '%s\n' "$OUT" | grep -vE "$OURS_RE" | grep -E 'error TS' | grep -vE "$DEP_DIAG_RE" || true)"
 
