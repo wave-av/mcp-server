@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Fixed
+
+- The build now emits the TypeScript declaration files (`dist/index.d.ts`,
+  `dist/sdk-server.d.ts`) that `package.json` has been advertising via `types`
+  and the `exports` map. Previously consumers silently resolved to `any`. The
+  release workflow now verifies the declared types entries exist in the packed
+  tarball before publishing.
+
 ### Changed
 
 - Releases are now published via npm trusted publishing (OIDC) with signed
