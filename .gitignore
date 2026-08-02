@@ -1,3 +1,13 @@
 node_modules/
 dist/
 *.log
+
+# `npm pack` — which the release smoke runs, and which anyone reproducing it
+# locally will run — drops a publishable tarball in the repo root.
+*.tgz
+
+# Public repo. These have never been committed here; the entries exist so a
+# stray `git add -A` cannot be the first time.
+.env
+.env.*
+.DS_Store

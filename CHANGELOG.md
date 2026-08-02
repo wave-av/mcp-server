@@ -16,7 +16,12 @@ All notable changes to this project are documented here. The format is based on
   optional `@anthropic-ai/claude-agent-sdk` peer dependency, so type-checking
   an import of `@wave-av/mcp-server/sdk-server` without that package installed
   now fails with TS2307 (instead of silently resolving to `any`); install the
-  peer dependency to consume that subpath.
+  peer dependency to consume that subpath. This is a deliberate choice rather
+  than an accident of the build (see #77): the `./sdk-server` subpath exists to
+  hand a config object to the Agent SDK, so requiring the SDK to type-check it
+  is honest. The release gate now enforces both halves of that contract — the
+  root entry must type-check for a consumer who has NOT installed the peer, and
+  `./sdk-server` must type-check for one who has.
 
 ### Changed
 
