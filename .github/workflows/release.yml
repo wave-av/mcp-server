@@ -173,26 +173,40 @@ jobs:
               if(!fs.existsSync(f)){console.error('declared bin missing from tarball: '+n+' -> '+bins[n]);process.exit(1);}
               console.log('bin ok:',n,'->',bins[n]);
             }"
-          # Declared `types` entry points. The build currently emits no .d.ts
-          # (tsup dts: false -- a documented pre-existing follow-up, see
-          # tsup.config.ts), so missing declarations are surfaced as a warning
-          # rather than failing the gate on a known packaging gap. Flip this to
-          # a hard failure once dts emission lands.
+          # Declared `types` entry points must exist in the tarball. This was a
+          # warning while the build emitted no .d.ts at all; the build now runs
+          # `tsc --emitDeclarationOnly` (see tsup.config.ts for why not tsup's
+          # dts worker), so a missing declaration is a real regression and fails
+          # the gate. A warning nobody reads is how the `bin` defect survived to
+          # a published version.
           PKG_DIR="$SMOKE/node_modules/@wave-av/mcp-server" node -e "
             const fs=require('fs'),path=require('path');
-            const dir=process.env.PKG_DIR;
+            const dir=path.resolve(process.env.PKG_DIR);
             const pkg=JSON.parse(fs.readFileSync(path.join(dir,'package.json'),'utf8'));
             const targets=new Set();
             if(typeof pkg.types==='string')targets.add(pkg.types);
             for(const v of Object.values(pkg.exports||{})){
               if(v&&typeof v==='object'&&typeof v.types==='string')targets.add(v.types);
             }
-            const missing=[...targets].filter(t=>!fs.existsSync(path.join(dir,t)));
+            if(targets.size===0){
+              console.log('::warning title=no types declared::manifest declares no \"types\" entry point - nothing to verify');
+              process.exit(0);
+            }
+            const missing=[];
+            for(const t of targets){
+              // t comes from the packed manifest; keep it inside the package dir.
+              const f=path.resolve(dir,t);
+              if(f!==dir&&!f.startsWith(dir+path.sep)){
+                console.error('::error title=types entry escapes package::'+t+' resolves outside the package directory');
+                process.exit(1);
+              }
+              if(!fs.existsSync(f))missing.push(t);
+            }
             if(missing.length){
-              console.log('::warning title=declared types missing from tarball::'+missing.join(', ')+' -- TypeScript consumers get no declarations (tsup dts:false is a pre-existing follow-up)');
-            } else if(targets.size){
-              console.log('types ok:',[...targets].join(', '));
-            }"
+              console.error('::error title=declared types missing from tarball::'+missing.join(', ')+' -- package.json advertises TypeScript support but these declarations are not in the tarball; consumers would silently resolve to any');
+              process.exit(1);
+            }
+            console.log('types ok:',[...targets].join(', '));"
 
   # ---------------------------------------------------------------------------
   # Gate 3 — publish. Runs ONLY if secret-scan + verify are green.
