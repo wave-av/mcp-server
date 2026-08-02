@@ -42,7 +42,14 @@ OUT="$("$TSC" -p "$CONFIG" --pretty false 2>&1)"
 RC=$?
 
 OURS="$(printf '%s\n' "$OUT" | grep -E "$OURS_RE" || true)"
-OTHERS="$(printf '%s\n' "$OUT" | grep -vE "$OURS_RE" | grep -E 'error TS' || true)"
+
+# A dependency diagnostic carries a file location ("path(line,col): error TS").
+# A global error does not (TS18003 no inputs found, TS5083 cannot read file, an
+# unknown compiler option): those mean the arm itself is mis-wired, not that
+# somebody else's declarations regressed, and they must never be excused.
+readonly DEP_DIAG_RE='^[^(]+\([0-9]+,[0-9]+\): error TS'
+OTHERS="$(printf '%s\n' "$OUT" | grep -vE "$OURS_RE" | grep -E "$DEP_DIAG_RE" || true)"
+GLOBAL="$(printf '%s\n' "$OUT" | grep -vE "$OURS_RE" | grep -E 'error TS' | grep -vE "$DEP_DIAG_RE" || true)"
 
 if [ -n "$OTHERS" ]; then
   COUNT="$(printf '%s\n' "$OTHERS" | wc -l | tr -d ' ')"
@@ -56,9 +63,17 @@ if [ -n "$OURS" ]; then
   exit 1
 fi
 
-# tsc can still be non-zero purely from the dependency noise above. Say so
-# rather than printing an unqualified "ok" over a red exit code.
+# tsc can still be non-zero purely from the dependency noise above. Only
+# excuse a red exit code when every reported error was attributable to a
+# dependency's declarations. A global error, or a crash that produced no
+# classifiable diagnostics at all, means the arm verified nothing and must
+# not be reported as a pass.
 if [ "$RC" -ne 0 ]; then
+  if [ -n "$GLOBAL" ] || [ -z "$OTHERS" ]; then
+    echo "::error title=type-resolution arm failed unclassified::$LABEL: tsc exited $RC for reasons not attributable to this package or its dependencies - the arm verified nothing"
+    printf '%s\n' "$OUT" | head -n 40
+    exit 1
+  fi
   echo "type resolution ok: $LABEL (tsc exited $RC, entirely on declarations outside this package)"
   exit 0
 fi
