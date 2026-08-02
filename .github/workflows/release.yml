@@ -113,7 +113,20 @@ jobs:
       - name: e2e-smoke — pack + install + import the real tarball
         run: |
           set -euo pipefail
-          TARBALL="$(npm pack --silent | tail -n1)"
+          # --json instead of --silent: some npm versions suppress the stdout
+          # filename under --silent, which would leave TARBALL empty and turn
+          # the install below into an install of the workspace DIRECTORY --
+          # green gate, real tarball never exercised. Parse the filename and
+          # prove the .tgz exists so any regression fails loudly instead.
+          TARBALL="$(npm pack --json | node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(0,'utf8'))[0].filename)")"
+          case "$TARBALL" in
+            *.tgz) ;;
+            *) echo "::error::npm pack --json reported '$TARBALL', not a .tgz filename"; exit 1 ;;
+          esac
+          if [ ! -f "$TARBALL" ]; then
+            echo "::error::npm pack reported '$TARBALL' but no such file exists"
+            exit 1
+          fi
           TARBALL="$PWD/$TARBALL"
           echo "packed: $TARBALL"
           # Disposable project, outside the workspace, with lifecycle scripts
@@ -159,6 +172,26 @@ jobs:
               const f=path.join(dir,bins[n]);
               if(!fs.existsSync(f)){console.error('declared bin missing from tarball: '+n+' -> '+bins[n]);process.exit(1);}
               console.log('bin ok:',n,'->',bins[n]);
+            }"
+          # Declared `types` entry points. The build currently emits no .d.ts
+          # (tsup dts: false -- a documented pre-existing follow-up, see
+          # tsup.config.ts), so missing declarations are surfaced as a warning
+          # rather than failing the gate on a known packaging gap. Flip this to
+          # a hard failure once dts emission lands.
+          PKG_DIR="$SMOKE/node_modules/@wave-av/mcp-server" node -e "
+            const fs=require('fs'),path=require('path');
+            const dir=process.env.PKG_DIR;
+            const pkg=JSON.parse(fs.readFileSync(path.join(dir,'package.json'),'utf8'));
+            const targets=new Set();
+            if(typeof pkg.types==='string')targets.add(pkg.types);
+            for(const v of Object.values(pkg.exports||{})){
+              if(v&&typeof v==='object'&&typeof v.types==='string')targets.add(v.types);
+            }
+            const missing=[...targets].filter(t=>!fs.existsSync(path.join(dir,t)));
+            if(missing.length){
+              console.log('::warning title=declared types missing from tarball::'+missing.join(', ')+' -- TypeScript consumers get no declarations (tsup dts:false is a pre-existing follow-up)');
+            } else if(targets.size){
+              console.log('types ok:',[...targets].join(', '));
             }"
 
   # ---------------------------------------------------------------------------
