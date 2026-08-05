@@ -479,5 +479,12 @@
       "heading": "License",
       "body": "MIT"
     }
+  ],
+  "disclosureWaivers": [
+    {
+      "rule": "config-state",
+      "match": "WAVE_API_KEY",
+      "reason": "Troubleshooting step instructing the READER to check their OWN environment (`echo $WAVE_API_KEY`). It discloses no WAVE deployment state — the variable belongs to the person installing the MCP server, not to us."
+    }
   ]
 }
