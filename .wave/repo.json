@@ -3,6 +3,7 @@
   "kind": "mcp-server",
   "domain": "agent-ops",
   "purpose": "MCP (Model Context Protocol) server that exposes WAVE streaming APIs as tools for AI coding assistants (Claude Code, Cursor, Windsurf).",
+  "description": "WAVE MCP Server — 18 tools exposing the WAVE streaming APIs to Claude Code, Cursor and Windsurf.",
   "visibility": "public",
   "primaryLanguage": "TypeScript",
   "topics": [
@@ -478,6 +479,13 @@
       "kind": "prose",
       "heading": "License",
       "body": "MIT"
+    }
+  ],
+  "policyWaivers": [
+    {
+      "host": "www.npmjs.com",
+      "pathPrefix": "/package/@anthropic-ai",
+      "reason": "The README documents this server's own MCP client compatibility, and @anthropic-ai/claude-agent-sdk is the published package a reader installs to use it. Scoped to that one npm org, not the whole host, so an arbitrary third-party package link is still reported."
     }
   ],
   "disclosureWaivers": [
