@@ -40,6 +40,10 @@ on:
   # just as world-readable — a leak pasted next to a diff line bypasses nothing.
   pull_request_review_comment:
     types: [created, edited]
+  # And the review's own summary body (the text submitted with an approval or
+  # changes-requested) is a fourth surface, distinct from both comment kinds.
+  pull_request_review:
+    types: [submitted, edited]
   push:
     branches: [main, master]
   workflow_dispatch:
@@ -130,18 +134,19 @@ jobs:
       || github.event_name == 'issues'
       || github.event_name == 'issue_comment'
       || github.event_name == 'pull_request_review_comment'
+      || github.event_name == 'pull_request_review'
     concurrency:
-      # Keyed on the specific comment / PR / issue rather than github.ref, because
-      # issue events all report the default branch and a ref-keyed group would let
-      # two comments cancel each other, leaving one unscanned. The comment id must
-      # come FIRST: a pull_request_review_comment payload carries the pull_request
-      # object too, and keying those on the PR number would fold every review
-      # comment on a PR into one group.
+      # Keyed on the specific comment / review / PR / issue rather than github.ref,
+      # because issue events all report the default branch and a ref-keyed group
+      # would let two comments cancel each other, leaving one unscanned. The
+      # comment and review ids must come BEFORE the PR number: review-comment and
+      # review payloads carry the pull_request object too, and keying those on the
+      # PR number would fold every comment on a PR into one group.
       #
       # cancel-in-progress is deliberately FALSE. Every version of a body deserves a
       # verdict, the job is seconds long, and a cancelled check-run lingers on the
       # commit and makes an otherwise-green PR look broken.
-      group: public-repo-guard-body-${{ github.event.comment.id || github.event.pull_request.number || github.event.issue.number || github.ref }}
+      group: public-repo-guard-body-${{ github.event.comment.id || github.event.review.id || github.event.pull_request.number || github.event.issue.number || github.ref }}
       cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
@@ -173,13 +178,13 @@ jobs:
           # An UNRECOGNIZED payload shape must fail, never quietly scan nothing and
           # report a pass. If the event schema ever moves, this job must go red
           # rather than become a green rubber stamp over an unscanned body.
-          if [ "$(jq -r 'has("pull_request") or has("issue") or has("comment")' "$GITHUB_EVENT_PATH")" != "true" ]; then
-            echo "::error title=public-repo-guard (body-guard)::Event payload contains no pull_request/issue/comment object — refusing to report a pass on an unscanned body."
+          if [ "$(jq -r 'has("pull_request") or has("issue") or has("comment") or has("review")' "$GITHUB_EVENT_PATH")" != "true" ]; then
+            echo "::error title=public-repo-guard (body-guard)::Event payload contains no pull_request/issue/comment/review object — refusing to report a pass on an unscanned body."
             exit 1
           fi
           jq -r '[.pull_request.title, .pull_request.body,
                   .issue.title, .issue.body,
-                  .comment.body]
+                  .comment.body, .review.body]
                  | map(select(. != null)) | join("\n")' \
             "$GITHUB_EVENT_PATH" > "$RUNNER_TEMP/bodyscan/body.txt"
           echo "scanning $(wc -l < "$RUNNER_TEMP/bodyscan/body.txt") line(s) of body text"
