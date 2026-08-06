@@ -13,11 +13,13 @@ name: public-repo-guard
 # wave-av/.github must not be able to alter another repo's secret scanner). The
 # gitleaks binary is version-pinned AND SHA-256-verified before it runs.
 #
-# To install on a new repo, copy all four files together:
+# To install on a new repo, copy all five files together (the guard job runs the
+# fixture tests, so a repo missing the tests file fails on every run):
 #   .github/workflows/public-repo-guard.yml
 #   .gitleaks.toml
 #   scripts/public-repo-guard/content-policy.sh
 #   scripts/public-repo-guard/body-policy.sh
+#   scripts/public-repo-guard/tests/body-policy.test.sh
 #
 # Scan scope: the published working TREE (gitleaks --no-git), NOT git history. The
 # goal is "what is public right now is clean", so a shallow checkout is sufficient.
@@ -89,8 +91,15 @@ jobs:
       - name: gitleaks (secret scan — published tree)
         run: gitleaks detect --no-git --source . --config .gitleaks.toml --redact --no-banner --exit-code 1
 
-      - name: Install ripgrep
-        run: command -v rg >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ripgrep)
+      - name: Install ripgrep (and verify PCRE2 support)
+        run: |
+          command -v rg >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ripgrep)
+          # The policy rules use -P (PCRE2), and not every distro builds rg with it
+          # (Ubuntu jammy's apt package does not). Probe up front so a runner-image
+          # change fails HERE with a named cause, not downstream as an opaque
+          # scanner error blocking every PR.
+          echo probe | rg -qP 'p(?=robe)' \
+            || { echo "::error title=public-repo-guard::this ripgrep build lacks PCRE2 (-P) support, which the policy rules require"; exit 1; }
 
       - name: content policy (WAVE trade-secret / internal-leak gate)
         env:
@@ -143,8 +152,15 @@ jobs:
           sparse-checkout: scripts/public-repo-guard
           sparse-checkout-cone-mode: false
 
-      - name: Install ripgrep
-        run: command -v rg >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ripgrep)
+      - name: Install ripgrep (and verify PCRE2 support)
+        run: |
+          command -v rg >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ripgrep)
+          # The policy rules use -P (PCRE2), and not every distro builds rg with it
+          # (Ubuntu jammy's apt package does not). Probe up front so a runner-image
+          # change fails HERE with a named cause, not downstream as an opaque
+          # scanner error blocking every PR.
+          echo probe | rg -qP 'p(?=robe)' \
+            || { echo "::error title=public-repo-guard::this ripgrep build lacks PCRE2 (-P) support, which the policy rules require"; exit 1; }
 
       # The body is read straight out of the event payload FILE and written to
       # another file. It is never interpolated into a run: block and never placed

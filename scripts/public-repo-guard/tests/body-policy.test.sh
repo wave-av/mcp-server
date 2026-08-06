@@ -44,6 +44,8 @@ expect 1 'private repo + credential name, reverse order' \
   'The MOQ_JOIN_SECRET was added; wave-transports picks it up on deploy.'
 expect 1 'private repo + secret count' \
   'wave-gateway went from 74 secrets to 75 after this change.'
+expect 1 'repo name matches case-insensitively' \
+  'Flip is live: WAVE_VIEWPORT_LEASE_SECRET is bound on Wave-Gateway now.'
 expect 1 'private repo + service binding' \
   'This adds a service binding from the worker to agent-money for settlement.'
 expect 1 'operator home path' \
@@ -69,6 +71,12 @@ expect 1 'internal IP on a line that names the control still blocks' \
 # --- must PASS (precision — these keep the gate deployable) -------------------
 expect 0 'bare private-repo cross-reference' \
   'This is the companion change to wave-transports#260; merge that one first.'
+# Case-insensitivity must stay scoped to the repo NAME: lowercase everyday words
+# ending in key/token/secret are not operational detail.
+expect 0 'lowercase key-ish word near a private repo is not ops detail' \
+  'Companion to wave-transports#260; see docs/setup_key.md for the steps.'
+expect 0 'lowercase env accessor near a private repo is not ops detail' \
+  'wave-gateway now reads the value from process.env.api_token in dev.'
 expect 0 'two private repos, no operational detail' \
   'Both wave-gateway and wave-transports will need a follow-up for this.'
 expect 0 'credential NAME with no private repo nearby' \
