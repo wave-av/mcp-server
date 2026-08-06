@@ -59,6 +59,12 @@ expect 1 'AWS access key id' \
   "The failing job had ${AKID_FIXTURE} configured."
 expect 1 'internal tailscale IP' \
   'It resolves to 100.71.4.19 from inside the fleet.'
+# The same-line bypass: mentioning the gate must never launder a credential.
+# ABOUT_THE_CONTROL is prose-rules-only; a key next to "public-repo-guard" blocks.
+expect 1 'credential on a line that names the control still blocks' \
+  "public-repo-guard flagged ${AKID_FIXTURE} in the run linked from SECURITY.md."
+expect 1 'internal IP on a line that names the control still blocks' \
+  'body-policy missed 100.71.4.19 on the first pass; fixed now.'
 
 # --- must PASS (precision — these keep the gate deployable) -------------------
 expect 0 'bare private-repo cross-reference' \
@@ -71,6 +77,12 @@ expect 0 'public runner path is not an operator path' \
   'CI checks out to /home/runner/work/repo/repo before the scan runs.'  # enforce-ignore (fixture)
 expect 0 'talking about the control' \
   'body-policy blocks a private repo named next to a SECRET_TOKEN; that is intended.'
+# Prose rules DO consult ABOUT_THE_CONTROL: a sentence describing the gate's
+# behaviour with a real repo name stays discussable.
+expect 0 'prose rule discussing the gate (repo + credential name)' \
+  'public-repo-guard fires when wave-gateway appears near EXAMPLE_SECRET; see the fixtures.'
+expect 0 'unquoted marker on a line that names the control' \
+  'public-repo-guard blocks internal-only markers wherever they appear in body text.'
 expect 0 'explicit guard:allow with a reason' \
   'Example for the docs: wave-gateway holds EXAMPLE_SECRET — guard:allow documented-example'
 expect 0 'ordinary clean body' \

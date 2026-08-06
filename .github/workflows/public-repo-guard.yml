@@ -34,6 +34,10 @@ on:
     types: [opened, edited]
   issue_comment:
     types: [created, edited]
+  # Inline code-review comments are a separate event from issue_comment, and are
+  # just as world-readable — a leak pasted next to a diff line bypasses nothing.
+  pull_request_review_comment:
+    types: [created, edited]
   push:
     branches: [main, master]
   workflow_dispatch:
@@ -112,16 +116,23 @@ jobs:
   # can stop that class before publication.
   body-guard:
     name: Body content policy
-    if: github.event_name == 'pull_request' || github.event_name == 'issues' || github.event_name == 'issue_comment'
+    if: >-
+      github.event_name == 'pull_request'
+      || github.event_name == 'issues'
+      || github.event_name == 'issue_comment'
+      || github.event_name == 'pull_request_review_comment'
     concurrency:
-      # Keyed on the specific PR / comment / issue rather than github.ref, because
+      # Keyed on the specific comment / PR / issue rather than github.ref, because
       # issue events all report the default branch and a ref-keyed group would let
-      # two comments cancel each other, leaving one unscanned.
+      # two comments cancel each other, leaving one unscanned. The comment id must
+      # come FIRST: a pull_request_review_comment payload carries the pull_request
+      # object too, and keying those on the PR number would fold every review
+      # comment on a PR into one group.
       #
       # cancel-in-progress is deliberately FALSE. Every version of a body deserves a
       # verdict, the job is seconds long, and a cancelled check-run lingers on the
       # commit and makes an otherwise-green PR look broken.
-      group: public-repo-guard-body-${{ github.event.pull_request.number || github.event.comment.id || github.event.issue.number || github.ref }}
+      group: public-repo-guard-body-${{ github.event.comment.id || github.event.pull_request.number || github.event.issue.number || github.ref }}
       cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
