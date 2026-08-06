@@ -51,6 +51,13 @@ expect 1 'repo name matches case-insensitively' \
   'Flip is live: EXAMPLE_LEASE_SECRET is bound on Example-Priv-Alpha now.'
 expect 1 'private repo + service binding' \
   'This adds a service binding from the worker to example-priv-gamma for settlement.'
+# Regression: a leading \b before the credential-name shape made multi-underscore
+# names (only matchable from their inner segment, which follows a word character)
+# unmatchable in name-then-detail order, silently exempting exactly these bodies.
+expect 1 'private repo then multi-segment credential name' \
+  'example-priv-alpha now reads EXAMPLE_LEASE_SECRET at boot.'
+expect 1 'private repo then multi-segment token name' \
+  'example-priv-alpha now reads WAVE_API_TOKEN at boot.'
 expect 1 'operator home path' \
   'Repro: run it from /Users/someoperator/Documents/notes and it fails.'  # enforce-ignore (fixture)
 expect 1 'operator home path, capitalized username' \

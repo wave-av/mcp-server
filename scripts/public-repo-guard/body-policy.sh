@@ -136,10 +136,14 @@ check BLOCK internal-marker  '(?<![“"'"'"'`])\b(?i:internal[- ]only|do\s+not\s
 # references ("companion to <private-repo>#260"). A gate that fires on all of
 # those gets switched off, and then it protects nothing.
 #
-# So a bare mention stays silent. What fires is a private repo name within ~140
-# characters of INTERNAL OPERATIONAL DETAIL — a SCREAMING_CASE credential NAME, a
-# secret-binding verb, a service binding, or a secret COUNT. That is the topology
-# of what is wired to what, and it is the shape that actually leaked.
+# So a bare mention stays silent. What fires is a private repo name and INTERNAL
+# OPERATIONAL DETAIL on the SAME LINE, within ~140 characters of each other — a
+# SCREAMING_CASE credential NAME, a secret-binding verb, a service binding, or a
+# secret COUNT. That is the topology of what is wired to what, and it is the
+# shape that actually leaked. Trade accepted: the scan is line-scoped (rg matches
+# per line and the separator excludes newlines), so a repo name on one line and
+# the detail on the next does not fire. Cross-line proximity would need multiline
+# scanning with its own false-positive budget; revisit if that shape leaks.
 #
 # Names are NOT hardcoded (this file is public); CI injects them via the
 # GUARD_PRIVATE_REPOS variable. Unset locally → this check is skipped.
@@ -161,8 +165,15 @@ if [[ -n "${GUARD_PRIVATE_REPOS:-}" ]]; then
     # OPS_DETAIL and turn its deliberate SCREAMING_CASE requirement into a match
     # on everyday lowercase words (docs/setup_key.md, process.env.api_token),
     # blocking exactly the bare cross-references this rule promises to leave alone.
+    #
+    # No \b in front of OPS_DETAIL: a multi-segment credential name like
+    # EXAMPLE_LEASE_SECRET can only start its match at the inner segment (LEASE),
+    # and the underscore before it is a word character, so a boundary there never
+    # exists — a leading \b silently exempted every credential name with more than
+    # one underscore when it followed the repo name. Uppercase-shape matching does
+    # not need the anchor; starting mid-token still evidences a credential name.
     check BLOCK private-repo-ops \
-      "(?i:\\b(?:${_ALT})\\b)[^\\n]{0,140}?\\b${OPS_DETAIL}|${OPS_DETAIL}[^\\n]{0,140}?(?i:\\b(?:${_ALT})\\b)" \
+      "(?i:\\b(?:${_ALT})\\b)[^\\n]{0,140}?${OPS_DETAIL}|${OPS_DETAIL}[^\\n]{0,140}?(?i:\\b(?:${_ALT})\\b)" \
       'A private WAVE repo named alongside internal operational detail (credential name, secret binding, or secret count) — the wiring topology is not public' \
       prose
   fi
