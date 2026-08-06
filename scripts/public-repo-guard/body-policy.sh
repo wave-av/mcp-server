@@ -107,7 +107,15 @@ check BLOCK private-key      '-----BEGIN [A-Z ]*PRIVATE KEY-----'            'Em
 # --- Infrastructure identifiers ----------------------------------------------
 # shellcheck disable=SC2016  # $CLOUDFLARE_ACCOUNT_ID is literal guidance text
 check BLOCK cf-account-id    'account_id\s*[:=]\s*["'"'"']?[0-9a-f]{32}'      'Hardcoded Cloudflare account_id — reference the env var instead'
-check BLOCK internal-ip      '100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\.[0-9]{1,3}\.[0-9]{1,3}'  'Internal Tailscale-CGNAT IP (100.64.0.0/10) — internal fleet address'
+# The BODY profile diverges from the FILE gate here too. The tree gate excludes
+# the guard's own directory from scanning, so its copy of this rule never sees
+# the range literal in its own comments; body text has no such exclusion, and
+# security discussion names the range's documentation form constantly (including
+# quoting this very rule). Two shapes are RANGE-talk, not a fleet address, and
+# are exempted: an all-zero host portion (100.64.0.0) and a CIDR-suffixed subnet
+# (100.64.0.0/10, 100.71.4.0/24). A concrete host like 100.71.4.19 still blocks.
+# Trade accepted: a live address written with a /32 suffix no longer fires.
+check BLOCK internal-ip      '100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\.(?!0\.0(?![0-9]))[0-9]{1,3}\.[0-9]{1,3}(?![0-9]|/[0-9])'  'Internal Tailscale-CGNAT IP (100.64.0.0/10) — internal fleet address'
 # shellcheck disable=SC2016  # $HOME is literal guidance text
 # The BODY profile diverges from the FILE gate here for the same reason as
 # private-repo-ops below: body text is prose, and prose contains app routes.

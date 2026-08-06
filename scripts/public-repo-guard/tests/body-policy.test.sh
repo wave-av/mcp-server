@@ -13,6 +13,16 @@ SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/body-policy.sh"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
+# The rules use -P (PCRE2), and not every rg build ships it (Ubuntu's apt package
+# does not). On such a build the scanner's fail-closed posture turns EVERY fixture
+# into "want exit 1, got 2" — dozens of opaque failures indistinguishable from a
+# broken gate. Probe once up front, exactly like the workflow's install step, so
+# the suite fails with the actual cause named instead.
+command -v rg >/dev/null 2>&1 \
+  || { echo "FAIL: ripgrep (rg) is required to run these fixtures" >&2; exit 1; }
+echo probe | rg -qP 'p(?=robe)' \
+  || { echo "FAIL: this ripgrep build lacks PCRE2 (-P) support, which the policy rules require — install a PCRE2-enabled rg (Ubuntu noble's apt package, brew, or cargo install ripgrep --features pcre2)" >&2; exit 1; }
+
 # The names the real gate is configured with come from an org variable; the tests
 # pin their own so they are hermetic and do not depend on CI configuration. The
 # pinned names are deliberately SYNTHETIC: this file is public, and hardcoding a
@@ -111,6 +121,15 @@ expect 0 'app route under /home/ is not an operator path' \
   'See /home/dashboard/settings route for the new page.'
 expect 0 'absolute URL with a deep /home/ path is not an operator path' \
   'Deep link: https://app.wave.online/home/dashboard/settings/profile works now.'
+# RANGE-talk is not a fleet address: the documentation form of the CGNAT range
+# (all-zero host, or any CIDR-suffixed subnet) appears in ordinary security
+# discussion — including quotes of this gate's own comments — and must pass.
+expect 0 'CGNAT range in documentation form (CIDR)' \
+  'The internal-ip rule covers the Tailscale CGNAT range 100.64.0.0/10 by design.'
+expect 0 'CGNAT range with all-zero host, no CIDR' \
+  'The fleet overlay uses 100.64.0.0 as its network address.'
+expect 0 'CIDR-suffixed subnet of the range' \
+  'Traffic from 100.71.4.0/24 is routed through the tunnel.'
 expect 0 'talking about the control' \
   'body-policy blocks a private repo named next to a SECRET_TOKEN; that is intended.'
 # Prose rules DO consult ABOUT_THE_CONTROL: a sentence describing the gate's
