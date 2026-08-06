@@ -149,6 +149,32 @@ for case in "no argument at all::" "nonexistent path::$TMP/does-not-exist.txt"; 
   fi
 done
 
+# Regression: the post-scan filter stages must fail CLOSED too. They once ran
+# `rg ... || true`, so a filter error (exit >= 2, e.g. a PCRE2-less rg on the -P
+# allowlist filter) emptied the match list and reported CLEAN on a body whose
+# main scan had already found a leak. Simulate with an rg shim that errors on
+# inverted-match (-v*) invocations and delegates everything else to the real rg:
+# the main scan still hits, and the gate must exit 2, never 0.
+REAL_RG="$(command -v rg)"
+mkdir -p "$TMP/fakebin"
+cat > "$TMP/fakebin/rg" <<SHIM
+#!/usr/bin/env bash
+for a in "\$@"; do
+  [[ "\$a" == "--" ]] && break
+  [[ "\$a" == -v* ]] && exit 2
+done
+exec "$REAL_RG" "\$@"
+SHIM
+chmod +x "$TMP/fakebin/rg"
+printf '%s\n' 'Attaching the internal-only rollout plan for context.' > "$TMP/body.txt"
+PATH="$TMP/fakebin:$PATH" bash "$SCRIPT" "$TMP/body.txt" >/dev/null 2>&1
+rc=$?
+if [[ "$rc" == 2 ]]; then
+  PASS=$((PASS+1)); printf '  ok   broken filter stage → exit 2 (fails closed)\n'
+else
+  FAIL=$((FAIL+1)); printf '  FAIL broken filter stage — want exit 2, got %s\n' "$rc"
+fi
+
 echo "  ---"
 if (( FAIL > 0 )); then
   echo "  $PASS passed, $FAIL FAILED"; exit 1

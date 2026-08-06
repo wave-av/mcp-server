@@ -61,11 +61,24 @@ check() {
   # Filter with rg, not grep: BSD/macOS grep has no -P, so a `grep -P` allowlist
   # silently errors out locally while working on GNU/CI — the gate would then
   # disagree with itself depending on where it ran. rg is already required above.
+  #
+  # The filters fail CLOSED exactly like the main scan: exit 1 only means every
+  # hit was filtered away (fine), but exit >= 2 is a broken filter, and a broken
+  # filter that empties the match list would convert detected leaks into a
+  # silent pass. That is why there is no `|| true` here.
   local matches
   matches="$(printf '%s' "$raw" \
-    | rg -vN -- 'guard:allow[[:space:]]+[^[:space:]]' || true)"
+    | rg -vN -- 'guard:allow[[:space:]]+[^[:space:]]')"; rc=$?
+  if (( rc >= 2 )); then
+    echo "::error title=public-repo-guard ($name)::ripgrep failed (exit $rc) in the guard:allow filter for rule '$name'. Failing closed."
+    exit 2
+  fi
   if [[ "$scope" == "prose" && -n "$matches" ]]; then
-    matches="$(printf '%s' "$matches" | rg -vNiP -- "$ABOUT_THE_CONTROL" || true)"
+    matches="$(printf '%s' "$matches" | rg -vNiP -- "$ABOUT_THE_CONTROL")"; rc=$?
+    if (( rc >= 2 )); then
+      echo "::error title=public-repo-guard ($name)::ripgrep failed (exit $rc) in the ABOUT_THE_CONTROL filter for rule '$name'. Failing closed."
+      exit 2
+    fi
   fi
   [[ -z "$matches" ]] && return 0
   local count; count="$(printf '%s\n' "$matches" | grep -c '')"
