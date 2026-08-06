@@ -74,6 +74,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          # Nothing in this job pushes or calls the API, so the token has no
+          # business lingering in .git/config while repo-checked-out scripts run.
+          persist-credentials: false
 
       # gitleaks' GitHub Action requires a paid license for organizations; the CLI
       # itself is MIT-licensed and free. Pin the version AND verify the release
@@ -156,6 +160,10 @@ jobs:
           # tree on every comment.
           sparse-checkout: scripts/public-repo-guard
           sparse-checkout-cone-mode: false
+          # This job runs repo-checked-out scripts over attacker-controlled body
+          # text; nothing here pushes or calls the API, so the token must not
+          # linger in .git/config for those scripts to find.
+          persist-credentials: false
 
       - name: Install ripgrep (and verify PCRE2 support)
         run: |
