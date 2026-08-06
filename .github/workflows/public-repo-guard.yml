@@ -182,9 +182,19 @@ jobs:
             echo "::error title=public-repo-guard (body-guard)::Event payload contains no pull_request/issue/comment/review object — refusing to report a pass on an unscanned body."
             exit 1
           fi
-          jq -r '[.pull_request.title, .pull_request.body,
-                  .issue.title, .issue.body,
-                  .comment.body, .review.body]
+          # Scope the scan to the object this event actually TOUCHED. Comment and
+          # review payloads carry the parent issue/pull_request object too, and
+          # scanning the parent on every comment would pin a parent-body violation
+          # on whoever commented last, and keep the check red until the parent is
+          # edited even after the offending comment is deleted. Nothing goes
+          # unscanned by scoping: parent-body changes raise their own `edited`
+          # events. Precedence mirrors the concurrency key above: comment, then
+          # review, then the parent objects.
+          jq -r '(if   has("comment")      then [.comment.body]
+                  elif has("review")       then [.review.body]
+                  elif has("pull_request") then [.pull_request.title, .pull_request.body]
+                  else                          [.issue.title, .issue.body]
+                  end)
                  | map(select(. != null)) | join("\n")' \
             "$GITHUB_EVENT_PATH" > "$RUNNER_TEMP/bodyscan/body.txt"
           echo "scanning $(wc -l < "$RUNNER_TEMP/bodyscan/body.txt") line(s) of body text"

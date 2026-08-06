@@ -96,7 +96,17 @@ check BLOCK private-key      '-----BEGIN [A-Z ]*PRIVATE KEY-----'            'Em
 check BLOCK cf-account-id    'account_id\s*[:=]\s*["'"'"']?[0-9a-f]{32}'      'Hardcoded Cloudflare account_id — reference the env var instead'
 check BLOCK internal-ip      '100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\.[0-9]{1,3}\.[0-9]{1,3}'  'Internal Tailscale-CGNAT IP (100.64.0.0/10) — internal fleet address'
 # shellcheck disable=SC2016  # $HOME is literal guidance text
-check BLOCK abs-user-path    '/(Users|home)/(?!runner/)[a-z][a-z0-9._-]+/'    'Operator absolute home path — leaks identity and local layout'
+# The BODY profile diverges from the FILE gate here for the same reason as
+# private-repo-ops below: body text is prose, and prose contains app routes.
+# "/home/<word>/" is an ordinary URL path shape ("See /home/dashboard/settings"),
+# so the file gate's bare two-segment form would fire on routine product talk.
+# What marks an OPERATOR path is what follows the username: further layout (one
+# more path segment) or a file (a dot-bearing final segment, which also catches
+# dotdirs like .config). The lookbehind keeps the rule out of absolute URLs,
+# where /home/ is preceded by a hostname character. The username class accepts
+# capitals: /Users/Someone/ leaks exactly as much as /Users/someone/. Trade
+# accepted: a bare "/home/alice/" with nothing after it no longer fires.
+check BLOCK abs-user-path    '(?<![\w.])/(Users|home)/(?!runner/)[A-Za-z][A-Za-z0-9._-]+/(?:[A-Za-z0-9._-]+/[A-Za-z0-9._-]|[A-Za-z0-9_-]*\.[A-Za-z0-9])' 'Operator absolute home path — leaks identity and local layout'
 
 # --- Self-identified internal material ---------------------------------------
 # USE vs MENTION. A body that SAYS "internal-only" is leaking; a body that QUOTES
@@ -111,7 +121,12 @@ check BLOCK abs-user-path    '/(Users|home)/(?!runner/)[a-z][a-z0-9._-]+/'    'O
 # A quoted marker is also a trivial bypass, and that is an accepted trade. The
 # threat here is the ACCIDENTAL paste; a deliberate evader has easier routes, and
 # `guard:allow <reason>` already exists as the honest, visible one.
-check BLOCK internal-marker  '(?<![“"'"'"'`])\b(internal[- ]only|do\s+not\s+(share|publish|distribute)|for\s+internal\s+use)\b(?![”"'"'"'`])' 'Text self-identifies as not-for-public' prose
+#
+# Case-insensitivity is scoped per-rule with (?i:...), never a leading (?i): a
+# sentence-initial "Internal-only" and a shouted "DO NOT SHARE" are the common
+# real forms of this marker, while the credential rules above keep their
+# deliberate case requirements intact.
+check BLOCK internal-marker  '(?<![“"'"'"'`])\b(?i:internal[- ]only|do\s+not\s+(?:share|publish|distribute)|for\s+internal\s+use)\b(?![”"'"'"'`])' 'Text self-identifies as not-for-public' prose
 
 # --- Private repo + operational detail (PROXIMITY, not bare name) ------------
 # The BODY profile deliberately DIVERGES from the FILE profile here, and the
@@ -128,6 +143,7 @@ check BLOCK internal-marker  '(?<![“"'"'"'`])\b(internal[- ]only|do\s+not\s+(s
 #
 # Names are NOT hardcoded (this file is public); CI injects them via the
 # GUARD_PRIVATE_REPOS variable. Unset locally → this check is skipped.
+_PRIVATE_REPO_OPS_RAN=0
 if [[ -n "${GUARD_PRIVATE_REPOS:-}" ]]; then
   OPS_DETAIL='(?:[A-Z][A-Z0-9]*_(?:SECRET|TOKEN|KEY|PASSWORD)|wrangler\s+secret|secret\s+(?:is\s+)?(?:bound|binding|list)|(?:is\s+)?bound\s+on|service\s+binding|\d{2,}\s+secrets)'
   _ALT=''
@@ -139,6 +155,7 @@ if [[ -n "${GUARD_PRIVATE_REPOS:-}" ]]; then
     _ALT="${_ALT:+$_ALT|}${_esc}"
   done
   if [[ -n "$_ALT" ]]; then
+    _PRIVATE_REPO_OPS_RAN=1
     # Both orders: name-then-detail and detail-then-name. Case-insensitivity is
     # scoped with (?i:...) to the REPO NAME alone: a leading (?i) would bleed into
     # OPS_DETAIL and turn its deliberate SCREAMING_CASE requirement into a match
@@ -149,6 +166,14 @@ if [[ -n "${GUARD_PRIVATE_REPOS:-}" ]]; then
       'A private WAVE repo named alongside internal operational detail (credential name, secret binding, or secret count) — the wiring topology is not public' \
       prose
   fi
+fi
+# Unset locally is fine (the fixtures pin their own names), but in CI an empty
+# or names-free variable means the flagship rule scanned NOTHING while the job
+# still reports green: the quiet inverse of this script's fail-closed posture.
+# Not a hard failure (the remaining rules are still worth running), but an
+# unconfigured gate must be VISIBLE rather than silently weaker than it looks.
+if [[ "$_PRIVATE_REPO_OPS_RAN" == 0 && -n "${GITHUB_ACTIONS:-}" ]]; then
+  echo "::warning title=public-repo-guard (private-repo-ops)::GUARD_PRIVATE_REPOS is empty or contains no names: the private-repo-ops rule scanned nothing this run. Set the org/repo Actions variable to restore it."
 fi
 
 if (( VIOLATIONS > 0 )); then

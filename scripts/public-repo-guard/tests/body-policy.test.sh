@@ -50,8 +50,20 @@ expect 1 'private repo + service binding' \
   'This adds a service binding from the worker to agent-money for settlement.'
 expect 1 'operator home path' \
   'Repro: run it from /Users/someoperator/Documents/notes and it fails.'  # enforce-ignore (fixture)
+expect 1 'operator home path, capitalized username' \
+  'Logs land in /Users/Someone/Library/Logs/wave.log on my machine.'  # enforce-ignore (fixture)
+expect 1 'operator home path, file directly under the home dir' \
+  'The crash referenced /home/someoperator/wrangler.toml directly.'  # enforce-ignore (fixture)
 expect 1 'internal-only marker' \
   'Attaching the internal-only rollout plan for context.'
+# The marker rules are case-insensitive on purpose: sentence-initial and shouted
+# forms are how these phrases are actually written.
+expect 1 'capitalized internal-only marker' \
+  'Internal-only rollout plan attached.'
+expect 1 'shouted do-not-share marker' \
+  'DO NOT SHARE outside the team.'
+expect 1 'for-internal-use marker, sentence-initial' \
+  'For internal use only; see the attached doc.'
 # Assembled at run time rather than written as a literal: a fixture that LOOKS like
 # a live AWS key trips this repo's own pre-commit secret scanners (it did, on the
 # first draft). Splitting the prefix keeps the fixture exercising the real regex
@@ -83,6 +95,12 @@ expect 0 'credential NAME with no private repo nearby' \
   'The handler now reads SOME_API_TOKEN from the environment instead of a literal.'
 expect 0 'public runner path is not an operator path' \
   'CI checks out to /home/runner/work/repo/repo before the scan runs.'  # enforce-ignore (fixture)
+# Body text is prose, and prose contains app routes: /home/<word>/ is an ordinary
+# URL path shape. Only username-plus-layout (or a dot-bearing file segment) fires.
+expect 0 'app route under /home/ is not an operator path' \
+  'See /home/dashboard/settings route for the new page.'
+expect 0 'absolute URL with a deep /home/ path is not an operator path' \
+  'Deep link: https://app.wave.online/home/dashboard/settings/profile works now.'
 expect 0 'talking about the control' \
   'body-policy blocks a private repo named next to a SECRET_TOKEN; that is intended.'
 # Prose rules DO consult ABOUT_THE_CONTROL: a sentence describing the gate's
