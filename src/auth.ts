@@ -7,13 +7,11 @@
  *
  * WHY api.wave.online AND WHY THE TOOL PATHS ARE `/v1/*` (#89):
  * `https://wave.online` is the marketing/app origin — it 404s on the API surface, so every one of
- * this package's tools failed with the previous default. The API is served by wave-gateway, which
- * is the single billing/auth authority: it scope-gates the request, meters it, and runs the x402
- * paywall. Its PUBLIC path space is `/v1/*`; the gateway itself re-prefixes to the spoke origin's
- * `/api/v1/*` on forward (wave-gateway src/forward.ts ORIGIN_PATH_PREFIX). Calling `/api/v1/*`
- * here therefore misses the gateway's route map even on the right host. Measured 2026-08-07:
+ * this package's tools failed with the previous default. `https://api.wave.online` is the public
+ * API origin, and its public path space is `/v1/*` — NOT `/api/v1/*`, which is an internal path
+ * shape that is not routable by a client on any host. Measured 2026-08-07:
  *   POST https://api.wave.online/v1/streams      → 402 (route exists, priced)
- *   POST https://api.wave.online/api/v1/streams  → 404 (not a gateway route)
+ *   POST https://api.wave.online/api/v1/streams  → 404 (not a routable API path)
  *   POST https://wave.online/api/v1/streams      → 404 (wrong origin entirely)
  * A 402 is the CORRECT unauthenticated answer here — it proves the route exists and is priced.
  */
