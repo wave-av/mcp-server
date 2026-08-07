@@ -4,9 +4,16 @@
  * Reads credentials from environment variables:
  * - WAVE_API_KEY: Required. Bearer token for WAVE API authentication.
  * - WAVE_BASE_URL: Optional. Defaults to https://wave.online.
+ * - WAVE_INSTALL_CHANNEL: Optional. Self-declared install-channel label forwarded to wave-gateway as
+ *   `X-Wave-Install-Channel` (E2 usage-attribution, wave-gateway PR "feat/usage-attribution-e2"). Lets
+ *   WAVE's onboarding config (e.g. a Skill/manifest-generated .mcp.json) tag itself apart from a
+ *   hand-written docs install for quarterly usage-attribution reporting. Absent by default — unset is
+ *   byte-identical to today. Allowlisted server-side to "skill-manifest" | "docs-manual"; any other value
+ *   (including unset) is recorded as untagged, so this is safe to leave unset with no behavior change.
  */
 
 const DEFAULT_BASE_URL = "https://wave.online";
+const INSTALL_CHANNEL_HEADER = "X-Wave-Install-Channel";
 
 export function getApiKey(): string {
   const key = process.env["WAVE_API_KEY"];
@@ -25,11 +32,14 @@ export function getBaseUrl(): string {
 }
 
 export function getAuthHeaders(): Record<string, string> {
-  return {
+  const headers: Record<string, string> = {
     Authorization: `Bearer ${getApiKey()}`,
     "Content-Type": "application/json",
     "User-Agent": "wave-mcp-server/0.1.0",
   };
+  const installChannel = process.env["WAVE_INSTALL_CHANNEL"];
+  if (installChannel) headers[INSTALL_CHANNEL_HEADER] = installChannel;
+  return headers;
 }
 
 /**
