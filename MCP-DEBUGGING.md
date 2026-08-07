@@ -78,7 +78,7 @@ WAVE_BASE_URL=https://staging.wave.online npx @wave-av/mcp-server
 
 | Environment | `WAVE_BASE_URL` | API key prefix |
 |------------|----------------|---------------|
-| Production | `https://wave.online` (default) | `wave_live_*` |
+| Production | `https://api.wave.online` (default) | `wave_live_*` |
 | Staging | `https://staging.wave.online` | `wave_test_*` |
 
 Override via environment variable:

@@ -3,10 +3,18 @@
  *
  * Reads credentials from environment variables:
  * - WAVE_API_KEY: Required. Bearer token for WAVE API authentication.
- * - WAVE_BASE_URL: Optional. Defaults to https://wave.online.
+ * - WAVE_BASE_URL: Optional. Defaults to https://api.wave.online.
+ *
+ * All tool/resource handlers build paths as `/v1/*` (see src/tools/*.ts and
+ * src/resources/*.ts) — the public path shape served by the WAVE API
+ * gateway. https://api.wave.online is the API's own surface; it is
+ * NOT the same origin as https://wave.online (the marketing/docs Next.js
+ * site), which has no knowledge of `/v1/*` or `/api/v1/*` and 404s on both.
+ * `/api/v1/*` in particular is an internal path shape within the WAVE
+ * platform — it is never a path a client should call directly.
  */
 
-const DEFAULT_BASE_URL = "https://wave.online";
+const DEFAULT_BASE_URL = "https://api.wave.online";
 
 export function getApiKey(): string {
   const key = process.env["WAVE_API_KEY"];

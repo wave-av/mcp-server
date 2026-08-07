@@ -17,7 +17,7 @@ export function registerProductionResources(server: McpServer): void {
         };
       }
 
-      const res = await fetch(`${getBaseUrl()}/api/v1/productions/${id}`, {
+      const res = await fetch(`${getBaseUrl()}/v1/productions/${id}`, {
         headers: getAuthHeaders(),
       });
       if (!res.ok) {

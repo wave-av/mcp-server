@@ -22,7 +22,7 @@ export const productionTools: WaveToolDef[] = [
         .describe("Transition duration in ms (default: 0 for cut)"),
     },
     handler: async ({ switcher_id, source_id, transition, duration_ms }) => {
-      const res = await waveFetch(`/api/v1/switcher/${switcher_id}/control`, {
+      const res = await waveFetch(`/v1/switcher/${switcher_id}/control`, {
         method: "POST",
         body: JSON.stringify({
           type: "switch",
@@ -58,7 +58,7 @@ export const productionTools: WaveToolDef[] = [
       if (title !== undefined) payload["title"] = title;
       if (export_to !== undefined) payload["exportTo"] = export_to;
 
-      const res = await waveFetch("/api/v1/clips", {
+      const res = await waveFetch("/v1/clips", {
         method: "POST",
         body: JSON.stringify(payload),
       });
@@ -81,7 +81,7 @@ export const productionTools: WaveToolDef[] = [
     },
     handler: async ({ production_id, graphic_id, action, data }) => {
       const res = await waveFetch(
-        `/api/v1/studio/productions/${production_id}/graphics/${graphic_id}`,
+        `/v1/studio/productions/${production_id}/graphics/${graphic_id}`,
         {
           method: "POST",
           body: JSON.stringify({ action, data: data ?? {} }),
@@ -112,7 +112,7 @@ export const productionTools: WaveToolDef[] = [
       if (zoom !== undefined) payload["zoom"] = zoom;
       if (preset_id !== undefined) payload["presetId"] = preset_id;
 
-      const res = await waveFetch(`/api/v1/cameras/${camera_id}/control`, {
+      const res = await waveFetch(`/v1/cameras/${camera_id}/control`, {
         method: "POST",
         body: JSON.stringify(payload),
       });
@@ -131,7 +131,7 @@ export const productionTools: WaveToolDef[] = [
       reason: z.string().max(500).optional().describe("Reason for moderation action"),
     },
     handler: async ({ stream_id, message_id, action, reason }) => {
-      const res = await waveFetch(`/api/v1/streams/${stream_id}/chat/${message_id}/moderate`, {
+      const res = await waveFetch(`/v1/streams/${stream_id}/chat/${message_id}/moderate`, {
         method: "POST",
         body: JSON.stringify({ action, reason: reason ?? "" }),
       });
@@ -152,7 +152,7 @@ export const productionTools: WaveToolDef[] = [
         .describe("Transcription provider (default: deepgram)"),
     },
     handler: async ({ stream_id, language, provider }) => {
-      const res = await waveFetch(`/api/v1/streams/${stream_id}/captions/start`, {
+      const res = await waveFetch(`/v1/streams/${stream_id}/captions/start`, {
         method: "POST",
         body: JSON.stringify({
           language: language ?? "en",
@@ -178,7 +178,7 @@ export const productionTools: WaveToolDef[] = [
         .describe("Confidence score (0-1, for AI-detected highlights)"),
     },
     handler: async ({ stream_id, label, confidence }) => {
-      const res = await waveFetch(`/api/v1/streams/${stream_id}/highlights`, {
+      const res = await waveFetch(`/v1/streams/${stream_id}/highlights`, {
         method: "POST",
         body: JSON.stringify({
           label: label ?? "Highlight",

@@ -32,7 +32,7 @@ export const streamTools: WaveToolDef[] = [
         params.set("status", status);
       }
 
-      const res = await waveFetch(`/api/v1/streams?${params.toString()}`);
+      const res = await waveFetch(`/v1/streams?${params.toString()}`);
       if (!res.ok) return errorContent(res.status, res.body);
 
       return textContent(res.body);
@@ -62,7 +62,7 @@ export const streamTools: WaveToolDef[] = [
       if (record !== undefined) payload["record"] = record;
       if (region !== undefined) payload["region"] = region;
 
-      const res = await waveFetch("/api/v1/streams", {
+      const res = await waveFetch("/v1/streams", {
         method: "POST",
         body: JSON.stringify(payload),
       });
@@ -79,7 +79,7 @@ export const streamTools: WaveToolDef[] = [
       stream_id: z.string().uuid().describe("The UUID of the stream to start"),
     },
     handler: async ({ stream_id }) => {
-      const res = await waveFetch(`/api/v1/streams/${stream_id}/start`, {
+      const res = await waveFetch(`/v1/streams/${stream_id}/start`, {
         method: "POST",
       });
       if (!res.ok) return errorContent(res.status, res.body);
@@ -95,7 +95,7 @@ export const streamTools: WaveToolDef[] = [
       stream_id: z.string().uuid().describe("The UUID of the stream to stop"),
     },
     handler: async ({ stream_id }) => {
-      const res = await waveFetch(`/api/v1/streams/${stream_id}/stop`, {
+      const res = await waveFetch(`/v1/streams/${stream_id}/stop`, {
         method: "POST",
       });
       if (!res.ok) return errorContent(res.status, res.body);
@@ -112,7 +112,7 @@ export const streamTools: WaveToolDef[] = [
       stream_id: z.string().uuid().describe("The UUID of the stream to check"),
     },
     handler: async ({ stream_id }) => {
-      const res = await waveFetch(`/api/v1/streams/${stream_id}/health`);
+      const res = await waveFetch(`/v1/streams/${stream_id}/health`);
       if (!res.ok) return errorContent(res.status, res.body);
 
       return textContent(res.body);

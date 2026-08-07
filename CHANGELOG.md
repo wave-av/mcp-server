@@ -8,6 +8,30 @@ All notable changes to this project are documented here. The format is based on
 
 ### Fixed
 
+- **All 18 tools and both `wave://` resources 404'd against prod (#91).** Every
+  request was built as `${WAVE_BASE_URL}/api/v1/...` against a default
+  `WAVE_BASE_URL` of `https://wave.online` (the marketing/docs Next.js site).
+  `/api/v1/*` is an *internal* path shape within the WAVE platform, not a
+  path any client should call — and neither `wave.online` nor
+  `api.wave.online` serve it, so every call returned a prerendered Next.js
+  404. Fixed the default base URL to `https://api.wave.online` (the gateway)
+  and every tool/resource to build `/v1/*` paths, matching the public route
+  shape verified live and scope-gated (402 `PAYMENT_REQUIRED`, zero
+  credentials, 18/18) for all 18
+  tools. `WAVE_BASE_URL` still overrides the origin for anyone pointed at a
+  non-default environment, but the override now composes with the `/v1/*`
+  paths: the target origin must serve the public `/v1/*` shape, not the
+  internal `/api/v1/*` one.
+
+- The old `https://wave.online` default was also still advertised in
+  `MCP-DEBUGGING.md` (shipped in the npm package) and in `.wave/repo.json`
+  (the source of truth the README is generated from); both now say
+  `https://api.wave.online`. The regression tests added for #91 are now
+  type-checked (`tsconfig.test.json`) and run in CI, and the `test` script
+  now uses single-level globs (`src/*.test.ts src/*/*.test.ts`, which work on
+  Node 20's shell expansion) so `src/auth.test.ts` is no longer silently
+  skipped by the npm shell's non-recursive `**`.
+
 - The build now emits the TypeScript declaration files (`dist/index.d.ts`,
   `dist/sdk-server.d.ts`) that `package.json` has been advertising via `types`
   and the `exports` map. Previously consumers silently resolved to `any`. The
@@ -19,6 +43,12 @@ All notable changes to this project are documented here. The format is based on
   peer dependency to consume that subpath.
 
 ### Changed
+
+- The minimum supported Node version is now 20 (`engines.node: ">=20.0.0"`,
+  was `">=18.0.0"`). `@modelcontextprotocol/sdk` resolves
+  `@hono/node-server@2.x` at runtime, which requires Node `>=20`, so the old
+  `>=18` claim produced `EBADENGINE` warnings for Node 18 installs. Node 18
+  is end-of-life.
 
 - Releases are now published via npm trusted publishing (OIDC) with signed
   provenance attestations, replacing token-based authentication in CI.
