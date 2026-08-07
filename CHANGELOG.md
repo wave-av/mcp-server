@@ -20,21 +20,18 @@ All notable changes to this project are documented here. The format is based on
   `POST api.wave.online/api/v1/streams` → 404, `POST wave.online/api/v1/streams` → 404.
   **This does not remediate already-installed copies** — they stay broken until this ships to npm
   and consumers upgrade.
-- `WAVE_BASE_URL`, when explicitly set, is now validated as an absolute http(s) URL and stripped of
-  any trailing slash. A malformed value previously surfaced as an opaque fetch failure inside each
-  individual tool call; it now fails loudly at startup, naming the offending value.
+- `WAVE_BASE_URL`, when explicitly set, is now validated and normalised to its **origin**: surrounding
+  whitespace is trimmed, and a path, query or fragment is rejected rather than silently discarded
+  (tool paths like `/v1/...` are appended to this value, so anything beyond scheme+host+port corrupts
+  every request URL). Validation runs at **startup**, from `startServer()`, so a bad value kills the
+  process once with an actionable message instead of failing inside every individual tool call.
+- `WAVE_BASE_URL` now refuses a cleartext `http://` origin for a remote host. Every request attaches
+  `Authorization: Bearer <WAVE_API_KEY>`, so an `http://` origin would put the API key on the wire in
+  the clear. Loopback (`localhost` / `127.0.0.1` / `::1`) is still accepted for local development.
 - The API-key-minting URL in the missing-key error is now
   `https://console.wave.online/dashboard#keys`. The previous
   `https://wave.online/settings/api-keys` returned 404, so the one pointer a user got toward
   credentials was dead.
-
-### Changed
-
-- Documentation corrected against live probes: the "Staging vs production" table in
-  `MCP-DEBUGGING.md` advertised `https://staging.wave.online`, which has no DNS record and has
-  never been reachable — it has been removed rather than reworded. The tool count in the same
-  document said 19; there are 18.
-
 - The build now emits the TypeScript declaration files (`dist/index.d.ts`,
   `dist/sdk-server.d.ts`) that `package.json` has been advertising via `types`
   and the `exports` map. Previously consumers silently resolved to `any`. The
@@ -49,6 +46,11 @@ All notable changes to this project are documented here. The format is based on
 
 - Releases are now published via npm trusted publishing (OIDC) with signed
   provenance attestations, replacing token-based authentication in CI.
+- Documentation corrected against live probes: the "Staging vs production" table in
+  `MCP-DEBUGGING.md` advertised `https://staging.wave.online`, which has no DNS record and has never
+  been reachable — it has been removed rather than reworded. The tool count in the same document said
+  19; there are 18. The generated `README.md` and its source of truth (`.wave/repo.json`) were both
+  updated, so the corrected default and key-minting URL survive the next regeneration.
 
 ## [0.2.0]
 

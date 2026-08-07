@@ -333,7 +333,7 @@
     {
       "kind": "prose",
       "heading": "Setup",
-      "body": "### 1. Get an API key\n\n```bash\n# Via CLI\nwave auth login\n\n# Or create at https://wave.online/settings/api-keys\n```\n\n### 2. Configure your AI tool\n\nAdd to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) — see the Quick start config above."
+      "body": "### 1. Get an API key\n\n```bash\n# Via CLI\nwave auth login\n\n# Or create at https://console.wave.online/dashboard#keys\n```\n\n### 2. Configure your AI tool\n\nAdd to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) — see the Quick start config above."
     },
     {
       "kind": "table",
@@ -443,8 +443,8 @@
         [
           "`WAVE_BASE_URL`",
           "No",
-          "`https://wave.online`",
-          "API base URL"
+          "`https://api.wave.online`",
+          "API origin. Tool paths are `/v1/*` on the WAVE gateway."
         ]
       ]
     },
