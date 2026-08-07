@@ -30,9 +30,9 @@
   "scripts": {
     "build": "tsup && tsc --emitDeclarationOnly --declarationMap false",
     "dev": "tsup --watch",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --noEmit -p tsconfig.test.json",
     "lint": "eslint src/ --max-warnings 0",
-    "test": "node --import tsx --test src/**/*.test.ts",
+    "test": "node --import tsx --test \"src/**/*.test.ts\"",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

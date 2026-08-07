@@ -67,7 +67,7 @@ test("every tool calls the gateway at https://api.wave.online/v1/*, never /api/v
     await t.test(tool.name, async () => {
       let capturedUrl: string | undefined;
       const originalFetch = globalThis.fetch;
-      globalThis.fetch = (async (input: RequestInfo | URL) => {
+      globalThis.fetch = (async (input: string | URL | Request) => {
         capturedUrl = typeof input === "string" ? input : input.toString();
         return fakeResponse();
       }) as typeof fetch;
@@ -97,7 +97,7 @@ test("WAVE_BASE_URL override still composes with the /v1/* path shape", async ()
   process.env["WAVE_BASE_URL"] = "https://staging.wave.online";
   let capturedUrl: string | undefined;
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = (async (input: RequestInfo | URL) => {
+  globalThis.fetch = (async (input: string | URL | Request) => {
     capturedUrl = typeof input === "string" ? input : input.toString();
     return fakeResponse();
   }) as typeof fetch;

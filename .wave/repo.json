@@ -443,8 +443,8 @@
         [
           "`WAVE_BASE_URL`",
           "No",
-          "`https://wave.online`",
-          "API base URL"
+          "`https://api.wave.online`",
+          "API base URL (the WAVE API gateway; do not point at `wave.online`, the marketing site)"
         ]
       ]
     },

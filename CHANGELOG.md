@@ -21,6 +21,14 @@ All notable changes to this project are documented here. The format is based on
   tools. `WAVE_BASE_URL` still overrides the origin for anyone pointed at a
   non-default environment.
 
+- The old `https://wave.online` default was also still advertised in
+  `MCP-DEBUGGING.md` (shipped in the npm package) and in `.wave/repo.json`
+  (the source of truth the README is generated from); both now say
+  `https://api.wave.online`. The regression tests added for #91 are now
+  type-checked (`tsconfig.test.json`) and run in CI, and the `test` script
+  quotes its glob so `src/auth.test.ts` is no longer silently skipped by the
+  npm shell's non-recursive `**`.
+
 - The build now emits the TypeScript declaration files (`dist/index.d.ts`,
   `dist/sdk-server.d.ts`) that `package.json` has been advertising via `types`
   and the `exports` map. Previously consumers silently resolved to `any`. The

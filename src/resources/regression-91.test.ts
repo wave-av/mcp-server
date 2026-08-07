@@ -34,7 +34,7 @@ function fakeResponse(): Response {
 async function captureUrl(handler: ResourceHandler, uri: URL): Promise<string | undefined> {
   let capturedUrl: string | undefined;
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = (async (input: RequestInfo | URL) => {
+  globalThis.fetch = (async (input: string | URL | Request) => {
     capturedUrl = typeof input === "string" ? input : input.toString();
     return fakeResponse();
   }) as typeof fetch;
