@@ -1,0 +1,49 @@
+src/resources/productions.ts
+  s_15127d80763110::t_e126a58236b0ef 20
+README.md
+  s_15127d80763110::t_fbb13eebed8ab1 97
+  s_15127d80763110::t_4f762bfead3bde 47
+src/tools/streams.ts
+  s_15127d80763110::t_6880bc5f23ee89 35,82,98,115
+  s_15127d80763110::t_47f05ea8ab7ba8 65
+src/resources/streams.ts
+  s_15127d80763110::t_39d0886c92e93f 21
+src/tools/studio.ts
+  s_15127d80763110::t_0dd158a2d44625 68
+  s_15127d80763110::t_2cdc8fbf109a8c 35
+CHANGELOG.md
+  s_15127d80763110::t_2efec7ac1e5963 11-37
+src/auth.ts
+  s_15127d80763110::t_d1cfa0c4b4fb6d 6-18,21-24,32,38-42,44-64
+src/tools/analytics.ts
+  s_15127d80763110::t_7b817cffd059a5 26,55
+src/tools/production.ts
+  s_15127d80763110::t_63ad7911b58b5d 61
+  s_15127d80763110::t_7738062ff27202 25,115,134,155,181
+  s_15127d80763110::t_63570422f45281 84
+src/tools/billing.ts
+  s_15127d80763110::t_d9e5dd1cd9216d 11
+  s_15127d80763110::t_c22de520865fd7 38
+MCP-DEBUGGING.md
+  s_15127d80763110::t_502f859f78ddc5 35
+  s_15127d80763110::t_893f7f06d50f96 39-45
+  s_15127d80763110::t_905d5d0a25f73f 85-89,91-93,98-99
+  s_15127d80763110::t_b3025dddc8c37b 54,56-58,61
+  s_15127d80763110::t_f291b8dd643573 64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "18464169c12c50b2101cfab6e224c0ffd70b1c6e",
+  "prompts": {},
+  "sessions": {
+    "s_15127d80763110": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f70037af-ffae-40e0-adc5-d29d25d96fee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
