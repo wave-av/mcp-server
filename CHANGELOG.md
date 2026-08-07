@@ -8,6 +8,33 @@ All notable changes to this project are documented here. The format is based on
 
 ### Fixed
 
+- **Every tool now targets a host and path that actually serve the API (#89).** The default
+  `WAVE_BASE_URL` was `https://wave.online` — the marketing/app origin, which 404s on the API
+  surface — and every tool requested `/api/v1/*`. Both were wrong, and the two compounded: with
+  default configuration none of the 18 tools could ever succeed. The default is now
+  `https://api.wave.online` (the WAVE gateway, which is the billing/auth/metering authority) and
+  the tool paths are now `/v1/*`, which is the gateway's public path space. The gateway itself
+  re-prefixes to the spoke origin's `/api/v1/*` on forward, so `/api/v1/*` was never a valid
+  request path for a client. Measured 2026-08-07:
+  `POST api.wave.online/v1/streams` → 402 (route exists and is priced),
+  `POST api.wave.online/api/v1/streams` → 404, `POST wave.online/api/v1/streams` → 404.
+  **This does not remediate already-installed copies** — they stay broken until this ships to npm
+  and consumers upgrade.
+- `WAVE_BASE_URL`, when explicitly set, is now validated as an absolute http(s) URL and stripped of
+  any trailing slash. A malformed value previously surfaced as an opaque fetch failure inside each
+  individual tool call; it now fails loudly at startup, naming the offending value.
+- The API-key-minting URL in the missing-key error is now
+  `https://console.wave.online/dashboard#keys`. The previous
+  `https://wave.online/settings/api-keys` returned 404, so the one pointer a user got toward
+  credentials was dead.
+
+### Changed
+
+- Documentation corrected against live probes: the "Staging vs production" table in
+  `MCP-DEBUGGING.md` advertised `https://staging.wave.online`, which has no DNS record and has
+  never been reachable — it has been removed rather than reworded. The tool count in the same
+  document said 19; there are 18.
+
 - The build now emits the TypeScript declaration files (`dist/index.d.ts`,
   `dist/sdk-server.d.ts`) that `package.json` has been advertising via `types`
   and the `exports` map. Previously consumers silently resolved to `any`. The

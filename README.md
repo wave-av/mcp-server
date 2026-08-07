@@ -44,7 +44,7 @@ npx @wave-av/mcp-server
 # Via CLI
 wave auth login
 
-# Or create at https://wave.online/settings/api-keys
+# Or create at https://console.wave.online/dashboard#keys
 ```
 
 ### 2. Configure your AI tool
@@ -94,7 +94,7 @@ Access WAVE entities directly via the `wave://` URI scheme:
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
 | `WAVE_API_KEY` | Yes | - | Your WAVE API key |
-| `WAVE_BASE_URL` | No | `https://wave.online` | API base URL |
+| `WAVE_BASE_URL` | No | `https://api.wave.online` | API origin. Tool paths are `/v1/*` on the WAVE gateway. |
 
 ## In-process (Claude Agent SDK) mode
 

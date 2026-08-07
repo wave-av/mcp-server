@@ -3,10 +3,25 @@
  *
  * Reads credentials from environment variables:
  * - WAVE_API_KEY: Required. Bearer token for WAVE API authentication.
- * - WAVE_BASE_URL: Optional. Defaults to https://wave.online.
+ * - WAVE_BASE_URL: Optional. Defaults to https://api.wave.online.
+ *
+ * WHY api.wave.online AND WHY THE TOOL PATHS ARE `/v1/*` (#89):
+ * `https://wave.online` is the marketing/app origin — it 404s on the API surface, so every one of
+ * this package's tools failed with the previous default. The API is served by wave-gateway, which
+ * is the single billing/auth authority: it scope-gates the request, meters it, and runs the x402
+ * paywall. Its PUBLIC path space is `/v1/*`; the gateway itself re-prefixes to the spoke origin's
+ * `/api/v1/*` on forward (wave-gateway src/forward.ts ORIGIN_PATH_PREFIX). Calling `/api/v1/*`
+ * here therefore misses the gateway's route map even on the right host. Measured 2026-08-07:
+ *   POST https://api.wave.online/v1/streams      → 402 (route exists, priced)
+ *   POST https://api.wave.online/api/v1/streams  → 404 (not a gateway route)
+ *   POST https://wave.online/api/v1/streams      → 404 (wrong origin entirely)
+ * A 402 is the CORRECT unauthenticated answer here — it proves the route exists and is priced.
  */
 
-const DEFAULT_BASE_URL = "https://wave.online";
+const DEFAULT_BASE_URL = "https://api.wave.online";
+
+/** Where a human mints an API key. Must be a page that actually resolves (#89). */
+export const API_KEY_CONSOLE_URL = "https://console.wave.online/dashboard#keys";
 
 export function getApiKey(): string {
   const key = process.env["WAVE_API_KEY"];
@@ -14,14 +29,39 @@ export function getApiKey(): string {
     throw new Error(
       "WAVE_API_KEY environment variable is required. " +
         "Set it to your WAVE API key before starting the MCP server. " +
-        "You can generate one at https://wave.online/settings/api-keys",
+        `You can generate one at ${API_KEY_CONSOLE_URL}`,
     );
   }
   return key;
 }
 
+/**
+ * Resolve the API origin. An explicitly-set WAVE_BASE_URL is validated rather than trusted: a
+ * malformed or non-http(s) value would otherwise surface far downstream as an opaque fetch
+ * failure inside a tool call. Fail loud, at startup, naming the offending value.
+ */
 export function getBaseUrl(): string {
-  return process.env["WAVE_BASE_URL"] ?? DEFAULT_BASE_URL;
+  const configured = process.env["WAVE_BASE_URL"];
+  if (configured === undefined || configured === "") return DEFAULT_BASE_URL;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(configured);
+  } catch {
+    throw new Error(
+      `WAVE_BASE_URL is not a valid absolute URL: ${JSON.stringify(configured)}. ` +
+        `Expected an origin like ${DEFAULT_BASE_URL} (no trailing path). ` +
+        "Unset it to use the default.",
+    );
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+    throw new Error(
+      `WAVE_BASE_URL must be an http(s) URL, got ${JSON.stringify(configured)}. ` +
+        `Expected an origin like ${DEFAULT_BASE_URL}.`,
+    );
+  }
+  // Tool paths are absolute (`/v1/...`), so a trailing slash would produce `//v1/...`.
+  return configured.replace(/\/+$/, "");
 }
 
 export function getAuthHeaders(): Record<string, string> {
