@@ -41,6 +41,12 @@ All notable changes to this project are documented here. The format is based on
 
 ### Changed
 
+- The minimum supported Node version is now 20 (`engines.node: ">=20.0.0"`,
+  was `">=18.0.0"`). `@modelcontextprotocol/sdk` resolves
+  `@hono/node-server@2.x` at runtime, which requires Node `>=20`, so the old
+  `>=18` claim produced `EBADENGINE` warnings for Node 18 installs. Node 18
+  is end-of-life.
+
 - Releases are now published via npm trusted publishing (OIDC) with signed
   provenance attestations, replacing token-based authentication in CI.
 
