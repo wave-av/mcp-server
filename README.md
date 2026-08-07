@@ -94,7 +94,7 @@ Access WAVE entities directly via the `wave://` URI scheme:
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
 | `WAVE_API_KEY` | Yes | - | Your WAVE API key |
-| `WAVE_BASE_URL` | No | `https://api.wave.online` | API base URL (wave-gateway; do not point at `wave.online`, the marketing site) |
+| `WAVE_BASE_URL` | No | `https://api.wave.online` | API base URL (the WAVE API gateway; do not point at `wave.online`, the marketing site) |
 
 ## In-process (Claude Agent SDK) mode
 

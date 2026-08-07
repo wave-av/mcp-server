@@ -3,15 +3,15 @@
 // Root cause: every one of the 18 published tools (plus the 2 `wave://`
 // resources) built requests as `${getBaseUrl()}/api/v1/...` against a default
 // base URL of `https://wave.online`. Neither `wave.online` nor
-// `api.wave.online` serve `/api/v1/*` — it is wave-gateway's *internal*
-// forwarding prefix to the WSC origin (wave-gateway forward.ts,
-// ORIGIN_PATH_PREFIX), never a path a client should call. Every customer
-// using the published package got a prerendered Next.js 404 on every call.
+// `api.wave.online` serve `/api/v1/*` — it is an *internal* path shape
+// within the WAVE platform, never a path a client should call. Every
+// customer using the published package got a prerendered Next.js 404 on
+// every call.
 //
-// wave-gateway PR #835 proved (with zero credentials, receipts in the PR
-// body) that the gateway-PUBLIC equivalents at `/v1/*` against
-// `https://api.wave.online` are live and gated (402 PAYMENT_REQUIRED for all
-// 18 routes). This test proves, without hitting the network, that every tool
+// Probing (with zero credentials, receipts in issue #91) proved that the
+// PUBLIC equivalents at `/v1/*` against `https://api.wave.online` are live
+// and gated (402 PAYMENT_REQUIRED for all 18 routes). This test proves,
+// without hitting the network, that every tool
 // and resource in this package now builds a request against that shape:
 // origin `https://api.wave.online`, path prefix `/v1/`, never `/api/v1/`.
 import { test } from "node:test";
@@ -87,7 +87,7 @@ test("every tool calls the gateway at https://api.wave.online/v1/*, never /api/v
       assert.doesNotMatch(
         capturedUrl!,
         /\/api\/v1\//,
-        `${tool.name} still uses the internal /api/v1/* prefix (wave-gateway forward.ts ORIGIN_PATH_PREFIX) instead of the public /v1/* shape`,
+        `${tool.name} still uses the internal /api/v1/* prefix instead of the public /v1/* shape`,
       );
     });
   }

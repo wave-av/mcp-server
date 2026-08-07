@@ -6,13 +6,12 @@
  * - WAVE_BASE_URL: Optional. Defaults to https://api.wave.online.
  *
  * All tool/resource handlers build paths as `/v1/*` (see src/tools/*.ts and
- * src/resources/*.ts) — the gateway-public path shape enforced by
- * wave-gateway. https://api.wave.online is the gateway's own surface; it is
+ * src/resources/*.ts) — the public path shape served by the WAVE API
+ * gateway. https://api.wave.online is the API's own surface; it is
  * NOT the same origin as https://wave.online (the marketing/docs Next.js
  * site), which has no knowledge of `/v1/*` or `/api/v1/*` and 404s on both.
- * `/api/v1/*` in particular is wave-gateway's internal forwarding prefix to
- * the WSC origin (see wave-gateway's forward.ts ORIGIN_PATH_PREFIX) — it is
- * never a path a client should call directly.
+ * `/api/v1/*` in particular is an internal path shape within the WAVE
+ * platform — it is never a path a client should call directly.
  */
 
 const DEFAULT_BASE_URL = "https://api.wave.online";

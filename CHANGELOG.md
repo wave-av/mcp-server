@@ -11,13 +11,13 @@ All notable changes to this project are documented here. The format is based on
 - **All 18 tools and both `wave://` resources 404'd against prod (#91).** Every
   request was built as `${WAVE_BASE_URL}/api/v1/...` against a default
   `WAVE_BASE_URL` of `https://wave.online` (the marketing/docs Next.js site).
-  `/api/v1/*` is wave-gateway's *internal* forwarding prefix to the WSC
-  origin, not a path any client should call — and neither `wave.online` nor
+  `/api/v1/*` is an *internal* path shape within the WAVE platform, not a
+  path any client should call — and neither `wave.online` nor
   `api.wave.online` serve it, so every call returned a prerendered Next.js
   404. Fixed the default base URL to `https://api.wave.online` (the gateway)
-  and every tool/resource to build `/v1/*` paths, matching the
-  gateway-public route shape wave-gateway#835 proved live and
-  scope-gated (402 `PAYMENT_REQUIRED`, zero credentials, 18/18) for all 18
+  and every tool/resource to build `/v1/*` paths, matching the public route
+  shape verified live and scope-gated (402 `PAYMENT_REQUIRED`, zero
+  credentials, 18/18) for all 18
   tools. `WAVE_BASE_URL` still overrides the origin for anyone pointed at a
   non-default environment.
 
