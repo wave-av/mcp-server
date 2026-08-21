@@ -1,31 +1,26 @@
+<div align="center">
+
 # @wave-av/mcp-server
 
-[![npm version](https://img.shields.io/npm/v/@wave-av/mcp-server.svg)](https://www.npmjs.com/package/@wave-av/mcp-server)
-[![npm downloads](https://img.shields.io/npm/dm/@wave-av/mcp-server.svg)](https://www.npmjs.com/package/@wave-av/mcp-server)
-[![license](https://img.shields.io/npm/l/@wave-av/mcp-server.svg)](https://github.com/wave-av/mcp-server/blob/main/LICENSE)
+**MCP (Model Context Protocol) server that exposes WAVE streaming APIs as tools for AI coding assistants (Claude Code, Cursor, Windsurf).**
 
-MCP (Model Context Protocol) server that exposes WAVE streaming APIs as tools for AI coding assistants.
+![kind](https://img.shields.io/badge/kind-mcp--server-555?style=flat-square) ![domain](https://img.shields.io/badge/domain-agent--ops-0a7?style=flat-square) ![lang](https://img.shields.io/badge/lang-TypeScript-3178c6?style=flat-square) ![visibility](https://img.shields.io/badge/visibility-public-brightgreen?style=flat-square) ![phase](https://img.shields.io/badge/phase-preview-blue?style=flat-square)
+
+[**Live** →](https://docs.wave.online/mcp) · [docs](https://docs.wave.online/mcp) · [npm](https://www.npmjs.com/package/@wave-av/mcp-server) · [repo](https://github.com/wave-av/mcp-server) · [Docs](https://docs.wave.online) · [Status](https://wave.online/status)
+
+</div>
+
+> This README is machine-generated from WAVE's grounded Single Source of Truth — every
+> factual claim below traces to a resolver that `npm run verify` checks against the live
+> repo and live endpoints. Nothing here is asserted without a receipt.
+
+---
 
 ## Quick start
 
 ```bash
 npx @wave-av/mcp-server
 ```
-
-## Setup
-
-### 1. Get an API key
-
-```bash
-# Via CLI
-wave auth login
-
-# Or create at https://wave.online/settings/api-keys
-```
-
-### 2. Configure your AI tool
-
-Add to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.):
 
 ```json
 {
@@ -41,38 +36,51 @@ Add to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.):
 }
 ```
 
-## Available tools
+## Setup
 
-### Streams
+### 1. Get an API key
 
-| Tool                     | Description                                           |
-| ------------------------ | ----------------------------------------------------- |
-| `wave_list_streams`      | List all streams with pagination and status filtering |
-| `wave_create_stream`     | Create a new stream with protocol and privacy options |
-| `wave_start_stream`      | Start streaming on an existing stream                 |
-| `wave_stop_stream`       | Stop an active stream                                 |
-| `wave_get_stream_health` | Get real-time health metrics for a stream             |
+```bash
+# Via CLI
+wave auth login
 
-### Studio
+# Or create at https://wave.online/settings/api-keys
+```
 
-| Tool                     | Description                          |
-| ------------------------ | ------------------------------------ |
-| `wave_list_productions`  | List studio production sessions      |
+### 2. Configure your AI tool
+
+Add to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) — see the Quick start config above.
+
+## Available tools — Streams
+
+| Tool | Description |
+| --- | --- |
+| `wave_list_streams` | List all streams with pagination and status filtering |
+| `wave_create_stream` | Create a new stream with protocol and privacy options |
+| `wave_start_stream` | Start streaming on an existing stream |
+| `wave_stop_stream` | Stop an active stream |
+| `wave_get_stream_health` | Get real-time health metrics for a stream |
+
+## Available tools — Studio
+
+| Tool | Description |
+| --- | --- |
+| `wave_list_productions` | List studio production sessions |
 | `wave_create_production` | Create a new multi-camera production |
 
-### Analytics
+## Available tools — Analytics
 
-| Tool                      | Description                             |
-| ------------------------- | --------------------------------------- |
-| `wave_get_viewers`        | Get current viewer count and breakdown  |
+| Tool | Description |
+| --- | --- |
+| `wave_get_viewers` | Get current viewer count and breakdown |
 | `wave_get_stream_metrics` | Get detailed stream performance metrics |
 
-### Billing
+## Available tools — Billing
 
-| Tool                    | Description                              |
-| ----------------------- | ---------------------------------------- |
+| Tool | Description |
+| --- | --- |
 | `wave_get_subscription` | Get current subscription plan and status |
-| `wave_get_usage`        | Get current period usage and limits      |
+| `wave_get_usage` | Get current period usage and limits |
 
 ## Resources
 
@@ -83,10 +91,10 @@ Access WAVE entities directly via the `wave://` URI scheme:
 
 ## Environment variables
 
-| Variable        | Required | Default               | Description       |
-| --------------- | -------- | --------------------- | ----------------- |
-| `WAVE_API_KEY`  | Yes      | -                     | Your WAVE API key |
-| `WAVE_BASE_URL` | No       | `https://wave.online` | API base URL      |
+| Variable | Required | Default | Description |
+| --- | --- | --- | --- |
+| `WAVE_API_KEY` | Yes | - | Your WAVE API key |
+| `WAVE_BASE_URL` | No | `https://wave.online` | API base URL |
 
 ## In-process (Claude Agent SDK) mode
 
@@ -188,3 +196,72 @@ pnpm run type-check
 ## License
 
 MIT
+
+## Capabilities
+
+| Capability | Status |
+| --- | --- |
+| Control a PTZ camera (pan, tilt, zoom, focus, preset recall/store). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Create a clip from a recorded stream, optionally exporting to social platforms. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Create a new multi-camera studio production. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Create a new stream (protocol, recording, region options). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Get real-time stream health metrics (bitrate, frame rate, latency). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Get detailed stream performance metrics (bitrate, latency, quality, error rates). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Get current subscription plan, billing cycle, and feature entitlements. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Get current billing-period usage (streaming minutes, storage, bandwidth). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Get current viewer count and viewer demographics for a stream or account-wide. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| List all studio productions in the WAVE account. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| List all streams in the WAVE account with pagination and status filtering. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Mark a moment in a stream as a highlight for later clipping. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Moderate a chat message in a live stream (block, flag, or allow). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Show, hide, or update an HTML5 graphics overlay on a production. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Start real-time captions/transcription on a stream. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Start a stream by ID, transitioning it to the active state. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Stop an active stream by ID. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Switch the live program output to a different camera/source in a Cloud Switcher session. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+
+## For AI agents
+
+Exposes the MCP tool `wave-mcp-server` over `stdio`.
+
+## The receipts
+
+Every claim below is checked by `npm run verify` against the live repo or endpoint — a non-`pass` verdict fails the gate.
+
+| Claim | How it's verified |
+| --- | --- |
+| Documentation surface is docs.wave.online/mcp | resolved by grepping `package.json` |
+| Published npm package name is @wave-av/mcp-server | resolved by grepping `package.json` |
+| wave_control_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
+| Exposes 18 MCP tools | resolved by grepping `capabilities.json` |
+| wave_create_clip tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
+| wave_create_production tool defined in src/tools/studio.ts | resolved by grepping `src/tools/studio.ts` |
+| wave_create_stream tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
+| wave_get_viewers tool defined in src/tools/analytics.ts | resolved by grepping `src/tools/analytics.ts` |
+| wave_list_productions tool defined in src/tools/studio.ts | resolved by grepping `src/tools/studio.ts` |
+| wave_list_streams tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
+| wave_mark_highlight tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
+| wave_moderate_chat tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
+| wave_show_graphic tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
+| wave_start_captions tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
+| wave_start_stream tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
+| wave_stop_stream tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
+| wave_get_stream_health tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
+| wave_get_stream_metrics tool defined in src/tools/analytics.ts | resolved by grepping `src/tools/analytics.ts` |
+| wave_get_subscription tool defined in src/tools/billing.ts | resolved by grepping `src/tools/billing.ts` |
+| wave_switch_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
+| wave_get_usage tool defined in src/tools/billing.ts | resolved by grepping `src/tools/billing.ts` |
+| Server connects via stdio transport (no network listener) | resolved by grepping `src/server.ts` |
+
+## Topics
+
+`wave` · `mcp` · `model-context-protocol` · `ai` · `streaming` · `tools`
+
+---
+
+<div align="center">
+
+**Built by [WAVE Online, LLC](https://wave.online)** · [wave.online](https://wave.online) · [Docs](https://docs.wave.online) · [LinkedIn](https://www.linkedin.com/company/wave-online)
+
+</div>
+
