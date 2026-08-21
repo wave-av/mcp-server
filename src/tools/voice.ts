@@ -27,11 +27,11 @@ function encodePacket(payload: Buffer, seq: number, ts: number): Buffer {
 function decodePacket(frame: Buffer): Buffer {
   const b = frame; let i = 0;
   while (i < b.length) {
-    const tag = b[i++]; const wire = tag & 7;
-    if (wire === 0) { while (i < b.length && (b[i] & 0x80) !== 0) i++; i++; }
+    const tag = b[i++]!; const wire = tag & 7;
+    if (wire === 0) { while (i < b.length && (b[i]! & 0x80) !== 0) i++; i++; }
     else if (wire === 2) {
       let len = 0, s = 0;
-      while (i < b.length) { const byte = b[i++]; len |= (byte & 0x7f) << s; if ((byte & 0x80) === 0) break; s += 7; }
+      while (i < b.length) { const byte = b[i++]!; len |= (byte & 0x7f) << s; if ((byte & 0x80) === 0) break; s += 7; }
       if ((tag >> 3) === 5) return b.subarray(i, i + len);
       i += len;
     } else break;
