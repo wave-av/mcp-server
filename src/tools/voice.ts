@@ -8,7 +8,9 @@
 // the headless bind talks to the edge directly, mirroring the harness (leg3.mjs). Reference-only; never
 // returned.
 import { z } from "zod";
-import { randomUUID } from "node:crypto";
+import { WebSocket } from "ws";
+import { mkdirSync, realpathSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { textContent, type WaveToolDef } from "./shared.js";
 
 const EDGE = (process.env.WAVE_REALTIME_EDGE ?? "https://rt.wave.online").replace(/\/+$/, "");
@@ -28,26 +30,30 @@ function encodePacket(payload: Buffer, seq: number, ts: number): Buffer {
 function decodePacket(frame: Buffer): Buffer {
   const b = frame; let i = 0;
   while (i < b.length) {
-    const tag = b[i++]!; const wire = tag & 7;
-    if (wire === 0) { while (i < b.length && (b[i]! & 0x80) !== 0) i++; i++; }
+    const tag = b[i++]; const wire = tag & 7;
+    if (wire === 0) { while (i < b.length && (b[i] & 0x80) !== 0) i++; i++; }
     else if (wire === 2) {
       let len = 0, s = 0;
-      while (i < b.length) { const byte = b[i++]!; len |= (byte & 0x7f) << s; if ((byte & 0x80) === 0) break; s += 7; }
+      while (i < b.length) { const byte = b[i++]; len |= (byte & 0x7f) << s; if ((byte & 0x80) === 0) break; s += 7; }
       if ((tag >> 3) === 5) return b.subarray(i, i + len);
       i += len;
     } else break;
   }
   return Buffer.alloc(0);
 }
-function decodeWav(buf: Buffer): { pcm: Buffer } {
-  let off = 12, data: Buffer | null = null;
+function decodeWav(buf: Buffer): { pcm: Buffer; channels: number; sampleRate: number; bitsPerSample: number } {
+  if (buf.toString("ascii", 0, 4) !== "RIFF" || buf.toString("ascii", 8, 12) !== "WAVE") throw new Error("invalid WAV header");
+    let off = 12, data: Buffer | null = null;
+    let channels = 0, sampleRate = 0, bitsPerSample = 0;
   while (off + 8 <= buf.length) {
     const id = buf.toString("ascii", off, off + 4); const size = buf.readUInt32LE(off + 4);
+      if (id === "fmt " && size >= 16) { channels = buf.readUInt16LE(off + 10); sampleRate = buf.readUInt32LE(off + 12); bitsPerSample = buf.readUInt16LE(off + 22); }
     if (id === "data") { data = buf.subarray(off + 8, off + 8 + size); break; }
     off += 8 + size + (size % 2);
   }
   if (!data) throw new Error("WAV has no data chunk");
-  return { pcm: Buffer.from(data) };
+  if (sampleRate !== 48000 || bitsPerSample !== 16 || (channels !== 1 && channels !== 2)) throw new Error("WAV must be 48 kHz, 16-bit, mono or stereo");
+    return { pcm: Buffer.from(data), channels, sampleRate, bitsPerSample };
 }
 function connect(url: string): Promise<WebSocket> {
   return new Promise((resolve, reject) => {
@@ -62,7 +68,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 async function converse(room: string, audioPath: string, outPath: string): Promise<string> {
   if (!SEAL) throw new Error("WAVE_INTERNAL_SECRET is not set on this MCP server");
   const { readFileSync, writeFileSync } = await import("node:fs");
-  const participantSessionId = `mcp_${randomUUID()}`;
+  const participantSessionId = `mcp_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
 
   const res = await fetch(`${EDGE}/v1/realtime/agents/bind`, {
     method: "POST",
@@ -74,7 +80,12 @@ async function converse(room: string, audioPath: string, outPath: string): Promi
     throw new Error(`bind failed: ${res.status} ${JSON.stringify(json).slice(0, 200)}`);
   }
 
-  const pcm = decodeWav(readFileSync(audioPath)).pcm;
+  const decoded = decodeWav(readFileSync(audioPath));
+    const pcm = decoded.pcm;
+    const safeDir = resolve(process.env.VOICE_IO_DIR ?? process.cwd());
+    const target = resolve(outPath);
+    if (!target.startsWith(`${safeDir}${process.platform === "win32" ? "\\" : "/"}`)) throw new Error("outPath must be inside VOICE_IO_DIR");
+    mkdirSync(dirname(target), { recursive: true });
   const [audioIn, tts] = await Promise.all([connect(json.audioInEndpoint), connect(json.ttsEndpoint)]);
 
   const outChunks: Buffer[] = [];
@@ -103,7 +114,10 @@ async function converse(room: string, audioPath: string, outPath: string): Promi
 
   const total = Buffer.concat(outChunks);
   if (total.length === 0) throw new Error("no TTS received (agent did not reply)");
-  writeFileSync(outPath, total);
+  if (!closed) throw new Error("TTS timeout");
+    writeFileSync(target, total);
+    audioIn.close();
+    tts.close();
   return `TTS received: ${total.length} bytes (${Math.round(total.length / bytesPerMs)} ms) → ${outPath}`;
 }
 

@@ -28,7 +28,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsup && tsc --emitDeclarationOnly --declarationMap false",
+    "build": "tsup",
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit",
     "lint": "eslint src/ --max-warnings 0",
@@ -58,12 +58,13 @@
   },
   "publishConfig": {
     "access": "public",
-    "provenance": true,
+    "provenance": false,
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+      "ws": "^8.18.0"
   },
   "peerDependencies": {
     "@anthropic-ai/claude-agent-sdk": ">=0.3.0"
