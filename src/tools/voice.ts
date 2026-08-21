@@ -8,6 +8,7 @@
 // the headless bind talks to the edge directly, mirroring the harness (leg3.mjs). Reference-only; never
 // returned.
 import { z } from "zod";
+import { randomUUID } from "node:crypto";
 import { textContent, type WaveToolDef } from "./shared.js";
 
 const EDGE = (process.env.WAVE_REALTIME_EDGE ?? "https://rt.wave.online").replace(/\/+$/, "");
@@ -61,7 +62,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 async function converse(room: string, audioPath: string, outPath: string): Promise<string> {
   if (!SEAL) throw new Error("WAVE_INTERNAL_SECRET is not set on this MCP server");
   const { readFileSync, writeFileSync } = await import("node:fs");
-  const participantSessionId = `mcp_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+  const participantSessionId = `mcp_${randomUUID()}`;
 
   const res = await fetch(`${EDGE}/v1/realtime/agents/bind`, {
     method: "POST",
