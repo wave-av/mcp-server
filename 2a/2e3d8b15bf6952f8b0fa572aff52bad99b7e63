@@ -1,0 +1,21 @@
+.wave/repo.json
+  s_4657dee555390b::t_bcd5f4cf966aea 5
+README.md
+  s_4657dee555390b::t_104094a52e69ee 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "2a2e3d8b15bf6952f8b0fa572aff52bad99b7e63",
+  "prompts": {},
+  "sessions": {
+    "s_4657dee555390b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c714314b-1edf-4e54-a112-2a97f2377df1",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
