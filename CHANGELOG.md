@@ -29,6 +29,7 @@ All notable changes to this project are documented here. The format is based on
   helpers are hoisted to `src/tools/shared.ts`. (#32)
 - Releases are now published via npm trusted publishing (OIDC) with signed
   provenance attestations, replacing token-based authentication in CI. (#73)
+- Published to npm as `@wave-av/mcp-server@0.2.0`.
 
 ### Fixed
 
