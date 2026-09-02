@@ -4,9 +4,20 @@
  * Reads credentials from environment variables:
  * - WAVE_API_KEY: Required. Bearer token for WAVE API authentication.
  * - WAVE_BASE_URL: Optional. Defaults to https://wave.online.
+ * - WAVE_API_BASE_URL: Optional. Defaults to https://api.wave.online — the GATEWAY front door.
+ * - WAVE_DISPATCH_URL: Optional. Defaults to https://dispatch.wave.online.
  */
 
 const DEFAULT_BASE_URL = "https://wave.online";
+
+/** The gateway front door. DISTINCT from `WAVE_BASE_URL`: the app surface (`/api/v1/billing/...`)
+ *  lives on wave.online, while the metered product spokes (voice / transcribe / captions, and the
+ *  x402+MPP payment rails) are served through the gateway at api.wave.online under `/v1/...`.
+ *  Pointing product calls at the app host silently 404s, so the two are kept separate on purpose. */
+const DEFAULT_API_BASE_URL = "https://api.wave.online";
+
+/** wave-dispatch runs on its OWN host, not behind the product gateway, and takes a plain bearer. */
+const DEFAULT_DISPATCH_URL = "https://dispatch.wave.online";
 
 export function getApiKey(): string {
   const key = process.env["WAVE_API_KEY"];
@@ -22,6 +33,17 @@ export function getApiKey(): string {
 
 export function getBaseUrl(): string {
   return process.env["WAVE_BASE_URL"] ?? DEFAULT_BASE_URL;
+}
+
+/** Base URL for gateway-fronted product calls (`/v1/voice`, `/v1/transcribe`, `/v1/captions`,
+ *  `/v1/mpp/*`). See {@link DEFAULT_API_BASE_URL} for why this is not `getBaseUrl()`. */
+export function getApiBaseUrl(): string {
+  return process.env["WAVE_API_BASE_URL"] ?? DEFAULT_API_BASE_URL;
+}
+
+/** Base URL for wave-dispatch, which is NOT behind the product gateway. */
+export function getDispatchUrl(): string {
+  return process.env["WAVE_DISPATCH_URL"] ?? DEFAULT_DISPATCH_URL;
 }
 
 export function getAuthHeaders(): Record<string, string> {

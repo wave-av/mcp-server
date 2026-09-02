@@ -11,6 +11,9 @@ import { studioTools } from "./studio.js";
 import { analyticsTools } from "./analytics.js";
 import { billingTools } from "./billing.js";
 import { productionTools } from "./production.js";
+import { fleetTools } from "./fleet.js";
+import { dispatchTools } from "./dispatch.js";
+import { paymentTools } from "./payments.js";
 
 export const allTools: readonly WaveToolDef[] = [
   ...streamTools,
@@ -18,6 +21,9 @@ export const allTools: readonly WaveToolDef[] = [
   ...analyticsTools,
   ...billingTools,
   ...productionTools,
+  ...fleetTools,
+  ...dispatchTools,
+  ...paymentTools,
 ];
 
 // Drift/typo guard: tool names must be unique. Runs once at import (cheap) and
