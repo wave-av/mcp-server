@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+
+- Optional `WAVE_INSTALL_CHANNEL` environment variable, forwarded as an
+  `X-Wave-Install-Channel` request header on every call. Lets a Skill/manifest-
+  generated onboarding config self-declare its install channel apart from a
+  hand-written docs install, for WAVE's quarterly usage-attribution reporting
+  (see `governance/plans/wave-skills-distribution/E2-USAGE-ATTRIBUTION.md` in
+  `wave-av/claude-workstation`). Unset by default — no behavior change for
+  anyone who doesn't set it.
+
 ### Fixed
 
 - The build now emits the TypeScript declaration files (`dist/index.d.ts`,

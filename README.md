@@ -95,6 +95,7 @@ Access WAVE entities directly via the `wave://` URI scheme:
 | --- | --- | --- | --- |
 | `WAVE_API_KEY` | Yes | - | Your WAVE API key |
 | `WAVE_BASE_URL` | No | `https://wave.online` | API base URL |
+| `WAVE_INSTALL_CHANNEL` | No | - | Self-declared install-channel label sent as `X-Wave-Install-Channel` (WAVE-internal usage-attribution reporting; safe to leave unset) |
 
 ## In-process (Claude Agent SDK) mode
 
