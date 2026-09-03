@@ -56,7 +56,7 @@ jobs:
       - name: --version prints the package version
         run: |
           cd "$RUNNER_TEMP/smoke"
-          EXPECTED="$(node -p "require('@wave-av/mcp-server/package.json').version")"
+          EXPECTED="$(node -p "require('./node_modules/@wave-av/mcp-server/package.json').version")"
           GOT="$(node node_modules/.bin/wave-mcp-server --version)"
           echo "expected=$EXPECTED got=$GOT"
           test "$GOT" = "$EXPECTED"
