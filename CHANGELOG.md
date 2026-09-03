@@ -47,7 +47,7 @@ below). All 18 tool names are unchanged.
   persistent caption feed to a live stream. The tool description says this
   explicitly rather than implying the old "start captions on a stream"
   affordance.
-- `wave_create_clip` body now matches `wave-clip-engine`'s validator exactly:
+- `wave_create_clip` body now matches the clip route's own validator exactly:
   `source` (a recording ID) + `in` (a time string like `"5s"`) replace
   `stream_id`/`start_time`/`end_time`; `duration`/`out`, `visibility`,
   `formats`, `quality`, `width`/`height`, `fit`, and `spritesheet_frames` are
