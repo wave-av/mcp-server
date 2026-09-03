@@ -4,7 +4,7 @@ import { defineTool, errorContent, textContent, waveFetch, type WaveToolDef } fr
 export const studioTools: WaveToolDef[] = [
   defineTool({
     name: "wave_list_productions",
-    description: "List all studio productions in your WAVE account",
+    description: "List multi-camera productions in your WAVE account (GET /v1/productions)",
     inputSchema: {
       limit: z
         .number()
@@ -12,7 +12,7 @@ export const studioTools: WaveToolDef[] = [
         .min(1)
         .max(100)
         .optional()
-        .describe("Maximum number of productions to return (1-100, default 25)"),
+        .describe("Maximum number of productions to return (default 25)"),
       offset: z
         .number()
         .int()
@@ -20,19 +20,18 @@ export const studioTools: WaveToolDef[] = [
         .optional()
         .describe("Number of productions to skip for pagination (default 0)"),
       status: z
-        .enum(["draft", "live", "ended", "all"])
+        .enum(["setup", "rehearsal", "live", "paused", "ended"])
         .optional()
         .describe("Filter by production status"),
     },
     handler: async ({ limit, offset, status }) => {
       const params = new URLSearchParams();
-      params.set("limit", String(limit ?? 25));
-      params.set("offset", String(offset ?? 0));
-      if (status && status !== "all") {
-        params.set("status", status);
-      }
+      if (limit !== undefined) params.set("limit", String(limit));
+      if (offset !== undefined) params.set("offset", String(offset));
+      if (status) params.set("status", status);
 
-      const res = await waveFetch(`/v1/studio/productions?${params.toString()}`);
+      const query = params.toString();
+      const res = await waveFetch(`/v1/productions${query ? `?${query}` : ""}`);
       if (!res.ok) return errorContent(res.status, res.body);
 
       return textContent(res.body);
@@ -41,7 +40,7 @@ export const studioTools: WaveToolDef[] = [
 
   defineTool({
     name: "wave_create_production",
-    description: "Create a new studio production with multi-camera support",
+    description: "Create a new multi-camera production (POST /v1/productions)",
     inputSchema: {
       title: z.string().min(1).max(255).describe("Production title"),
       description: z.string().max(2000).optional().describe("Production description"),
@@ -65,7 +64,7 @@ export const studioTools: WaveToolDef[] = [
       if (stream_ids !== undefined) payload["stream_ids"] = stream_ids;
       if (record !== undefined) payload["record"] = record;
 
-      const res = await waveFetch("/v1/studio/productions", {
+      const res = await waveFetch("/v1/productions", {
         method: "POST",
         body: JSON.stringify(payload),
       });

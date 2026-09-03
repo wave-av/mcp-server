@@ -2,22 +2,33 @@
 // Fresh-install smoke driver for the stdio MCP server.
 //
 //   node scripts/smoke-mcp.mjs <path-to-installed-bin> [expectedToolCount] [toolName] [jsonArgs]
+//   node scripts/smoke-mcp.mjs <path-to-installed-bin> [expectedToolCount] --all
 //
 // Spawns the bin (argument array, no shell), performs the MCP handshake over
-// newline-delimited JSON-RPC, lists tools, and optionally calls one tool. Exit 0
-// when tools/list returns the expected count (or any non-empty list when no count
-// is given) and, if a tool was named, the call returned a result or a gateway
-// error that proves the request reached api.wave.online. Exit 1 otherwise.
-// Environment is passed through untouched and never printed.
+// newline-delimited JSON-RPC, lists tools, and either calls one named tool or
+// (with --all) calls every registered tool with safe arguments. Environment is
+// passed through untouched and never printed.
 import { spawn } from "node:child_process";
 
-const [bin, expectedRaw, toolName, jsonArgs] = process.argv.slice(2);
+const rawArgs = process.argv.slice(2);
+const bin = rawArgs[0];
 if (!bin) {
   console.error("usage: smoke-mcp.mjs <bin> [expectedToolCount] [toolName] [jsonArgs]");
+  console.error("       smoke-mcp.mjs <bin> [expectedToolCount] --all");
   process.exit(2);
 }
-const expected = expectedRaw ? Number(expectedRaw) : undefined;
+const allMode = rawArgs.includes("--all");
+const rest = rawArgs.slice(1).filter((a) => a !== "--all");
+const expected = rest[0] !== undefined ? Number(rest[0]) : undefined;
+const toolName = allMode ? undefined : rest[1];
+const jsonArgs = allMode ? undefined : rest[2];
 const TIMEOUT_MS = 30_000;
+
+// A well-formed but non-existent UUID (v4-shaped nil-like marker), used where a
+// tool needs a path/body ID but creating a real resource is not wanted.
+const NIL_UUID = "00000000-0000-4000-8000-000000000001";
+// A minimal, valid, silent WAV file (44-byte header, zero audio frames), base64.
+const SILENT_WAV_B64 = "UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=";
 
 const child = spawn(process.execPath, [bin], { stdio: ["pipe", "pipe", "pipe"], env: process.env });
 const pending = new Map();
@@ -67,6 +78,49 @@ function finish(code) {
   process.exit(code);
 }
 
+/**
+ * Extract a resource id from a tool's passthrough JSON body, trying the
+ * shapes real WAVE responses commonly use. Returns undefined if none found.
+ */
+function extractId(bodyText) {
+  try {
+    const parsed = JSON.parse(bodyText);
+    return parsed?.id ?? parsed?.stream?.id ?? parsed?.production?.id ?? parsed?.data?.id ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Classify a tools/call result into a smoke-table row.
+ * Tool handlers return either the raw passthrough JSON (success) or the
+ * "Error <status>: <body>" text errorContent() produces (non-2xx).
+ */
+function classify(call) {
+  if (call.error) {
+    return { status: "ERR", marker: "jsonrpc-error", pass: false, hardFail: true, body: JSON.stringify(call.error) };
+  }
+  const text = call.result?.content?.[0]?.text ?? "";
+  const m = /^Error (\d+): ([\s\S]*)$/.exec(text);
+  const status = m ? m[1] : "2xx";
+  const body = m ? m[2] : text;
+  const isHtml = /<!DOCTYPE|<html/i.test(body);
+  const routeNotMapped = /ROUTE_NOT_MAPPED/i.test(body);
+  const numStatus = m ? Number(m[1]) : 200;
+  const hardFail = isHtml || routeNotMapped || numStatus === 404 || numStatus >= 500;
+  const pass = !hardFail && (status === "2xx" || numStatus === 402);
+  const marker = isHtml ? "HTML" : routeNotMapped ? "ROUTE_NOT_MAPPED" : body.slice(0, 80).replace(/\s+/g, " ");
+  return { status, marker, pass, hardFail, body };
+}
+
+async function callTool(rows, name, route, args) {
+  const call = await rpc("tools/call", { name, arguments: args });
+  const c = classify(call);
+  rows.push({ tool: name, route, status: c.status, marker: c.marker, pass: c.pass });
+  console.log(`${name} | ${route} | ${c.status} | ${c.pass ? "PASS" : "FAIL"} | ${c.marker}`);
+  return c;
+}
+
 try {
   const init = await rpc("initialize", {
     protocolVersion: "2025-06-18",
@@ -88,6 +142,80 @@ try {
   if (expected !== undefined && tools.length !== expected) {
     console.error(`FAIL expected ${expected} tools, got ${tools.length}`);
     finish(1);
+  }
+
+  if (allMode) {
+    const rows = [];
+    let hardFail = false;
+    const wrap = async (name, route, args) => {
+      const c = await callTool(rows, name, route, args);
+      if (c.hardFail) hardFail = true;
+    };
+
+    const iso = new Date().toISOString();
+
+    // 1. Read-only / list tools first.
+    await wrap("wave_list_streams", "GET /v1/streams", {});
+    await wrap("wave_list_productions", "GET /v1/productions", {});
+    await wrap("wave_get_subscription", "GET /v1/billing", {});
+    await wrap("wave_get_usage", "GET /v1/billing/usage", {});
+    await wrap("wave_get_viewers", "GET /v1/analytics/engagement", {});
+
+    // 2. Create a stream, then exercise its lifecycle.
+    const createStream = await callTool(rows, "wave_create_stream", "POST /v1/streams", {
+      title: `mcp-smoke-${iso}`,
+    });
+    const streamId = extractId(createStream.body) ?? NIL_UUID;
+
+    await wrap("wave_start_stream", "POST /v1/streams/{id}/start", { stream_id: streamId });
+    await wrap("wave_get_stream_health", "GET /v1/streams/{id}/status", { stream_id: streamId });
+    await wrap("wave_get_stream_metrics", "GET /v1/streams/{id}/analytics", { stream_id: streamId });
+    await wrap("wave_mark_highlight", "POST /v1/streams/{id}/highlights", { stream_id: streamId, label: "smoke" });
+    await wrap("wave_stop_stream", "POST /v1/streams/{id}/stop", { stream_id: streamId });
+    await wrap("wave_moderate_chat", "POST /v1/moderate", {
+      stream_id: streamId,
+      message_id: "smoke-msg-1",
+      action: "flag",
+    });
+
+    // 3. Create a production, then exercise its controls.
+    const createProduction = await callTool(rows, "wave_create_production", "POST /v1/productions", {
+      title: `mcp-smoke-${iso}`,
+    });
+    const productionId = extractId(createProduction.body) ?? NIL_UUID;
+
+    await wrap("wave_switch_camera", "POST /v1/productions/{id}/camera", {
+      production_id: productionId,
+      camera_index: 0,
+      bus: "program",
+    });
+    await wrap("wave_show_graphic", "POST /v1/productions/{id}/overlay", {
+      production_id: productionId,
+      overlay_id: "smoke",
+      visible: true,
+    });
+
+    // 4. Nil-uuid / independent operations — nothing destructive beyond this point.
+    await wrap("wave_control_camera", "POST /v1/cameras/{id}/control", {
+      camera_id: NIL_UUID,
+      command: "autofocus_trigger",
+    });
+    await wrap("wave_create_clip", "POST /v1/clips", { source: NIL_UUID, in: "0s", duration: "1s" });
+    await wrap("wave_start_captions", "POST /v1/live/pipeline", {
+      audio_base64: SILENT_WAV_B64,
+      llm_model: "llama-3.1-8b-instant",
+    });
+
+    console.log("");
+    console.log("=== smoke table ===");
+    for (const r of rows) {
+      console.log(`${r.tool} | ${r.route} | ${r.status} | ${r.pass ? "PASS" : "FAIL"}`);
+    }
+    if (rows.length !== 18) {
+      console.error(`FAIL --all called ${rows.length} tools, expected 18`);
+      finish(1);
+    }
+    finish(hardFail ? 1 : 0);
   }
 
   if (toolName) {
