@@ -83,12 +83,34 @@ below). All 18 tool names are unchanged.
   `channel`/`level`, `preset_id`, `name`/`slot`). The old pan/tilt/zoom shape
   was never accepted by the live route.
 
+## [0.2.1] - 2026-09-03
+
 ### Fixed
 
-- Tool and resource requests now target the production API host,
-  `https://api.wave.online`, with `/v1/...` paths. The previous default,
-  `https://wave.online/api/v1/...`, returned an HTML 404 page for every tool call
-  on a fresh install of 0.2.0.
+- **Every tool now targets a host and path that actually serve the API (#89).** The default
+  `WAVE_BASE_URL` was `https://wave.online` — the marketing/app origin, which 404s on the API
+  surface — and every tool requested `/api/v1/*`. Both were wrong, and the two compounded: with
+  default configuration none of the 18 tools could ever succeed. The default is now
+  `https://api.wave.online` (the WAVE gateway, which is the billing/auth/metering authority) and
+  the tool paths are now `/v1/*`, which is the gateway's public path space. The gateway itself
+  re-prefixes to the spoke origin's `/api/v1/*` on forward, so `/api/v1/*` was never a valid
+  request path for a client. Measured 2026-08-07:
+  `POST api.wave.online/v1/streams` → 402 (route exists and is priced),
+  `POST api.wave.online/api/v1/streams` → 404, `POST wave.online/api/v1/streams` → 404.
+  **This does not remediate already-installed copies** — they stay broken until this ships to npm
+  and consumers upgrade.
+- `WAVE_BASE_URL`, when explicitly set, is now validated and normalised to its **origin**: surrounding
+  whitespace is trimmed, and a path, query or fragment is rejected rather than silently discarded
+  (tool paths like `/v1/...` are appended to this value, so anything beyond scheme+host+port corrupts
+  every request URL). Validation runs at **startup**, from `startServer()`, so a bad value kills the
+  process once with an actionable message instead of failing inside every individual tool call.
+- `WAVE_BASE_URL` now refuses a cleartext `http://` origin for a remote host. Every request attaches
+  `Authorization: Bearer <WAVE_API_KEY>`, so an `http://` origin would put the API key on the wire in
+  the clear. Loopback (`localhost` / `127.0.0.1` / `::1`) is still accepted for local development.
+- The API-key-minting URL in the missing-key error is now
+  `https://console.wave.online/dashboard#keys`. The previous
+  `https://wave.online/settings/api-keys` returned 404, so the one pointer a user got toward
+  credentials was dead.
 - The MCP `serverInfo` version, the `User-Agent` header and the new `--version`
   flag read the package version at runtime instead of a hard-coded `0.1.0`.
 
@@ -107,10 +129,25 @@ below). All 18 tool names are unchanged.
   (`tool | METHOD path | status | PASS/FAIL`). `.github/workflows/smoke-install.yml`
   now runs this mode.
 
+### Changed
+
+- Documentation corrected against live probes: the "Staging vs production" table in
+  `MCP-DEBUGGING.md` advertised `https://staging.wave.online`, which has no DNS record and has never
+  been reachable — it has been removed rather than reworded. The tool count in the same document said
+  19; there are 18. The generated `README.md` and its source of truth (`.wave/repo.json`) were both
+  updated, so the corrected default and key-minting URL survive the next regeneration.
+
 ### Security
 
 - Updated `@anthropic-ai/claude-agent-sdk` to 1.30.0. This unblocks `@hono/node-server`
   2.x and clears the last two runtime advisories on the dependency tree. (#68)
+
+### Release note
+
+Publishing `@wave-av/mcp-server@0.2.1` to npm is a separate, manual operator step (repo release
+workflow on a version tag). This change does not run `npm publish`. Every copy already installed
+from the published `0.2.0` defaults `WAVE_BASE_URL` to `https://wave.online`, which 404s on every
+tool call — those installs stay broken until `0.2.1` ships and consumers upgrade.
 
 ## [0.2.0] - 2026-08-04
 
@@ -153,6 +190,8 @@ below). All 18 tool names are unchanged.
 
 ### Changed
 
+- Releases are now published via npm trusted publishing (OIDC) with signed
+  provenance attestations, replacing token-based authentication in CI.
 - Six untagged republishes of the 0.1.2 line, `0.1.3` through `0.1.8`, are on the
   npm registry (three on 2026-04-02, three on 2026-04-03). The changes in that
   window were package metadata (`types` and `exports` fields, repository URL and
@@ -168,6 +207,7 @@ below). All 18 tool names are unchanged.
 
 [Unreleased]: https://github.com/wave-av/mcp-server/compare/v0.3.0...HEAD
 [0.3.0]: https://github.com/wave-av/mcp-server/releases/tag/v0.3.0
+[0.2.1]: https://github.com/wave-av/mcp-server/releases/tag/v0.2.1
 [0.2.0]: https://github.com/wave-av/mcp-server/releases/tag/v0.2.0
 [0.1.3] to [0.1.8]: https://www.npmjs.com/package/@wave-av/mcp-server?activeTab=versions
 [0.1.2]: https://github.com/wave-av/mcp-server/releases/tag/v0.1.2

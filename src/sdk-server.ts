@@ -10,6 +10,7 @@
 // fallback so a missing install surfaces a clear, actionable error instead of a
 // module-resolution crash at startup.
 import type { McpSdkServerConfigWithInstance } from "@anthropic-ai/claude-agent-sdk";
+import { assertConfigValid } from "./auth.js";
 import { allTools } from "./tools/index.js";
 import { PKG_VERSION } from "./version.js";
 
@@ -27,6 +28,11 @@ const AGENT_SDK_MODULE = "@anthropic-ai/claude-agent-sdk";
  * @throws if the optional `@anthropic-ai/claude-agent-sdk` peer dep is absent.
  */
 export async function createWaveSdkMcpServer(): Promise<McpSdkServerConfigWithInstance> {
+  // Same startup validation the stdio transport runs (#89). Without this the "validated at startup"
+  // contract would hold for only ONE of the two transports, and in-process consumers would keep seeing a
+  // malformed WAVE_BASE_URL surface once per tool call instead of once, here, at construction.
+  assertConfigValid();
+
   let sdk: typeof import("@anthropic-ai/claude-agent-sdk");
   try {
     sdk = await import(AGENT_SDK_MODULE);
