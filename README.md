@@ -2,17 +2,13 @@
 
 # @wave-av/mcp-server
 
-**MCP (Model Context Protocol) server that exposes WAVE streaming APIs as tools for AI coding assistants (Claude Code, Cursor, Windsurf).**
+**Media infrastructure for the agentic internet.** MCP (Model Context Protocol) server that exposes WAVE media operations as tools for agents and AI coding assistants (Claude Code, Cursor, Windsurf).
 
 ![kind](https://img.shields.io/badge/kind-mcp--server-555?style=flat-square) ![domain](https://img.shields.io/badge/domain-agent--ops-0a7?style=flat-square) ![lang](https://img.shields.io/badge/lang-TypeScript-3178c6?style=flat-square) ![visibility](https://img.shields.io/badge/visibility-public-brightgreen?style=flat-square) ![phase](https://img.shields.io/badge/phase-preview-blue?style=flat-square)
 
 [**Live** →](https://docs.wave.online/mcp) · [docs](https://docs.wave.online/mcp) · [npm](https://www.npmjs.com/package/@wave-av/mcp-server) · [repo](https://github.com/wave-av/mcp-server) · [Docs](https://docs.wave.online) · [Status](https://wave.online/status)
 
 </div>
-
-> This README is machine-generated from WAVE's grounded Single Source of Truth — every
-> factual claim below traces to a resolver that `npm run verify` checks against the live
-> repo and live endpoints. Nothing here is asserted without a receipt.
 
 ---
 
@@ -94,7 +90,7 @@ Access WAVE entities directly via the `wave://` URI scheme:
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
 | `WAVE_API_KEY` | Yes | - | Your WAVE API key |
-| `WAVE_BASE_URL` | No | `https://wave.online` | API base URL |
+| `WAVE_BASE_URL` | No | `https://api.wave.online` | API base URL |
 
 ## In-process (Claude Agent SDK) mode
 

@@ -8,6 +8,22 @@ All notable changes to this project are documented here. The format is based on
 
 ### Fixed
 
+- Tool and resource requests now target the production API host,
+  `https://api.wave.online`, with `/v1/...` paths. The previous default,
+  `https://wave.online/api/v1/...`, returned an HTML 404 page for every tool call
+  on a fresh install of 0.2.0.
+- The MCP `serverInfo` version, the `User-Agent` header and the new `--version`
+  flag read the package version at runtime instead of a hard-coded `0.1.0`.
+
+### Added
+
+- `wave-mcp-server --version` and `--help`. The README documented `--version`;
+  the binary started the stdio server instead.
+- A fresh-install smoke workflow that packs the build, installs the tarball in a
+  clean directory on Node 20 and 22, asserts `--version`, the stdio handshake and
+  the 18-tool `tools/list`, and makes one live tool call against
+  `https://api.wave.online` when the repository secret is present.
+
 - The build now emits the TypeScript declaration files (`dist/index.d.ts`,
   `dist/sdk-server.d.ts`) that `package.json` has been advertising via `types`
   and the `exports` map. Previously consumers silently resolved to `any`. The

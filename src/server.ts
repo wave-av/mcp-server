@@ -3,6 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 import { allTools } from "./tools/index.js";
+import { PKG_VERSION } from "./version.js";
 import { registerStreamResources } from "./resources/streams.js";
 import { registerProductionResources } from "./resources/productions.js";
 
@@ -10,7 +11,7 @@ import { registerProductionResources } from "./resources/productions.js";
 export function buildServer(): McpServer {
   const server = new McpServer({
     name: "wave-mcp-server",
-    version: "0.1.0",
+    version: PKG_VERSION,
   });
 
   // Register tools from the single source of truth (src/tools/index.ts).
