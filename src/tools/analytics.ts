@@ -23,7 +23,7 @@ export const analyticsTools: WaveToolDef[] = [
       if (include_demographics) params.set("include_demographics", "true");
 
       const query = params.toString();
-      const path = `/api/v1/analytics/viewers${query ? `?${query}` : ""}`;
+      const path = `/v1/analytics/viewers${query ? `?${query}` : ""}`;
       const res = await waveFetch(path);
       if (!res.ok) return errorContent(res.status, res.body);
 
@@ -52,7 +52,7 @@ export const analyticsTools: WaveToolDef[] = [
       if (granularity) params.set("granularity", granularity);
 
       const query = params.toString();
-      const path = `/api/v1/analytics/streams/${stream_id}/metrics${query ? `?${query}` : ""}`;
+      const path = `/v1/analytics/streams/${stream_id}/metrics${query ? `?${query}` : ""}`;
       const res = await waveFetch(path);
       if (!res.ok) return errorContent(res.status, res.body);
 

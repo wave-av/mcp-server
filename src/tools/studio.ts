@@ -32,7 +32,7 @@ export const studioTools: WaveToolDef[] = [
         params.set("status", status);
       }
 
-      const res = await waveFetch(`/api/v1/studio/productions?${params.toString()}`);
+      const res = await waveFetch(`/v1/studio/productions?${params.toString()}`);
       if (!res.ok) return errorContent(res.status, res.body);
 
       return textContent(res.body);
@@ -65,7 +65,7 @@ export const studioTools: WaveToolDef[] = [
       if (stream_ids !== undefined) payload["stream_ids"] = stream_ids;
       if (record !== undefined) payload["record"] = record;
 
-      const res = await waveFetch("/api/v1/studio/productions", {
+      const res = await waveFetch("/v1/studio/productions", {
         method: "POST",
         body: JSON.stringify(payload),
       });

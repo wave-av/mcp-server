@@ -10,10 +10,6 @@
 
 </div>
 
-> This README is machine-generated from WAVE's grounded Single Source of Truth — every
-> factual claim below traces to a resolver that `npm run verify` checks against the live
-> repo and live endpoints. Nothing here is asserted without a receipt.
-
 ---
 
 ## Quick start
@@ -94,7 +90,7 @@ Access WAVE entities directly via the `wave://` URI scheme:
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
 | `WAVE_API_KEY` | Yes | - | Your WAVE API key |
-| `WAVE_BASE_URL` | No | `https://wave.online` | API base URL |
+| `WAVE_BASE_URL` | No | `https://api.wave.online` | API base URL |
 
 ## In-process (Claude Agent SDK) mode
 

@@ -1,12 +1,14 @@
+import { PKG_VERSION } from "./version.js";
+
 /**
  * Authentication utilities for the WAVE MCP Server.
  *
  * Reads credentials from environment variables:
  * - WAVE_API_KEY: Required. Bearer token for WAVE API authentication.
- * - WAVE_BASE_URL: Optional. Defaults to https://wave.online.
+ * - WAVE_BASE_URL: Optional. Defaults to https://api.wave.online.
  */
 
-const DEFAULT_BASE_URL = "https://wave.online";
+const DEFAULT_BASE_URL = "https://api.wave.online";
 
 export function getApiKey(): string {
   const key = process.env["WAVE_API_KEY"];
@@ -28,7 +30,7 @@ export function getAuthHeaders(): Record<string, string> {
   return {
     Authorization: `Bearer ${getApiKey()}`,
     "Content-Type": "application/json",
-    "User-Agent": "wave-mcp-server/0.1.0",
+    "User-Agent": `wave-mcp-server/${PKG_VERSION}`,
   };
 }
 

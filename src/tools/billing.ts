@@ -8,7 +8,7 @@ export const billingTools: WaveToolDef[] = [
       "Get current subscription details including plan, billing cycle, and feature entitlements",
     inputSchema: {},
     handler: async () => {
-      const res = await waveFetch("/api/v1/billing/subscription");
+      const res = await waveFetch("/v1/billing/subscription");
       if (!res.ok) return errorContent(res.status, res.body);
 
       return textContent(res.body);
@@ -35,7 +35,7 @@ export const billingTools: WaveToolDef[] = [
       if (breakdown) params.set("breakdown", breakdown);
 
       const query = params.toString();
-      const path = `/api/v1/billing/usage${query ? `?${query}` : ""}`;
+      const path = `/v1/billing/usage${query ? `?${query}` : ""}`;
       const res = await waveFetch(path);
       if (!res.ok) return errorContent(res.status, res.body);
 

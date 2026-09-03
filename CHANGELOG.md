@@ -6,6 +6,24 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Fixed
+
+- Tool and resource requests now target the production API host,
+  `https://api.wave.online`, with `/v1/...` paths. The previous default,
+  `https://wave.online/api/v1/...`, returned an HTML 404 page for every tool call
+  on a fresh install of 0.2.0.
+- The MCP `serverInfo` version, the `User-Agent` header and the new `--version`
+  flag read the package version at runtime instead of a hard-coded `0.1.0`.
+
+### Added
+
+- `wave-mcp-server --version` and `--help`. The README documented `--version`;
+  the binary started the stdio server instead.
+- A fresh-install smoke workflow that packs the build, installs the tarball in a
+  clean directory on Node 20 and 22, asserts `--version`, the stdio handshake and
+  the 18-tool `tools/list`, and makes one live tool call against
+  `https://api.wave.online` when the repository secret is present.
+
 ### Security
 
 - Updated `@anthropic-ai/claude-agent-sdk` to 1.30.0. This unblocks `@hono/node-server`
@@ -48,13 +66,24 @@ All notable changes to this project are documented here. The format is based on
 - Updated `brace-expansion` to 5.0.8, the version that clears the runtime
   advisory on that package. (#67)
 
+## [0.1.3] to [0.1.8] - 2026-04-02 to 2026-04-03
+
+### Changed
+
+- Six untagged republishes of the 0.1.2 line, `0.1.3` through `0.1.8`, are on the
+  npm registry (three on 2026-04-02, three on 2026-04-03). The changes in that
+  window were package metadata (`types` and `exports` fields, repository URL and
+  directory) and README updates. The tool set was unchanged.
+
 ## [0.1.2] - 2026-04-02
 
 ### Added
 
 - Initial public release of the MCP server. Exposes tools for AI agents over
-  the stdio transport (Model Context Protocol).
+  the stdio transport (Model Context Protocol). `0.1.0` and `0.1.1` reached the
+  registry on 2026-04-01 ahead of this tagged release and carry the same code line.
 
 [Unreleased]: https://github.com/wave-av/mcp-server/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/wave-av/mcp-server/releases/tag/v0.2.0
+[0.1.3] to [0.1.8]: https://www.npmjs.com/package/@wave-av/mcp-server?activeTab=versions
 [0.1.2]: https://github.com/wave-av/mcp-server/releases/tag/v0.1.2
