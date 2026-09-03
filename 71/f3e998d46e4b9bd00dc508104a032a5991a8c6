@@ -1,0 +1,24 @@
+CHANGELOG.md
+  s_4657dee555390b::t_a38a9bd1e32c9b 9-85,103-108
+  s_4657dee555390b::t_9ad4cc9f382368 169-170
+README.md
+  s_4657dee555390b::t_1b54374ce486e4 246
+  s_4657dee555390b::t_22fdc587310c1a 54-56,58-60,66,68-73,79,85-86
+  s_4657dee555390b::t_fbca362ecd3bed 253
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "71f3e998d46e4b9bd00dc508104a032a5991a8c6",
+  "prompts": {},
+  "sessions": {
+    "s_4657dee555390b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c714314b-1edf-4e54-a112-2a97f2377df1",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
