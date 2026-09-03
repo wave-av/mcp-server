@@ -1,0 +1,21 @@
+.github/workflows/release.yml
+  s_c96f4a8d75d909::t_fe37e9745ee3e3 90,239
+package-lock.json
+  s_c96f4a8d75d909::t_08767f4e951609 1659-1661,2298-2300,2544-2546,2615-2617
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "4f02f2c334173d511191012a5524c26926ead165",
+  "prompts": {},
+  "sessions": {
+    "s_c96f4a8d75d909": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a034e6824235b8de5",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
