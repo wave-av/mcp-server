@@ -12,6 +12,7 @@
 import type { McpSdkServerConfigWithInstance } from "@anthropic-ai/claude-agent-sdk";
 import { assertConfigValid } from "./auth.js";
 import { allTools } from "./tools/index.js";
+import { PKG_VERSION } from "./version.js";
 
 const AGENT_SDK_MODULE = "@anthropic-ai/claude-agent-sdk";
 
@@ -51,7 +52,7 @@ export async function createWaveSdkMcpServer(): Promise<McpSdkServerConfigWithIn
 
   return sdk.createSdkMcpServer({
     name: "wave-mcp-server",
-    version: "0.1.0",
+    version: PKG_VERSION,
     tools,
   });
 }

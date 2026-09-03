@@ -1,3 +1,5 @@
+import { PKG_VERSION } from "./version.js";
+
 /**
  * Authentication utilities for the WAVE MCP Server.
  *
@@ -103,7 +105,7 @@ export function getAuthHeaders(): Record<string, string> {
   return {
     Authorization: `Bearer ${getApiKey()}`,
     "Content-Type": "application/json",
-    "User-Agent": "wave-mcp-server/0.1.0",
+    "User-Agent": `wave-mcp-server/${PKG_VERSION}`,
   };
 }
 
