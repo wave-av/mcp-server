@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-09-03
+
 ### Fixed
 
 - **Every tool now targets a host and path that actually serve the API (#89).** The default
@@ -51,6 +53,13 @@ All notable changes to this project are documented here. The format is based on
   been reachable — it has been removed rather than reworded. The tool count in the same document said
   19; there are 18. The generated `README.md` and its source of truth (`.wave/repo.json`) were both
   updated, so the corrected default and key-minting URL survive the next regeneration.
+
+### Release note
+
+Publishing `@wave-av/mcp-server@0.2.1` to npm is a separate, manual operator step (repo release
+workflow on a version tag). This change does not run `npm publish`. Every copy already installed
+from the published `0.2.0` defaults `WAVE_BASE_URL` to `https://wave.online`, which 404s on every
+tool call — those installs stay broken until `0.2.1` ships and consumers upgrade.
 
 ## [0.2.0]
 
