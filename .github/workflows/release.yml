@@ -281,13 +281,106 @@ jobs:
           echo "dist-tag=$DIST_TAG"
           echo "dist_tag=$DIST_TAG" >> "$GITHUB_OUTPUT"
 
-      # Auth comes from the OIDC token (id-token: write) exchanged by npm
+      # Primary auth is the OIDC token (id-token: write) exchanged by npm
       # against the Trusted Publisher registered for @wave-av/mcp-server -- NO
-      # NODE_AUTH_TOKEN / NPM_TOKEN / .npmrc _authToken. --provenance is free
-      # under OIDC: it supplies the signing identity for the attestation.
-      - name: npm publish (OIDC trusted publishing)
+      # NODE_AUTH_TOKEN is set for that path. If an NPM_TOKEN repository secret
+      # exists (e.g. before the Trusted Publisher is registered, or as a
+      # break-glass fallback), it is written to .npmrc as a classic auth token
+      # and npm uses it instead; an absent/empty secret never touches .npmrc,
+      # so the OIDC path is unaffected. --provenance works either way: it only
+      # needs `id-token: write` on this job to mint the sigstore attestation.
+      - name: Configure npm auth (NPM_TOKEN fallback only — OIDC trusted publishing needs no config here)
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -n "$NPM_TOKEN" ]; then
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+            echo "npm auth: using NPM_TOKEN secret fallback"
+          else
+            echo "npm auth: no NPM_TOKEN secret set — relying on OIDC trusted publishing"
+          fi
+
+      - name: npm publish (OIDC trusted publishing, NPM_TOKEN fallback)
         env:
           DIST_TAG: ${{ steps.ver.outputs.dist_tag }}
         run: |
           set -euo pipefail
           npm publish --access public --provenance --tag "$DIST_TAG"
+
+  # ---------------------------------------------------------------------------
+  # Gate 4 — post-publish verification. Proves the version that just left this
+  # workflow is actually live and correct on the real registry, not just that
+  # `npm publish` returned 0. Installs the published package (not the packed
+  # tarball verify already checked) and re-runs the same stdio smoke this repo
+  # already trusts for fresh installs (scripts/smoke-mcp.mjs, also used by
+  # smoke-install.yml). The live tools/call step is the receipt that the
+  # published binary talks to api.wave.online, never the wave.online marketing
+  # site — it fails on an HTML response and passes only on a real gateway
+  # answer (2xx or a gateway error contract).
+  # ---------------------------------------------------------------------------
+  verify-publish:
+    name: Verify published package (live registry)
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Resolve expected version from tag
+        id: ver
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: echo "version=${TAG_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: npm view — published version is live on the registry
+        env:
+          EXPECTED: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5 6 7 8; do
+            PUBLISHED="$(npm view @wave-av/mcp-server@"$EXPECTED" version 2>/dev/null || true)"
+            if [ "$PUBLISHED" = "$EXPECTED" ]; then break; fi
+            echo "waiting for the registry to index @wave-av/mcp-server@$EXPECTED (attempt $i)"
+            sleep 15
+          done
+          if [ "$PUBLISHED" != "$EXPECTED" ]; then
+            echo "::error::npm view never returned $EXPECTED for @wave-av/mcp-server"
+            exit 1
+          fi
+          echo "npm view: @wave-av/mcp-server@$EXPECTED confirmed live"
+
+      - name: Fresh install from the real registry (not the packed tarball)
+        env:
+          EXPECTED: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/verify"
+          cd "$RUNNER_TEMP/verify"
+          npm init -y >/dev/null
+          npm install "@wave-av/mcp-server@$EXPECTED" --registry=https://registry.npmjs.org
+          GOT="$(node node_modules/.bin/wave-mcp-server --version)"
+          echo "expected=$EXPECTED got=$GOT"
+          test "$GOT" = "$EXPECTED"
+
+      - name: Stdio handshake — tools/list answers over the published binary
+        run: |
+          cd "$RUNNER_TEMP/verify"
+          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 18
+
+      - name: Live tools/call reaches api.wave.online, never wave.online
+        env:
+          WAVE_API_KEY: ${{ secrets.WAVE_GATEWAY_API_KEY }}
+        run: |
+          if [ -z "$WAVE_API_KEY" ]; then
+            echo "skipped: WAVE_GATEWAY_API_KEY absent (fork or unset)"
+            exit 0
+          fi
+          cd "$RUNNER_TEMP/verify"
+          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 18 wave_list_streams '{}'
