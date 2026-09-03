@@ -51,32 +51,39 @@ Add to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) — see the Quick 
 
 | Tool | Description |
 | --- | --- |
-| `wave_list_streams` | List all streams with pagination and status filtering |
-| `wave_create_stream` | Create a new stream with protocol and privacy options |
-| `wave_start_stream` | Start streaming on an existing stream |
+| `wave_list_streams` | List streams with pagination and status filtering (idle/live/ended) |
+| `wave_create_stream` | Create a new stream (protocol, recording, privacy) |
+| `wave_start_stream` | Start a stream |
 | `wave_stop_stream` | Stop an active stream |
-| `wave_get_stream_health` | Get real-time health metrics for a stream |
+| `wave_get_stream_health` | Get a stream's current status document |
+| `wave_get_stream_metrics` | Get analytics for a single stream over a date range |
+| `wave_mark_highlight` | Mark a moment in a stream as a highlight for later clipping |
 
 ## Available tools — Studio
 
 | Tool | Description |
 | --- | --- |
-| `wave_list_productions` | List studio production sessions |
+| `wave_list_productions` | List multi-camera productions |
 | `wave_create_production` | Create a new multi-camera production |
+| `wave_switch_camera` | Switch the program/preview bus to a camera index in a production |
+| `wave_show_graphic` | Show or hide a graphics overlay in a production |
+| `wave_control_camera` | Send a control command (iris/focus/zoom/white balance/gain/shutter/recording/audio level/presets) to a managed camera |
+| `wave_moderate_chat` | Moderate a chat message in a live stream (block/flag/allow) |
+| `wave_start_captions` | Transcribe an audio clip and optionally run a fast-LLM step over the transcript |
+| `wave_create_clip` | Create a clip from a recording |
 
 ## Available tools — Analytics
 
 | Tool | Description |
 | --- | --- |
-| `wave_get_viewers` | Get current viewer count and breakdown |
-| `wave_get_stream_metrics` | Get detailed stream performance metrics |
+| `wave_get_viewers` | Get account-wide viewer engagement analytics over a date range |
 
 ## Available tools — Billing
 
 | Tool | Description |
 | --- | --- |
-| `wave_get_subscription` | Get current subscription plan and status |
-| `wave_get_usage` | Get current period usage and limits |
+| `wave_get_subscription` | Get the current billing account (plan, subscription state) |
+| `wave_get_usage` | Get billed usage for a date range |
 
 ## Resources
 
@@ -236,14 +243,14 @@ Every claim below is checked by `npm run verify` against the live repo or endpoi
 | wave_get_viewers tool defined in src/tools/analytics.ts | resolved by grepping `src/tools/analytics.ts` |
 | wave_list_productions tool defined in src/tools/studio.ts | resolved by grepping `src/tools/studio.ts` |
 | wave_list_streams tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
-| wave_mark_highlight tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
+| wave_mark_highlight tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
 | wave_moderate_chat tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
 | wave_show_graphic tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
 | wave_start_captions tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
 | wave_start_stream tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
 | wave_stop_stream tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
 | wave_get_stream_health tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
-| wave_get_stream_metrics tool defined in src/tools/analytics.ts | resolved by grepping `src/tools/analytics.ts` |
+| wave_get_stream_metrics tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
 | wave_get_subscription tool defined in src/tools/billing.ts | resolved by grepping `src/tools/billing.ts` |
 | wave_switch_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
 | wave_get_usage tool defined in src/tools/billing.ts | resolved by grepping `src/tools/billing.ts` |
