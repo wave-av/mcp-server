@@ -1,6 +1,6 @@
 {
   "name": "@wave-av/mcp-server",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "WAVE MCP Server - Exposes WAVE streaming APIs as tools for AI agents",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

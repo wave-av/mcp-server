@@ -4,7 +4,10 @@ name: Smoke install
 # directory the way a user would, and exercises the published surface:
 #   1. `wave-mcp-server --version` prints the package version.
 #   2. The stdio handshake + tools/list returns every tool (count asserted).
-#   3. One live tools/call reaches https://api.wave.online with the repo secret.
+#   3. A live --all run calls all 18 tools against https://api.wave.online with the
+#      repo secret and prints one row per tool. Some rows are expected to fail
+#      until dependent WAVE services finish deploying (see CHANGELOG); the job
+#      still asserts the tool count is 18 either way.
 # Step 3 skips honestly when WAVE_GATEWAY_API_KEY is absent (forks, unset).
 on:
   push:
@@ -66,7 +69,7 @@ jobs:
           cd "$RUNNER_TEMP/smoke"
           node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 18
 
-      - name: Live tools/call against api.wave.online
+      - name: Live --all against api.wave.online (all 18 tools)
         env:
           WAVE_API_KEY: ${{ secrets.WAVE_GATEWAY_API_KEY }}
         run: |
@@ -75,4 +78,4 @@ jobs:
             exit 0
           fi
           cd "$RUNNER_TEMP/smoke"
-          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 18 wave_list_streams '{}'
+          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 18 --all
