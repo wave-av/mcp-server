@@ -1,0 +1,22 @@
+.github/workflows/version-surfaces.yml
+  s_418f585ff58cb5::t_3f6c6d4b4eda07 1-79
+scripts/check-version-surfaces.mjs
+  s_418f585ff58cb5::t_8e43d9fc656a92 1-341,353-403
+  s_418f585ff58cb5::t_0b5753e061bac0 342-352
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "f850e13f2c9922ceac11ac1d99efd90e76751fc0",
+  "prompts": {},
+  "sessions": {
+    "s_418f585ff58cb5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e5b410ce-aa9a-48d6-be5d-09400395b1b6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
