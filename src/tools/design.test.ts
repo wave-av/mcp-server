@@ -10,6 +10,17 @@ import { join } from "node:path";
 import { assertAllowedPath, countPlaceholderSlices, type ExecResult, type Runner } from "./design-lib.js";
 import { extractImpl, contractImpl, contractCheckImpl, measureImpl } from "./design.js";
 
+// extractImpl/contractImpl/contractCheckImpl/measureImpl all resolve
+// penExtractRoot()/locStudyRoot()/penRegisterRepoRoot() from disk before ever
+// touching the (mocked) Runner. Those roots only exist on a machine with the
+// sibling wave-pen-register-wt/wave-design-study-wt checkouts (a dev box) —
+// CI has neither. Point the env overrides at throwaway temp dirs that always
+// exist so root resolution never depends on the environment; nothing in
+// these tests reads real files under those roots, only the mocked runner's
+// return values.
+process.env["WAVE_PEN_EXTRACT_ROOT"] = mkdtempSync(join(tmpdir(), "fake-pen-extract-root-"));
+process.env["WAVE_LOC_STUDY_ROOT"] = mkdtempSync(join(tmpdir(), "fake-loc-study-root-"));
+
 function ok(stdout = "", stderr = ""): ExecResult {
   return { code: 0, stdout, stderr };
 }
