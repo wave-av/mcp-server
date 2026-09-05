@@ -109,6 +109,12 @@ is rejected before anything runs.
 | `WAVE_PEN_EXTRACT_ROOT` | `$HOME/wave-av/wave-pen-register-wt/packages/pen-extract` | Root of the `@wave-av/pen-extract` checkout |
 | `WAVE_LOC_STUDY_ROOT` | `$HOME/wave-av/wave-design-study-wt/tools/loc-study` | Root of the `@wave-av/loc-study` checkout |
 
+## Available tools — Voice
+
+| Tool | Description |
+| --- | --- |
+| `wave_voice_converse` | Drive a full headless voice-agent turn: bind an agent to a room, send a WAV of the caller's speech, and receive the agent's spoken reply as raw PCM. No browser, no WebRTC. Requires `WAVE_INTERNAL_SECRET` (edge-internal auth, not the customer API key). |
+
 ## Resources
 
 Access WAVE entities directly via the `wave://` URI scheme:
@@ -232,6 +238,7 @@ MIT
 | Create a clip from a recorded stream, optionally exporting to social platforms. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Create a new multi-camera studio production. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Create a new stream (protocol, recording, region options). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Drive a full headless conversation with the WAVE voice agent (WAV in, PCM reply out, no browser/WebRTC). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Get real-time stream health metrics (bitrate, frame rate, latency). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Get detailed stream performance metrics (bitrate, latency, quality, error rates). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Get current subscription plan, billing cycle, and feature entitlements. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
@@ -264,7 +271,8 @@ Every claim below is checked by `npm run verify` against the live repo or endpoi
 | Documentation surface is docs.wave.online/mcp | resolved by grepping `package.json` |
 | Published npm package name is @wave-av/mcp-server | resolved by grepping `package.json` |
 | wave_control_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
-| Exposes 22 MCP tools | resolved by grepping `capabilities.json` |
+| Exposes 23 MCP tools | resolved by grepping `capabilities.json` |
+| wave_voice_converse tool defined in src/tools/voice.ts | resolved by grepping `src/tools/voice.ts` |
 | wave_design_extract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
 | wave_design_contract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
 | wave_design_measure tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |

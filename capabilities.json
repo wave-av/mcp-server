@@ -30,6 +30,7 @@
       { "name": "wave_moderate_chat" },
       { "name": "wave_start_captions" },
       { "name": "wave_mark_highlight" },
+      { "name": "wave_voice_converse" },
       { "name": "wave_design_extract" },
       { "name": "wave_design_contract" },
       { "name": "wave_design_measure" },
@@ -49,7 +50,7 @@
   "tags": [
     "mcp-server",
     "public",
-    "22-tools",
+    "23-tools",
     "agent-ops"
   ]
 }

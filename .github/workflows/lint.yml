@@ -24,3 +24,7 @@ jobs:
       - run: npm run lint
       - run: npm run type-check
       - run: npm test
+      # CAP-001 — capabilities.json must list exactly the tools registered in
+      # src/tools/index.ts's allTools. Fails the build the moment a tool is added/removed
+      # without updating the manifest (see scripts/check-capabilities-drift.ts).
+      - run: npm run check:capabilities
