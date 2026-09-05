@@ -29,7 +29,8 @@
       { "name": "wave_control_camera" },
       { "name": "wave_moderate_chat" },
       { "name": "wave_start_captions" },
-      { "name": "wave_mark_highlight" }
+      { "name": "wave_mark_highlight" },
+      { "name": "wave_voice_converse" }
     ]
   },
   "consumes": {
@@ -45,7 +46,7 @@
   "tags": [
     "mcp-server",
     "public",
-    "18-tools",
+    "19-tools",
     "agent-ops"
   ]
 }
