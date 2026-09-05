@@ -32,6 +32,7 @@
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit",
     "lint": "eslint src/ --max-warnings 0",
+    "check:capabilities": "tsx scripts/check-capabilities-drift.ts",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -79,6 +80,7 @@
     "@types/node": "^25.9.1",
     "eslint": "^10.4.1",
     "tsup": "^8.0.0",
+    "tsx": "^4.23.13",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.1"
   }
