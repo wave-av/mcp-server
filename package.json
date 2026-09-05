@@ -31,6 +31,8 @@
     "build": "tsup && tsc --emitDeclarationOnly --declarationMap false",
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit",
+    "pretest": "tsc -p tsconfig.test.json",
+    "test": "node --test $(find .ts-out -name '*.test.js')",
     "lint": "eslint src/ --max-warnings 0",
     "prepublishOnly": "npm run build"
   },
