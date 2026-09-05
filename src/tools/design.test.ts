@@ -3,7 +3,7 @@
 // only a tiny fake extract dir this file creates under the OS temp dir.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from "node:fs";
+import { mkdtempSync, writeFileSync, rmSync, mkdirSync, symlinkSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
 import { join } from "node:path";
 
@@ -54,6 +54,25 @@ test("assertAllowedPath rejects a sibling directory that merely shares the $HOME
   // e.g. $HOME/wave-avocado should NOT pass just because it starts with the same characters.
   const sneaky = join(homedir(), "wave-avocado", "board.pen");
   assert.throws(() => assertAllowedPath(sneaky, "pen"), /must resolve inside/);
+});
+
+test("assertAllowedPath rejects a symlink under an allowed root that targets a disallowed path", () => {
+  // A symlink placed *inside* an allowed root (here, the OS temp dir) whose target
+  // points outside every allowed root must not pass just because its own lexical
+  // path sits under tmpdir() — every real read/write on it lands on /etc instead.
+  const dir = mkdtempSync(join(tmpdir(), "design-symlink-escape-"));
+  const link = join(dir, "escape");
+  symlinkSync("/etc", link);
+  assert.throws(() => assertAllowedPath(join(link, "passwd"), "pen"), /must resolve inside/);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("assertAllowedPath rejects a symlink whose target itself IS the input path", () => {
+  const dir = mkdtempSync(join(tmpdir(), "design-symlink-direct-"));
+  const link = join(dir, "escape");
+  symlinkSync("/etc/passwd", link);
+  assert.throws(() => assertAllowedPath(link, "pen"), /must resolve inside/);
+  rmSync(dir, { recursive: true, force: true });
 });
 
 // ---------------------------------------------------------------------------
@@ -182,22 +201,81 @@ test("contractImpl reports an invalid contract via the validator's stderr line",
   rmSync(dir, { recursive: true, force: true });
 });
 
+test("contractImpl surfaces a validator spawn failure as ok:false, not valid:false", async () => {
+  // A validator that never ran (bad interpreter path, ENOENT, killed by signal) must
+  // not be reported the same way as "the validator ran and said invalid" — that would
+  // mask a broken checkout/permission failure behind a plausible-looking `valid: false`.
+  const dir = mkdtempSync(join(tmpdir(), "design-contract-spawnfail-"));
+  const runner: Runner = async (args) => {
+    if (args.includes("contract")) {
+      const outIdx = args.indexOf("--out");
+      writeFileSync(args[outIdx + 1]!, JSON.stringify(FAKE_CONTRACT));
+      return ok();
+    }
+    return { code: -1, stdout: "", stderr: "", spawnError: "spawn ENOENT" };
+  };
+
+  const result = await contractImpl({ extract: dir }, runner);
+  assert.equal(result.ok, false);
+  if (!result.ok) assert.match(result.error, /failed to run: spawn ENOENT/);
+
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("extractImpl surfaces a manifest.json parse failure as a structured error, not an uncaught throw", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "design-extract-badjson-"));
+  const pen = join(dir, "board.pen");
+  writeFileSync(pen, "{}");
+  const outDir = join(dir, "board.extract");
+  mkdirSync(outDir, { recursive: true });
+
+  const runner: Runner = async () => {
+    // Exit 0, but manifest.json is malformed — the CLI's version drifted, or it
+    // wrote a partial file. This must not escape as an uncaught SyntaxError.
+    writeFileSync(join(outDir, "manifest.json"), "not json");
+    return ok();
+  };
+
+  const result = await extractImpl({ pen, out: outDir }, runner);
+  assert.equal(result.ok, false);
+  if (!result.ok) assert.match(result.error, /could not be read\/parsed/);
+
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("contractCheckImpl surfaces a validator spawn failure as ok:false", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "design-contract-check-spawnfail-"));
+  const contractPath = join(dir, "design-contract.json");
+  writeFileSync(contractPath, JSON.stringify(FAKE_CONTRACT));
+
+  const runner: Runner = async () => ({ code: -1, stdout: "", stderr: "", spawnError: "spawn EACCES" });
+  const result = await contractCheckImpl({ contract: contractPath }, runner);
+  assert.equal(result.ok, false);
+  if (!result.ok) assert.match(result.error, /failed to run: spawn EACCES/);
+
+  rmSync(dir, { recursive: true, force: true });
+});
+
 test("contractCheckImpl validates only, no compose call", async () => {
   const dir = mkdtempSync(join(tmpdir(), "design-contract-check-"));
   const contractPath = join(dir, "design-contract.json");
   writeFileSync(contractPath, JSON.stringify(FAKE_CONTRACT));
 
   let calls = 0;
-  const runner: Runner = async () => {
+  const runner: Runner = async (args) => {
     calls++;
+    assert.ok(args[0]!.endsWith(join("designs", "contract", "validate.mjs")));
+    assert.equal(args[1], contractPath);
     return ok("VALID: ok");
   };
 
   const result = await contractCheckImpl({ contract: contractPath }, runner);
   assert.equal(calls, 1);
   assert.equal(result.ok, true);
-  assert.equal(result.valid, true);
-  assert.equal(result.validatorLine, "VALID: ok");
+  if (result.ok) {
+    assert.equal(result.valid, true);
+    assert.equal(result.validatorLine, "VALID: ok");
+  }
 
   rmSync(dir, { recursive: true, force: true });
 });

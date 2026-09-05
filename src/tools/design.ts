@@ -66,14 +66,26 @@ export async function extractImpl(input: ExtractInput, runner: Runner = runNode)
 
   const result = await runner(args);
   if (result.code !== 0) {
-    return { ok: false, error: firstLine(result.stderr) || `pen-extract exited ${result.code}`, stderr: result.stderr };
+    return {
+      ok: false,
+      error: result.spawnError
+        ? `pen-extract failed to run: ${result.spawnError}`
+        : firstLine(result.stderr) || `pen-extract exited ${result.code}`,
+      stderr: result.stderr,
+    };
   }
 
   const manifestPath = join(outDir, "manifest.json");
-  const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as {
-    files?: Array<{ path: string; sha256: string; bytes?: number }>;
-    owed?: string[];
-  };
+  let manifest: { files?: Array<{ path: string; sha256: string; bytes?: number }>; owed?: string[] };
+  try {
+    manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as typeof manifest;
+  } catch (err) {
+    return {
+      ok: false,
+      error: `pen-extract exited 0 but ${manifestPath} could not be read/parsed: ${(err as Error).message}`,
+      stderr: result.stderr,
+    };
+  }
 
   return {
     ok: true,
@@ -119,18 +131,33 @@ export async function contractImpl(input: ContractInput, runner: Runner = runNod
   if (compose.code !== 0) {
     return {
       ok: false,
-      error: firstLine(compose.stderr) || `pen-extract contract exited ${compose.code}`,
+      error: compose.spawnError
+        ? `pen-extract contract failed to run: ${compose.spawnError}`
+        : firstLine(compose.stderr) || `pen-extract contract exited ${compose.code}`,
       stderr: compose.stderr,
     };
   }
 
-  const contract = JSON.parse(readFileSync(outFile, "utf8")) as {
-    geometry?: { steering?: unknown[]; occluders?: unknown[] };
-    acceptanceTests?: unknown[];
-  };
+  let contract: { geometry?: { steering?: unknown[]; occluders?: unknown[] }; acceptanceTests?: unknown[] };
+  try {
+    contract = JSON.parse(readFileSync(outFile, "utf8")) as typeof contract;
+  } catch (err) {
+    return {
+      ok: false,
+      error: `pen-extract contract exited 0 but ${outFile} could not be read/parsed: ${(err as Error).message}`,
+      stderr: compose.stderr,
+    };
+  }
 
   const validatorScript = join(repoRoot, "designs", "contract", "validate.mjs");
   const validation = await runner([validatorScript, outFile, schemaPath, catalogPath]);
+  if (validation.spawnError) {
+    return {
+      ok: false,
+      error: `design-contract validator failed to run: ${validation.spawnError}`,
+      stderr: validation.stderr,
+    };
+  }
   const validatorLine = validation.code === 0 ? firstLine(validation.stdout) : firstLine(validation.stderr);
 
   return {
@@ -155,12 +182,9 @@ export interface ContractCheckInput {
   contract: string;
 }
 
-export interface ContractCheckResult {
-  ok: true;
-  valid: boolean;
-  validatorLine: string;
-  path: string;
-}
+export type ContractCheckResult =
+  | { ok: true; valid: boolean; validatorLine: string; path: string }
+  | { ok: false; error: string; stderr: string };
 
 export async function contractCheckImpl(
   input: ContractCheckInput,
@@ -173,6 +197,13 @@ export async function contractCheckImpl(
   const validatorScript = join(repoRoot, "designs", "contract", "validate.mjs");
 
   const validation = await runner([validatorScript, contractPath, schemaPath, catalogPath]);
+  if (validation.spawnError) {
+    return {
+      ok: false,
+      error: `design-contract validator failed to run: ${validation.spawnError}`,
+      stderr: validation.stderr,
+    };
+  }
   const validatorLine = validation.code === 0 ? firstLine(validation.stdout) : firstLine(validation.stderr);
 
   return { ok: true, valid: validation.code === 0, validatorLine, path: contractPath };
