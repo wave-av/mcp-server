@@ -85,6 +85,30 @@ Add to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) — see the Quick 
 | `wave_get_subscription` | Get the current billing account (plan, subscription state) |
 | `wave_get_usage` | Get billed usage for a date range |
 
+## Design tools
+
+Thin wrappers over the design-to-engineer pipeline's two standalone libraries
+(`@wave-av/pen-extract`, `@wave-av/loc-study`) — stage E2 of
+`wave-pen-register`'s `designs/DESIGN-TO-ENGINEER-SYSTEM.md`. Neither library
+is published to npm yet, so each tool resolves its library from a sibling
+checkout, `$HOME`-first, with an env override:
+
+| Tool | Description |
+| --- | --- |
+| `wave_design_extract` | Run pen-extract's `all` pipeline on a `.pen` board; returns the manifest (files, sha256s, owed) |
+| `wave_design_contract` | Compose + validate a `design-contract.json` from an extract dir; returns the validator line and key counts |
+| `wave_design_measure` | Run loc-study's `measure` on an image (masked by geometry) or a rasterized plate SVG |
+| `wave_design_contract_check` | Validate an existing `design-contract.json`, no compose |
+
+Every path argument (pen board, extract dir, image, contract file, etc.) is
+confined to `$HOME/wave-av` or the OS temp dir — a call outside those roots
+is rejected before anything runs.
+
+| Env var | Default | Purpose |
+| --- | --- | --- |
+| `WAVE_PEN_EXTRACT_ROOT` | `$HOME/wave-av/wave-pen-register-wt/packages/pen-extract` | Root of the `@wave-av/pen-extract` checkout |
+| `WAVE_LOC_STUDY_ROOT` | `$HOME/wave-av/wave-design-study-wt/tools/loc-study` | Root of the `@wave-av/loc-study` checkout |
+
 ## Available tools — Voice
 
 | Tool | Description |
@@ -229,6 +253,10 @@ MIT
 | Start a stream by ID, transitioning it to the active state. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Stop an active stream by ID. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Switch the live program output to a different camera/source in a Cloud Switcher session. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Run pen-extract's mechanical extraction pipeline on a .pen board. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Compose and validate a design-contract.json from an extract dir. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Measure a print image or rasterized plate SVG with loc-study. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Validate an existing design-contract.json against the schema. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 
 ## For AI agents
 
@@ -243,8 +271,12 @@ Every claim below is checked by `npm run verify` against the live repo or endpoi
 | Documentation surface is docs.wave.online/mcp | resolved by grepping `package.json` |
 | Published npm package name is @wave-av/mcp-server | resolved by grepping `package.json` |
 | wave_control_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
-| Exposes 19 MCP tools | resolved by grepping `capabilities.json` |
+| Exposes 23 MCP tools | resolved by grepping `capabilities.json` |
 | wave_voice_converse tool defined in src/tools/voice.ts | resolved by grepping `src/tools/voice.ts` |
+| wave_design_extract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
+| wave_design_contract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
+| wave_design_measure tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
+| wave_design_contract_check tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
 | wave_create_clip tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
 | wave_create_production tool defined in src/tools/studio.ts | resolved by grepping `src/tools/studio.ts` |
 | wave_create_stream tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |

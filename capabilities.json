@@ -30,7 +30,11 @@
       { "name": "wave_moderate_chat" },
       { "name": "wave_start_captions" },
       { "name": "wave_mark_highlight" },
-      { "name": "wave_voice_converse" }
+      { "name": "wave_voice_converse" },
+      { "name": "wave_design_extract" },
+      { "name": "wave_design_contract" },
+      { "name": "wave_design_measure" },
+      { "name": "wave_design_contract_check" }
     ]
   },
   "consumes": {
@@ -46,7 +50,7 @@
   "tags": [
     "mcp-server",
     "public",
-    "19-tools",
+    "23-tools",
     "agent-ops"
   ]
 }

@@ -117,16 +117,36 @@
       "id": "wave_voice_converse",
       "does": "Drive a full headless conversation with the WAVE voice agent (WAV in, PCM reply out, no browser/WebRTC).",
       "status": "preview"
+    },
+    {
+      "id": "wave_design_extract",
+      "does": "Run @wave-av/pen-extract's `all` pipeline on a .pen board; returns the manifest (files, sha256s, owed).",
+      "status": "preview"
+    },
+    {
+      "id": "wave_design_contract",
+      "does": "Compose and validate a design-contract.json from an extract dir; returns the validator line and key counts.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_design_measure",
+      "does": "Run @wave-av/loc-study's `measure` on an image (masked by geometry) or a rasterized plate SVG.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_design_contract_check",
+      "does": "Validate an existing design-contract.json against the schema and acceptance-tests catalogue, no compose.",
+      "status": "preview"
     }
   ],
   "claims": [
     {
       "id": "claim-tool-count",
-      "text": "Exposes 19 MCP tools",
+      "text": "Exposes 23 MCP tools",
       "resolver": {
         "type": "grep",
         "target": "capabilities.json",
-        "expect": "19-tools"
+        "expect": "23-tools"
       }
     },
     {
@@ -326,6 +346,42 @@
         "target": "src/tools/voice.ts",
         "expect": "wave_voice_converse"
       }
+    },
+    {
+      "id": "claim-tool-design-extract",
+      "text": "wave_design_extract tool defined in src/tools/design.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/design.ts",
+        "expect": "wave_design_extract"
+      }
+    },
+    {
+      "id": "claim-tool-design-contract",
+      "text": "wave_design_contract tool defined in src/tools/design.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/design.ts",
+        "expect": "wave_design_contract"
+      }
+    },
+    {
+      "id": "claim-tool-design-measure",
+      "text": "wave_design_measure tool defined in src/tools/design.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/design.ts",
+        "expect": "wave_design_measure"
+      }
+    },
+    {
+      "id": "claim-tool-design-contract-check",
+      "text": "wave_design_contract_check tool defined in src/tools/design.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/design.ts",
+        "expect": "wave_design_contract_check"
+      }
     }
   ],
   "install": [
@@ -444,6 +500,37 @@
         [
           "`wave_voice_converse`",
           "Drive a full headless conversation with the WAVE voice agent: bind to a room, send a WAV of the caller's speech, receive the reply as raw PCM. No browser, no WebRTC. Requires WAVE_INTERNAL_SECRET."
+        ]
+      ]
+    },
+    {
+      "kind": "prose",
+      "heading": "Design tools",
+      "body": "Thin wrappers over the design-to-engineer pipeline's two standalone libraries (`@wave-av/pen-extract`, `@wave-av/loc-study`). Neither library is published to npm yet, so each tool resolves its library from a sibling checkout, $HOME-first, with an env override. Every path argument is confined to `$HOME/wave-av` or the OS temp dir — a call outside those roots is rejected before anything runs."
+    },
+    {
+      "kind": "table",
+      "heading": "Available tools — Design",
+      "columns": [
+        "Tool",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`wave_design_extract`",
+          "Run pen-extract's `all` pipeline on a `.pen` board; returns the manifest (files, sha256s, owed)"
+        ],
+        [
+          "`wave_design_contract`",
+          "Compose + validate a `design-contract.json` from an extract dir; returns the validator line and key counts"
+        ],
+        [
+          "`wave_design_measure`",
+          "Run loc-study's `measure` on an image (masked by geometry) or a rasterized plate SVG"
+        ],
+        [
+          "`wave_design_contract_check`",
+          "Validate an existing `design-contract.json`, no compose"
         ]
       ]
     },
