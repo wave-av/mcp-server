@@ -66,7 +66,7 @@ interface GoalSignature {
 }
 
 // Every productId/tool below is a real, measured id/name from
-// knowledge/products.json (53 products) and knowledge/mcp-tools.json (69 live
+// knowledge/products.json (59 products) and knowledge/mcp-tools.json (93 live
 // gateway tools) — see the module-load assertion at the bottom of this file,
 // which throws if any of them ever drift out of the bundled snapshot.
 const GOAL_SIGNATURES: readonly GoalSignature[] = [
