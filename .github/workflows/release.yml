@@ -372,7 +372,7 @@ jobs:
       - name: Stdio handshake — tools/list answers over the published binary
         run: |
           cd "$RUNNER_TEMP/verify"
-          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 18
+          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js capabilities
 
       - name: Live tools/call reaches api.wave.online, never wave.online
         env:
@@ -383,4 +383,4 @@ jobs:
             exit 0
           fi
           cd "$RUNNER_TEMP/verify"
-          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 18 wave_list_streams '{}'
+          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js capabilities wave_list_streams '{}'
