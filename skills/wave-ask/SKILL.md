@@ -35,7 +35,7 @@ deprecated `wave.ask({ question: "<goal>", budgetUsd?: <number> })` alias
 still works identically for one release.)
 
 ```json
-{ "question": "live captions from my mic" }
+{ "intent": "live captions from my mic" }
 ```
 
 `budgetUsd` is optional and never used to compute or invent a price — it only
