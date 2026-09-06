@@ -384,3 +384,67 @@ jobs:
           fi
           cd "$RUNNER_TEMP/verify"
           node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js capabilities wave_list_streams '{}'
+
+  # ---------------------------------------------------------------------------
+  # Gate 5 — VER-001. Create the GitHub Release for the tag once the artifact is
+  # confirmed live on npm (needs BOTH `publish` and `verify-publish` to succeed
+  # — never on a failed/skipped publish, and never on a publish that "returned
+  # 0" but was not actually confirmed live). Idempotent: if a Release already
+  # exists for this tag (e.g. a re-run), the tarball is re-uploaded with
+  # --clobber instead of failing on "already exists".
+  # ---------------------------------------------------------------------------
+  release:
+    name: Create GitHub Release
+    needs: [publish, verify-publish]
+    if: needs.publish.result == 'success' && needs.verify-publish.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write   # create/upload the Release for this tag — nothing else
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - run: npm ci
+
+      - run: npm run build
+
+      # TAG_NAME comes from the environment (never interpolated into the
+      # script body) even though `github.ref_name` on a tag push is not
+      # attacker-controlled the way a workflow_dispatch input would be — this
+      # keeps the same "no ${{ }} inside run:" discipline the rest of this
+      # workflow already follows (see "Verify tag matches package.json
+      # version" above).
+      - name: Create or update the GitHub Release (idempotent)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.ref_name }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          TARBALL="$(npm pack --json | node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(0,'utf8'))[0].filename)")"
+          echo "packed: $TARBALL"
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            echo "release $TAG_NAME already exists — uploading tarball (idempotent path, --clobber)"
+            gh release upload "$TAG_NAME" "$TARBALL" --clobber
+          else
+            echo "release $TAG_NAME does not exist — creating with generated notes"
+            gh release create "$TAG_NAME" "$TARBALL" --title "$TAG_NAME" --generate-notes
+          fi
+          echo "verifying the release exists and carries the tarball"
+          ASSETS="$(gh release view "$TAG_NAME" --json assets --jq '[.assets[].name] | join(" ")')"
+          echo "release assets: $ASSETS"
+          case "$ASSETS" in
+            *"$TARBALL"*) ;;
+            *)
+              echo "::error::$TARBALL missing from release $TAG_NAME after upload"
+              exit 1
+              ;;
+          esac
+          echo "VER-001: GitHub Release for $TAG_NAME exists and carries the packed tarball."
