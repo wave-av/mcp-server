@@ -1,0 +1,2355 @@
+{
+  "name": "wave-gateway",
+  "description": "WAVE Protocol Plane gateway \u2014 an MCP server fronting every WAVE product, plus x402 pay-per-use facilitation.",
+  "version": "1",
+  "mcpServers": {
+    "wave": {
+      "url": "https://api.wave.online/mcp",
+      "transport": "http"
+    }
+  },
+  "documentation": "https://docs.wave.online",
+  "payments": {
+    "x402": "https://api.wave.online/.well-known/x402"
+  },
+  "vocabulary": "https://api.wave.online/.well-known/mcp-vocabulary.json",
+  "toolCount": 69,
+  "tools": [
+    {
+      "name": "facilitator_status",
+      "description": "Returns WAVE facilitator health: which protocols are wired, which rails are supported, and the public endpoint URLs to point your x402-hono / agents/x402 config at.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_supported_protocols",
+      "description": "Returns the protocol ids registered in the gateway's multi-protocol dispatcher.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "identity_resolve",
+      "description": "Resolve a did:wave-* / did:pkh:* identity string to its public DID document fields. did:wave-platform \u2192 returns the URL of the signed platform DID document. did:pkh \u2192 returns chain + address.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "did": {
+            "type": "string",
+            "description": "The DID to resolve"
+          }
+        },
+        "required": [
+          "did"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "perception_subscribe",
+      "description": "Open an agentic live-media perception subscription (ADR-0004 #85): attach an agent as a WHEP/SRT viewer over any supported transport and receive a normalized receive descriptor + subscription_id + the D7 meter binding. Returns 503 (PERCEPTION_UNCONFIGURED) until perception is armed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "stream": {
+            "type": "string",
+            "description": "Stream ref: a whep:// / srt:// URI, a CF Stream /webRTC/play URL, or a 32-hex CF live-input uid."
+          },
+          "task": {
+            "type": "string",
+            "description": "Optional natural-language perception task (what to watch for)."
+          },
+          "model": {
+            "type": "string",
+            "description": "Optional vision model id (default claude-haiku)."
+          }
+        },
+        "required": [
+          "stream"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "perception_close",
+      "description": "Close an agentic perception subscription by its subscription_id (ADR-0004 #85). Returns { ok } on close, or a not_found note for an unknown/already-closed id. 503 until perception is armed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "subscription_id": {
+            "type": "string",
+            "description": "The psub_ subscription id returned by perception_subscribe."
+          }
+        },
+        "required": [
+          "subscription_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "pricing_manifest_create",
+      "description": "Create or update the caller org's pricing-page manifest (pricing-pages E2; MCP rendering of POST /v1/pricing/manifests). Input is a PricingManifest: slug, title, tiers[] (id, name, price_usdc_micro, rail, billing, features), optional contact/payout. The rail law is enforced server-side: a tier priced below $0.50 must be rail x402. Requires the pricing:write scope; acts as the verified caller org only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]{3,48}$",
+            "description": "per-org manifest slug"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "tiers": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,32}$",
+                  "description": "tier id"
+                },
+                "name": {
+                  "type": "string",
+                  "maxLength": 80,
+                  "description": "display name"
+                },
+                "price_usdc_micro": {
+                  "type": "string",
+                  "pattern": "^\\d{1,12}$",
+                  "description": "integer micro-USDC string (e.g. \"500000\" = $0.50). Rail law: below 500000 the rail must be x402; card requires >= $0.50."
+                },
+                "rail": {
+                  "type": "string",
+                  "enum": [
+                    "x402",
+                    "card",
+                    "both"
+                  ]
+                },
+                "billing": {
+                  "type": "string",
+                  "enum": [
+                    "per_op",
+                    "monthly_cap",
+                    "volume"
+                  ]
+                },
+                "features": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "price_usdc_micro",
+                "rail",
+                "billing",
+                "features"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "contact": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "optional buyer contact (email/URL)"
+          },
+          "payout": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "optional payout destination note"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "tiers"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "pricing_manifest_list",
+      "description": "List the caller org's pricing-page manifests (MCP rendering of GET /v1/pricing/manifests). Returns { org, manifests: [{ slug, title, status, updated_at }] }. Requires the pricing:read scope.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "pricing_manifest_get",
+      "description": "Read one of the caller org's pricing-page manifests by slug (MCP rendering of GET /v1/pricing/manifests/:slug). Returns { org, slug, status, updated_at, manifest }. Requires the pricing:read scope.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]{3,48}$",
+            "description": "the manifest slug"
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wave_av_demux",
+      "description": "Demux one container back into separate video + Dante audio (POST /v1/av/demux. Requires the `av:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/AvDemuxRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "AvDemuxRequest": {
+            "type": "object",
+            "required": [
+              "sourceUrl"
+            ],
+            "description": "`org` is derived from the caller's authenticated principal, not sent in the body.",
+            "properties": {
+              "sourceUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Synchronized MPEG-TS or fMP4 container to split back into video + Dante audio."
+              },
+              "videoOutputUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional presigned destination for the demuxed RTP H.264 video output."
+              },
+              "audioOutputUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional presigned destination for the demuxed Dante/AES67 audio output."
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_av_remux",
+      "description": "Mux synchronized IP video + Dante audio into one container (POST /v1/av/remux. Requires the `av:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/AvRemuxRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "AvRemuxRequest": {
+            "type": "object",
+            "required": [
+              "videoUrl",
+              "audioUrl",
+              "container"
+            ],
+            "description": "`org` is derived from the caller's authenticated principal, not sent in the body.",
+            "properties": {
+              "videoUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Source for local IP video (RTP H.264)."
+              },
+              "audioUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Source for the separate Dante/AES67 audio track."
+              },
+              "container": {
+                "type": "string",
+                "description": "Output container for the synchronized stream.",
+                "enum": [
+                  "mpegts",
+                  "fmp4"
+                ]
+              },
+              "outputUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional presigned destination to PUT the resulting container to. Omitted \u2192 returned inline."
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_batch_operations",
+      "description": "Execute a batch of operations in one request (POST /v1/batch. Requires the `batch:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "required": [
+              "operations"
+            ],
+            "properties": {
+              "operations": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 25,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "method",
+                    "path"
+                  ],
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "enum": [
+                        "GET",
+                        "HEAD",
+                        "POST",
+                        "PUT",
+                        "PATCH",
+                        "DELETE"
+                      ]
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "An enforced /v1 route"
+                    },
+                    "body": {
+                      "description": "The operation's JSON body (mutating methods only)"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      }
+    },
+    {
+      "name": "wave_publish_braid_audio",
+      "description": "Publish a braided audio track (POST /v1/braid/publish. Requires the `moq:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/BraidPublishRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "BraidPublishRequest": {
+            "type": "object",
+            "required": [
+              "ns",
+              "sources"
+            ],
+            "description": "`org` is derived from the caller's authenticated principal, not sent in the body.",
+            "properties": {
+              "ns": {
+                "type": "string",
+                "description": "Namespace for the published track. Republishing the same ns replaces the prior machine."
+              },
+              "sources": {
+                "type": "array",
+                "description": "Named audio sources to braid into one interleaved multichannel track. Each source needs a `label`/`track` and either a `url` or a `path`.",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "label",
+                    "track"
+                  ],
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "track": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "windowMs": {
+                "type": "integer",
+                "description": "Braid window size in milliseconds. Defaults to the machine-config default when omitted."
+              },
+              "sampleRate": {
+                "type": "integer",
+                "description": "Sample rate for the braided track. Defaults to the machine-config default when omitted."
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_stop_braid_audio",
+      "description": "Stop a braided audio publish (DELETE /v1/braid/publish/{ns}. Requires the `moq:write` scope on your WAVE API key. DESTRUCTIVE: permanently deletes the target resource and cannot be undone; confirm before calling. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ns": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "ns"
+        ]
+      }
+    },
+    {
+      "name": "wave_list_captions",
+      "description": "List caption jobs (GET /v1/captions. Requires the `captions:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          },
+          "video_id": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/$defs/JobStatus"
+          }
+        },
+        "additionalProperties": false,
+        "$defs": {
+          "JobStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "cancelled"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_create_caption_job",
+      "description": "Create a caption job (POST /v1/captions. Requires the `captions:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/CaptionJobCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "CaptionJobCreate": {
+            "type": "object",
+            "required": [
+              "videoId"
+            ],
+            "properties": {
+              "videoId": {
+                "type": "string"
+              },
+              "sourceLanguage": {
+                "type": "string",
+                "default": "en"
+              },
+              "targetLanguages": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "style": {
+                "type": "string",
+                "default": "default"
+              },
+              "speakerLabels": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_get_caption_job",
+      "description": "Get a caption job (GET /v1/captions/{jobId}. Requires the `captions:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_delete_caption_job",
+      "description": "Delete a caption job (DELETE /v1/captions/{jobId}. Requires the `captions:write` scope on your WAVE API key. DESTRUCTIVE: permanently deletes the target resource and cannot be undone; confirm before calling. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_download_captions",
+      "description": "Download captions (GET /v1/captions/{jobId}/download. Requires the `captions:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "srt",
+              "vtt",
+              "txt",
+              "json"
+            ],
+            "default": "srt"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "job_id",
+          "language"
+        ]
+      }
+    },
+    {
+      "name": "wave_list_clips",
+      "description": "List clips (GET /v1/clips. Requires the `clips:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          },
+          "video_id": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/$defs/JobStatus"
+          },
+          "category": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "$defs": {
+          "JobStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "cancelled"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_create_clip",
+      "description": "Create a clip (POST /v1/clips. Requires the `clips:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/ClipCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "ClipCreate": {
+            "type": "object",
+            "required": [
+              "videoId",
+              "startTime",
+              "endTime"
+            ],
+            "properties": {
+              "videoId": {
+                "type": "string"
+              },
+              "startTime": {
+                "type": "number"
+              },
+              "endTime": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "category": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_detect_clips",
+      "description": "Start AI clip detection (POST /v1/clips/detect. Requires the `clips:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/ClipDetectRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "ClipDetectRequest": {
+            "type": "object",
+            "required": [
+              "videoId"
+            ],
+            "properties": {
+              "videoId": {
+                "type": "string"
+              },
+              "minDuration": {
+                "type": "number",
+                "default": 5
+              },
+              "maxDuration": {
+                "type": "number",
+                "default": 60
+              },
+              "categories": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "sensitivity": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0.5
+              },
+              "maxClips": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_get_clip",
+      "description": "Get a clip (GET /v1/clips/{clipId}. Requires the `clips:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "clip_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "clip_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_update_clip",
+      "description": "Update a clip (PATCH /v1/clips/{clipId}. Requires the `clips:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "clip_id": {
+            "type": "string"
+          },
+          "body": {
+            "$ref": "#/$defs/ClipUpdate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "clip_id"
+        ],
+        "$defs": {
+          "ClipUpdate": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "startTime": {
+                "type": "number"
+              },
+              "endTime": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_delete_clip",
+      "description": "Delete a clip (DELETE /v1/clips/{clipId}. Requires the `clips:write` scope on your WAVE API key. DESTRUCTIVE: permanently deletes the target resource and cannot be undone; confirm before calling. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "clip_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "clip_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_list_collab_rooms",
+      "description": "List collaboration rooms (GET /v1/collab/rooms. Requires the `collab:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "waiting",
+              "active",
+              "ended"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wave_create_collab_room",
+      "description": "Create a collaboration room (POST /v1/collab/rooms. Requires the `collab:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/CollabRoomCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "CollabRoomCreate": {
+            "type": "object",
+            "required": [
+              "name",
+              "type"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "video",
+                  "audio",
+                  "whiteboard",
+                  "screen"
+                ]
+              },
+              "maxParticipants": {
+                "type": "integer",
+                "default": 10
+              },
+              "scheduledStart": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "settings": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_get_collab_room",
+      "description": "Get a room (GET /v1/collab/rooms/{roomId}. Requires the `collab:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "room_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "room_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_delete_collab_room",
+      "description": "Delete a room (DELETE /v1/collab/rooms/{roomId}. Requires the `collab:write` scope on your WAVE API key. DESTRUCTIVE: permanently deletes the target resource and cannot be undone; confirm before calling. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "room_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "room_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_list_projects",
+      "description": "List editor projects (GET /v1/editor/projects. Requires the `editor:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wave_create_project",
+      "description": "Create an editor project (POST /v1/editor/projects. Requires the `editor:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/EditorProjectCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "EditorProjectCreate": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "resolution": {
+                "type": "string",
+                "default": "1920x1080"
+              },
+              "frameRate": {
+                "type": "number",
+                "default": 30
+              },
+              "aspectRatio": {
+                "type": "string",
+                "default": "16:9"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_get_project",
+      "description": "Get a project (GET /v1/editor/projects/{projectId}. Requires the `editor:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "project_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_update_project",
+      "description": "Update a project (PATCH /v1/editor/projects/{projectId}. Requires the `editor:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "body": {
+            "$ref": "#/$defs/EditorProjectUpdate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "project_id"
+        ],
+        "$defs": {
+          "EditorProjectUpdate": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_delete_project",
+      "description": "Delete a project (DELETE /v1/editor/projects/{projectId}. Requires the `editor:write` scope on your WAVE API key. DESTRUCTIVE: permanently deletes the target resource and cannot be undone; confirm before calling. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "project_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_export_project",
+      "description": "Export a project (POST /v1/editor/projects/{projectId}/export. Requires the `editor:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "body": {
+            "$ref": "#/$defs/ExportRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "project_id"
+        ],
+        "$defs": {
+          "ExportRequest": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "type": "string",
+                "enum": [
+                  "mp4",
+                  "webm",
+                  "mov"
+                ],
+                "default": "mp4"
+              },
+              "resolution": {
+                "type": "string"
+              },
+              "quality": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "ultra"
+                ],
+                "default": "high"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_engine_capabilities",
+      "description": "The media-engine capability contract (GET /v1/engine/capabilities. Requires the `engine:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wave_gpu_status",
+      "description": "GPU plane status (GET /v1/gpu/infer. Requires the `gpu:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wave_gpu_infer",
+      "description": "Dispatch a GPU inference job on the WAVE-hosted GPU plane (POST /v1/gpu/infer. Requires the `gpu:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "model": {
+                "type": "string"
+              },
+              "input": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      }
+    },
+    {
+      "name": "wave_mint_moq_publish_token",
+      "description": "Mint a MoQ publish join-token (POST /v1/moq/publish/{ns}/{track}. Requires the `moq:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ns": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]{1,64}$",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "MoQ namespace. Lowercase alphanumeric and dashes, 1\u201364 characters. The same value is bound into the minted token's claims and re-checked by the relay against the session it opens."
+          },
+          "track": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]{1,64}$",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "MoQ track name within the namespace. Lowercase alphanumeric and dashes, 1\u201364 characters."
+          },
+          "header_x_wave_declare_protocol": {
+            "type": "string",
+            "description": "Optional declared origin protocol for billing (e.g. `moq`). Ignored unless recognized and authorized for this org; never rejects the mint."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "ns",
+          "track"
+        ]
+      }
+    },
+    {
+      "name": "wave_mint_moq_subscribe_token",
+      "description": "Mint a MoQ subscribe join-token (GET /v1/moq/subscribe/{ns}/{track}. Requires the `moq:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ns": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]{1,64}$",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "MoQ namespace. Lowercase alphanumeric and dashes, 1\u201364 characters. The same value is bound into the minted token's claims and re-checked by the relay against the session it opens."
+          },
+          "track": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]{1,64}$",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "MoQ track name within the namespace. Lowercase alphanumeric and dashes, 1\u201364 characters."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "ns",
+          "track"
+        ]
+      }
+    },
+    {
+      "name": "wave_list_calls",
+      "description": "List calls (GET /v1/phone/calls. Requires the `phone:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          },
+          "line_id": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "inbound",
+              "outbound"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wave_make_call",
+      "description": "Make a call (POST /v1/phone/calls. Requires the `phone:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/CallCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "CallCreate": {
+            "type": "object",
+            "required": [
+              "fromLineId",
+              "toNumber"
+            ],
+            "properties": {
+              "fromLineId": {
+                "type": "string"
+              },
+              "toNumber": {
+                "type": "string"
+              },
+              "record": {
+                "type": "boolean",
+                "default": false
+              },
+              "transcribe": {
+                "type": "boolean",
+                "default": false
+              },
+              "webhookUrl": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_list_phone_lines",
+      "description": "List phone lines (GET /v1/phone/lines. Requires the `phone:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wave_provision_phone_line",
+      "description": "Provision a phone line (POST /v1/phone/lines. Requires the `phone:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/PhoneLineProvision"
+          }
+        },
+        "additionalProperties": false,
+        "$defs": {
+          "PhoneLineProvision": {
+            "type": "object",
+            "properties": {
+              "areaCode": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string",
+                "default": "US"
+              },
+              "capabilities": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "voice",
+                    "sms",
+                    "mms",
+                    "fax"
+                  ]
+                }
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_list_podcast_shows",
+      "description": "List podcast shows (GET /v1/podcast/shows. Requires the `podcast:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wave_create_podcast_show",
+      "description": "Create a podcast show (POST /v1/podcast/shows. Requires the `podcast:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/PodcastShowCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "PodcastShowCreate": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "category": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string",
+                "default": "en"
+              },
+              "explicit": {
+                "type": "boolean",
+                "default": false
+              },
+              "coverUrl": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_list_podcast_episodes",
+      "description": "List episodes for a show (GET /v1/podcast/shows/{showId}/episodes. Requires the `podcast:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "show_id": {
+            "type": "string"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "show_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_create_podcast_episode",
+      "description": "Create an episode (POST /v1/podcast/shows/{showId}/episodes. Requires the `podcast:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "show_id": {
+            "type": "string"
+          },
+          "body": {
+            "$ref": "#/$defs/PodcastEpisodeCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "show_id",
+          "body"
+        ],
+        "$defs": {
+          "PodcastEpisodeCreate": {
+            "type": "object",
+            "required": [
+              "title",
+              "audioUrl"
+            ],
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "audioUrl": {
+                "type": "string",
+                "format": "uri"
+              },
+              "episodeNumber": {
+                "type": "integer"
+              },
+              "seasonNumber": {
+                "type": "integer"
+              },
+              "publishedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_render_video",
+      "description": "Render a video from a Brief (x402-payable) (POST /v1/render. Requires the `render:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "header_idempotency_key": {
+            "type": "string",
+            "description": "A replayed key returns the original result without re-charging."
+          },
+          "body": {
+            "$ref": "#/$defs/RenderBrief"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "RenderBrief": {
+            "type": "object",
+            "description": "A render Brief \u2014 a template plus its props. Brand-parametric: an optional BYO `brandKit` (logo SVG, fonts as data URLs, colors) renders any template on a tenant's brand.",
+            "required": [
+              "template",
+              "props"
+            ],
+            "properties": {
+              "template": {
+                "$ref": "#/$defs/RenderTemplate"
+              },
+              "props": {
+                "type": "object",
+                "description": "Template-specific props (see the live contract for per-template shapes). All string props are HTML-escaped; width/height \u2264 4096, durationMs \u2264 60000, fps \u2264 60.",
+                "additionalProperties": true
+              }
+            }
+          },
+          "RenderTemplate": {
+            "type": "string",
+            "description": "The render template. Per-template prop shapes are published in the live contract (GET /render/openapi.json) so this enum can never drift from what the renderer accepts.",
+            "enum": [
+              "slate",
+              "lowerThird",
+              "announce",
+              "stat",
+              "hero",
+              "quote",
+              "backdrop",
+              "field",
+              "badge",
+              "endcard",
+              "sting",
+              "ident",
+              "kinetic",
+              "ticker",
+              "countdown",
+              "receipt",
+              "code",
+              "session",
+              "chart",
+              "audiogram",
+              "manifesto",
+              "changelog"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_render_poll",
+      "description": "Poll an async render job (GET /v1/render/{jobId}. Requires the `render:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "The render job id returned when the render was started asynchronously."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "job_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_search",
+      "description": "Hybrid search (dense + sparse \u2192 RRF) over streams/clips/transcripts, tenant-isolated (POST /v1/search. Requires the `search:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/SearchRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "SearchRequest": {
+            "type": "object",
+            "required": [
+              "query"
+            ],
+            "properties": {
+              "query": {
+                "type": "string",
+                "maxLength": 1000
+              },
+              "namespace": {
+                "type": "string",
+                "enum": [
+                  "streams",
+                  "users",
+                  "clips",
+                  "transcripts",
+                  "all"
+                ],
+                "default": "streams"
+              },
+              "topK": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 20
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_search_analytics",
+      "description": "Own-org query insights (top / zero-result / trending) (GET /v1/search/analytics. Requires the `search:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "wave_search_index",
+      "description": "Index (upsert) one doc or a batch (POST /v1/search/index. Requires the `search:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/SearchIndexRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "SearchIndexRequest": {
+            "type": "object",
+            "required": [
+              "id",
+              "namespace",
+              "text"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "namespace": {
+                "type": "string",
+                "enum": [
+                  "streams",
+                  "users",
+                  "clips",
+                  "transcripts"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "metadata": {
+                "type": "object"
+              },
+              "docs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/SearchIndexDoc"
+                }
+              }
+            }
+          },
+          "SearchIndexDoc": {
+            "type": "object",
+            "required": [
+              "id",
+              "namespace",
+              "text"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "namespace": {
+                "type": "string",
+                "enum": [
+                  "streams",
+                  "users",
+                  "clips",
+                  "transcripts"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "metadata": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_search_delete",
+      "description": "Delete one indexed doc (idempotent) (DELETE /v1/search/index/{id}. Requires the `search:write` scope on your WAVE API key. DESTRUCTIVE: permanently deletes the target resource and cannot be undone; confirm before calling. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string",
+            "enum": [
+              "streams",
+              "users",
+              "clips",
+              "transcripts"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "namespace"
+        ]
+      }
+    },
+    {
+      "name": "wave_list_sentiment_analyses",
+      "description": "List sentiment analyses (GET /v1/sentiment. Requires the `sentiment:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          },
+          "status": {
+            "$ref": "#/$defs/JobStatus"
+          }
+        },
+        "additionalProperties": false,
+        "$defs": {
+          "JobStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "cancelled"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_create_sentiment_analysis",
+      "description": "Create a sentiment analysis (POST /v1/sentiment. Requires the `sentiment:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/SentimentAnalysisCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "SentimentAnalysisCreate": {
+            "type": "object",
+            "required": [
+              "sourceId",
+              "sourceType"
+            ],
+            "properties": {
+              "sourceId": {
+                "type": "string"
+              },
+              "sourceType": {
+                "type": "string",
+                "enum": [
+                  "video",
+                  "audio",
+                  "text",
+                  "chat"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "includeEmotions": {
+                "type": "boolean",
+                "default": false
+              },
+              "includeTopics": {
+                "type": "boolean",
+                "default": false
+              },
+              "includeSummary": {
+                "type": "boolean",
+                "default": false
+              },
+              "segmentAnalysis": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_analyze_text",
+      "description": "Analyze text directly (POST /v1/sentiment/analyze. Requires the `sentiment:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "includeEmotions": {
+                "type": "boolean",
+                "default": false
+              },
+              "includeTopics": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      }
+    },
+    {
+      "name": "wave_list_enhancements",
+      "description": "List enhancement jobs (GET /v1/studio-ai/enhancements. Requires the `studio-ai:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "upscale",
+              "denoise",
+              "stabilize",
+              "color_correct",
+              "super_resolution"
+            ]
+          },
+          "status": {
+            "$ref": "#/$defs/JobStatus"
+          }
+        },
+        "additionalProperties": false,
+        "$defs": {
+          "JobStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "cancelled"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_create_enhancement",
+      "description": "Create an enhancement job (POST /v1/studio-ai/enhancements. Requires the `studio-ai:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/EnhancementCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "EnhancementCreate": {
+            "type": "object",
+            "required": [
+              "videoId",
+              "type"
+            ],
+            "properties": {
+              "videoId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "upscale",
+                  "denoise",
+                  "stabilize",
+                  "color_correct",
+                  "super_resolution"
+                ]
+              },
+              "settings": {
+                "type": "object"
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "normal",
+                  "high"
+                ],
+                "default": "normal"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_preview_enhancement",
+      "description": "Generate enhancement preview (POST /v1/studio-ai/preview. Requires the `studio-ai:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/EnhancementPreviewRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "EnhancementPreviewRequest": {
+            "type": "object",
+            "required": [
+              "videoId",
+              "type"
+            ],
+            "properties": {
+              "videoId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "number",
+                "default": 0
+              },
+              "settings": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_list_transcriptions",
+      "description": "List transcriptions (GET /v1/transcribe. Requires the `transcribe:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "per_page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          },
+          "status": {
+            "$ref": "#/$defs/JobStatus"
+          }
+        },
+        "additionalProperties": false,
+        "$defs": {
+          "JobStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "cancelled"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_create_transcription",
+      "description": "Create a transcription (POST /v1/transcribe. Requires the `transcribe:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/TranscriptionCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "TranscriptionCreate": {
+            "type": "object",
+            "required": [
+              "sourceId",
+              "sourceType"
+            ],
+            "properties": {
+              "sourceId": {
+                "type": "string"
+              },
+              "sourceType": {
+                "type": "string",
+                "enum": [
+                  "video",
+                  "audio"
+                ]
+              },
+              "language": {
+                "type": "string"
+              },
+              "speakerLabels": {
+                "type": "boolean",
+                "default": false
+              },
+              "wordTimestamps": {
+                "type": "boolean",
+                "default": false
+              },
+              "punctuation": {
+                "type": "boolean",
+                "default": true
+              },
+              "model": {
+                "type": "string",
+                "default": "default"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_get_transcription",
+      "description": "Get a transcription (GET /v1/transcribe/{transcriptionId}. Requires the `transcribe:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "transcription_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "transcription_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_delete_transcription",
+      "description": "Delete a transcription (DELETE /v1/transcribe/{transcriptionId}. Requires the `transcribe:write` scope on your WAVE API key. DESTRUCTIVE: permanently deletes the target resource and cannot be undone; confirm before calling. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "transcription_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "transcription_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_list_chapters",
+      "description": "List chapters for a video (GET /v1/videos/{videoId}/chapters. Requires the `chapters:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "video_id": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "video_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_create_chapter",
+      "description": "Create a chapter (POST /v1/videos/{videoId}/chapters. Requires the `chapters:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "video_id": {
+            "type": "string"
+          },
+          "body": {
+            "$ref": "#/$defs/ChapterCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "video_id",
+          "body"
+        ],
+        "$defs": {
+          "ChapterCreate": {
+            "type": "object",
+            "required": [
+              "title",
+              "startTime",
+              "endTime"
+            ],
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "startTime": {
+                "type": "number"
+              },
+              "endTime": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_detect_chapters",
+      "description": "Start AI chapter detection (POST /v1/videos/{videoId}/chapters/detect. Requires the `chapters:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "video_id": {
+            "type": "string"
+          },
+          "body": {
+            "$ref": "#/$defs/ChapterDetectRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "video_id"
+        ],
+        "$defs": {
+          "ChapterDetectRequest": {
+            "type": "object",
+            "properties": {
+              "minDuration": {
+                "type": "number",
+                "default": 30
+              },
+              "maxChapters": {
+                "type": "integer"
+              },
+              "includeDescriptions": {
+                "type": "boolean",
+                "default": true
+              },
+              "includeThumbnails": {
+                "type": "boolean",
+                "default": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_clone_voice",
+      "description": "Clone a voice from audio samples (POST /v1/voice/clone. Requires the `voice:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/VoiceCloneRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "VoiceCloneRequest": {
+            "type": "object",
+            "required": [
+              "name",
+              "audioFiles"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "audioFiles": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "minItems": 1,
+                "maxItems": 25
+              },
+              "description": {
+                "type": "string"
+              },
+              "labels": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_generate_speech",
+      "description": "Generate speech from text (POST /v1/voice/generate. Requires the `voice:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/VoiceGenerateRequest"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "VoiceGenerateRequest": {
+            "type": "object",
+            "required": [
+              "voiceId",
+              "text"
+            ],
+            "properties": {
+              "voiceId": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0.5
+              },
+              "similarityBoost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0.75
+              },
+              "style": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0
+              },
+              "model": {
+                "type": "string",
+                "default": "eleven_multilingual_v2"
+              },
+              "outputFormat": {
+                "type": "string",
+                "default": "mp3_44100_128"
+              },
+              "timestamps": {
+                "type": "boolean",
+                "default": false,
+                "description": "When true, the resulting VoiceGeneration includes character-level `alignment` (start/end times) so clients can render karaoke highlighting and derive caption cues. Backed by the engine's with-timestamps mode.\n"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_list_voices",
+      "description": "List available voices (GET /v1/voice/voices. Requires the `voice:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "premade",
+              "cloned",
+              "professional"
+            ]
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ]
+}

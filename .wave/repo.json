@@ -137,16 +137,21 @@
       "id": "wave_design_contract_check",
       "does": "Validate an existing design-contract.json against the schema and acceptance-tests catalogue, no compose.",
       "status": "preview"
+    },
+    {
+      "id": "wave.ask",
+      "does": "Propose a WAVE media pipeline (captions/clips/dub/realtime/...) for a goal stated in plain language, grounded in a bundled products/skills/mcp-tools snapshot. Never executes; makes no network request.",
+      "status": "preview"
     }
   ],
   "claims": [
     {
       "id": "claim-tool-count",
-      "text": "Exposes 23 MCP tools",
+      "text": "Exposes 24 MCP tools",
       "resolver": {
         "type": "grep",
         "target": "capabilities.json",
-        "expect": "23-tools"
+        "expect": "24-tools"
       }
     },
     {
@@ -381,6 +386,15 @@
         "type": "grep",
         "target": "src/tools/design.ts",
         "expect": "wave_design_contract_check"
+      }
+    },
+    {
+      "id": "claim-tool-ask",
+      "text": "wave.ask tool defined in src/tools/wave-ask/wave-ask.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/wave-ask/wave-ask.ts",
+        "expect": "wave.ask"
       }
     }
   ],

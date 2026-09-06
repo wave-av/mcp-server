@@ -109,6 +109,24 @@ is rejected before anything runs.
 | `WAVE_PEN_EXTRACT_ROOT` | `$HOME/wave-av/wave-pen-register-wt/packages/pen-extract` | Root of the `@wave-av/pen-extract` checkout |
 | `WAVE_LOC_STUDY_ROOT` | `$HOME/wave-av/wave-design-study-wt/tools/loc-study` | Root of the `@wave-av/loc-study` checkout |
 
+## Available tools — Ask (front door composer)
+
+`wave.ask` is the agent rendering of the WAVE conversational front door
+composer (`designs/front-door/AGENT-MANIFEST-PLAN-2026-09-05.md` in
+`wave-pen-register-wt`): given a goal in plain language, it **proposes** a
+composition of WAVE products/tools/meters — it never executes anything and
+never fetches the network.
+
+| Tool | Description |
+| --- | --- |
+| `wave.ask` | Propose a WAVE media pipeline (captions/clips/dub/realtime/identity/...) for a goal stated in plain language. Read-only, propose-only: calls no other tool, makes no network request. |
+
+- **Input**: `{ question: string, budgetUsd?: number }`.
+- **Output**: `{ intent, stages[], productIds[], tools[], meters[], priceRows[], executes: false, next[] }` — always `executes: false`, never a `model` field (no sourced Dispatch model catalog exists yet).
+- **Grounded, not generated**: every `productIds[]`/`tools[]`/`meters[]` entry is checked against a bundled, measured snapshot of the live platform (`knowledge/products.json` — 53 products, `knowledge/skills.json` — 179 skills with pricing, `knowledge/mcp-tools.json` — 69 live gateway tools; see `knowledge/SOURCES.md` for fetch provenance). A goal the composer doesn't recognize, or one that mentions a name outside that snapshot, always falls back to a real, grounded composition — never a fabricated one and never a dead end.
+- **Pricing is never invented**: each `priceRows[]` entry carries the skill's real `meter` (or `null` for flat-rate skills) and a `priceShape` read straight off the skill's pricing block; the `quote` field is always `"quote at call time"` — this tool never calls the gateway's live 402 endpoint, so it never guesses a number.
+- See `skills/wave-ask/SKILL.md` for the full agent-facing how-to-call contract.
+
 ## Available tools — Voice
 
 | Tool | Description |
@@ -257,6 +275,7 @@ MIT
 | Compose and validate a design-contract.json from an extract dir. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Measure a print image or rasterized plate SVG with loc-study. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Validate an existing design-contract.json against the schema. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Propose a WAVE media pipeline (captions/clips/dub/realtime/...) for a goal in plain language; never executes. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 
 ## For AI agents
 
@@ -271,7 +290,7 @@ Every claim below is checked by `npm run verify` against the live repo or endpoi
 | Documentation surface is docs.wave.online/mcp | resolved by grepping `package.json` |
 | Published npm package name is @wave-av/mcp-server | resolved by grepping `package.json` |
 | wave_control_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
-| Exposes 23 MCP tools | resolved by grepping `capabilities.json` |
+| Exposes 24 MCP tools | resolved by grepping `capabilities.json` |
 | wave_voice_converse tool defined in src/tools/voice.ts | resolved by grepping `src/tools/voice.ts` |
 | wave_design_extract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
 | wave_design_contract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
@@ -295,6 +314,7 @@ Every claim below is checked by `npm run verify` against the live repo or endpoi
 | wave_switch_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
 | wave_get_usage tool defined in src/tools/billing.ts | resolved by grepping `src/tools/billing.ts` |
 | Server connects via stdio transport (no network listener) | resolved by grepping `src/server.ts` |
+| wave.ask tool defined in src/tools/wave-ask/wave-ask.ts | resolved by grepping `src/tools/wave-ask/wave-ask.ts` |
 
 ## Topics
 

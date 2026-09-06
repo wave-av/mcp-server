@@ -22,6 +22,7 @@
   },
   "files": [
     "dist",
+    "knowledge",
     "README.md",
     "LICENSE",
     "MCP-DEBUGGING.md",
