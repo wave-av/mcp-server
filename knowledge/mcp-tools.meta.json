@@ -1,11 +1,12 @@
 {
   "artifact": "mcp-tools.json",
-  "fetchedAt": "2026-09-05T23:06:00Z",
+  "fetchedAt": "2026-09-06T03:52:45Z",
   "url": "https://api.wave.online/mcp",
   "command": "curl -sS https://api.wave.online/mcp   # plain GET returns the full manifest incl. toolCount + tools[]; no JSON-RPC initialize/tools.list body was needed",
-  "sha256": "c7a60f524091c7c59b0dc3a4f5e7d3fa9439695a55156524d40166eefb95532a",
+  "sha256": "782ef83e72613378f540fd3d45e6e07fc47fb3d561ca2af54c0f79777ecc586c",
   "counts": {
-    "toolCount": 69,
-    "toolsLength": 69
-  }
+    "toolCount": 93,
+    "toolsLength": 93
+  },
+  "note": "24 new tools since the 2026-09-05T23:06:00Z snapshot (69 -> 93): wave_control_camera, wave_create_production, wave_create_stream, wave_get_analytics_engagement, wave_get_analytics_overview, wave_get_analytics_top_content, wave_get_billing, wave_get_billing_usage, wave_get_production, wave_get_stream, wave_get_stream_analytics, wave_get_stream_status, wave_get_usage, wave_list_cameras, wave_list_productions, wave_list_stream_highlights, wave_list_streams, wave_mark_stream_highlight, wave_moderate_content, wave_register_camera, wave_set_production_overlay, wave_start_stream, wave_stop_stream, wave_switch_production_camera. New coverage groups: cameras, productions, streams, analytics, billing, usage, moderation. No tools removed."
 }

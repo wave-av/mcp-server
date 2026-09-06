@@ -122,8 +122,10 @@
   {
     "name": "analytics",
     "path": "/v1/analytics",
-    "methods": [],
-    "methods_source": "unknown",
+    "methods": [
+      "GET"
+    ],
+    "methods_source": "openapi",
     "summary": "WAVE analytics API",
     "auth": {
       "scheme": "bearer",
@@ -344,8 +346,10 @@
   {
     "name": "billing",
     "path": "/v1/billing",
-    "methods": [],
-    "methods_source": "unknown",
+    "methods": [
+      "GET"
+    ],
+    "methods_source": "openapi",
     "summary": "WAVE billing API",
     "auth": {
       "scheme": "bearer",
@@ -444,8 +448,11 @@
   {
     "name": "cameras",
     "path": "/v1/cameras",
-    "methods": [],
-    "methods_source": "unknown",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
     "summary": "WAVE cameras API",
     "auth": {
       "scheme": "bearer",
@@ -1422,8 +1429,10 @@
   {
     "name": "moderate",
     "path": "/v1/moderate",
-    "methods": [],
-    "methods_source": "unknown",
+    "methods": [
+      "POST"
+    ],
+    "methods_source": "openapi",
     "summary": "WAVE moderate API",
     "auth": {
       "scheme": "bearer",
@@ -1768,8 +1777,11 @@
   {
     "name": "productions",
     "path": "/v1/productions",
-    "methods": [],
-    "methods_source": "unknown",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
     "summary": "WAVE productions API",
     "auth": {
       "scheme": "bearer",
@@ -2360,8 +2372,11 @@
   {
     "name": "streams",
     "path": "/v1/streams",
-    "methods": [],
-    "methods_source": "unknown",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
     "summary": "WAVE streams API",
     "auth": {
       "scheme": "bearer",
@@ -2518,8 +2533,8 @@
     "pricing": {
       "model": "x402",
       "meter": "wave_transcription_minutes",
-      "currency": "pathUSD",
-      "network": "tempo"
+      "currency": "USDC",
+      "network": "base"
     },
     "doc_url": "https://gateway.wave.online/openapi.json",
     "skill_url": "/.well-known/wave-skills/transcribe.json"
@@ -3133,8 +3148,10 @@
   {
     "name": "usage",
     "path": "/v1/usage",
-    "methods": [],
-    "methods_source": "unknown",
+    "methods": [
+      "GET"
+    ],
+    "methods_source": "openapi",
     "summary": "WAVE usage API",
     "auth": {
       "scheme": "bearer",
@@ -3440,8 +3457,10 @@
   {
     "name": "live",
     "path": "/v1/live",
-    "methods": [],
-    "methods_source": "unknown",
+    "methods": [
+      "POST"
+    ],
+    "methods_source": "openapi",
     "summary": "WAVE live API",
     "auth": {
       "scheme": "bearer",
