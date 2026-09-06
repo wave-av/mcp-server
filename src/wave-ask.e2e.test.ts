@@ -336,10 +336,12 @@ test("e2e: tools/call wave_compose falls back with gateway-invalid-json when a 2
 
 test("e2e: tools/call wave_compose refuses a pathologically nested gateway body instead of recursing into it", async () => {
   process.env["WAVE_API_KEY"] = "test-key-not-real";
-  // Valid JSON, under the size ceiling, correct top-level shape — but nested far past anything a
-  // composition could be. The redaction walk must refuse it, not blow the stack on the way through.
+  // Valid JSON, under the size ceiling, correct top-level shape — but nested past anything a
+  // composition could be. The redaction walk must refuse it rather than recurse into it. 200 is
+  // comfortably over the tool's 64-level ceiling and comfortably under any runtime's JSON.parse
+  // limit, so this pins OUR guard rather than the host's stack size.
   let nested: unknown = "leaf";
-  for (let i = 0; i < 5000; i++) nested = [nested];
+  for (let i = 0; i < 200; i++) nested = [nested];
   globalThis.fetch = (async () =>
     new Response(
       JSON.stringify({ intent: "x", productIds: ["realtime"], tools: ["perception_subscribe"], deep: nested }),
