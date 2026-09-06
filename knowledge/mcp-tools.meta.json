@@ -1,0 +1,11 @@
+{
+  "artifact": "mcp-tools.json",
+  "fetchedAt": "2026-09-05T23:06:00Z",
+  "url": "https://api.wave.online/mcp",
+  "command": "curl -sS https://api.wave.online/mcp   # plain GET returns the full manifest incl. toolCount + tools[]; no JSON-RPC initialize/tools.list body was needed",
+  "sha256": "c7a60f524091c7c59b0dc3a4f5e7d3fa9439695a55156524d40166eefb95532a",
+  "counts": {
+    "toolCount": 69,
+    "toolsLength": 69
+  }
+}
