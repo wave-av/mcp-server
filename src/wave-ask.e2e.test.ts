@@ -306,8 +306,55 @@ test("e2e: tools/call wave_compose with a stubbed 5xx gateway response falls bac
     });
     const parsed = ComposeProposalSchema.parse(parseToolText(result));
     assert.equal(parsed.grounding, "snapshot");
+    assert.equal(parsed.fallbackReason, "gateway-http-error");
     assert.deepEqual(parsed.productIds, ["realtime", "transcribe", "captions"]);
     assert.equal(fetchCalls, 1);
+  } finally {
+    await close();
+    restoreFetchAndKey();
+  }
+});
+
+test("e2e: tools/call wave_compose falls back with gateway-invalid-json when a 2xx body is not JSON", async () => {
+  process.env["WAVE_API_KEY"] = "test-key-not-real";
+  globalThis.fetch = (async () => new Response("{not json", { status: 200 })) as typeof fetch;
+
+  const { client, close } = await connectedClient();
+  try {
+    const result = await client.callTool({
+      name: "wave_compose",
+      arguments: { intent: "live captions from my mic" },
+    });
+    const parsed = ComposeProposalSchema.parse(parseToolText(result));
+    assert.equal(parsed.grounding, "snapshot");
+    assert.equal(parsed.fallbackReason, "gateway-invalid-json");
+  } finally {
+    await close();
+    restoreFetchAndKey();
+  }
+});
+
+test("e2e: tools/call wave_compose refuses a pathologically nested gateway body instead of recursing into it", async () => {
+  process.env["WAVE_API_KEY"] = "test-key-not-real";
+  // Valid JSON, under the size ceiling, correct top-level shape — but nested far past anything a
+  // composition could be. The redaction walk must refuse it, not blow the stack on the way through.
+  let nested: unknown = "leaf";
+  for (let i = 0; i < 5000; i++) nested = [nested];
+  globalThis.fetch = (async () =>
+    new Response(
+      JSON.stringify({ intent: "x", productIds: ["realtime"], tools: ["perception_subscribe"], deep: nested }),
+      { status: 200 },
+    )) as typeof fetch;
+
+  const { client, close } = await connectedClient();
+  try {
+    const result = await client.callTool({
+      name: "wave_compose",
+      arguments: { intent: "live captions from my mic" },
+    });
+    const parsed = ComposeProposalSchema.parse(parseToolText(result));
+    assert.equal(parsed.grounding, "snapshot");
+    assert.equal(parsed.fallbackReason, "gateway-unexpected-shape");
   } finally {
     await close();
     restoreFetchAndKey();

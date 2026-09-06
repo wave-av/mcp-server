@@ -133,20 +133,39 @@ function isPlausibleProposal(value: Record<string, unknown>): boolean {
   return true;
 }
 
+/** Nesting past this is not a composition — no real proposal is 64 objects deep. */
+const MAX_REDACT_DEPTH = 64;
+
+/** Thrown by `redactApiKey` past `MAX_REDACT_DEPTH`; caught at the one call site. */
+class TooDeepError extends Error {}
+
 /**
  * Enforce the documented no-echo guarantee on the success path too: if a gateway response ever
  * carried the configured key back (a compromised or misconfigured responder), it is replaced
  * before the object reaches the agent's transcript. Structure is preserved exactly otherwise.
  */
-function redactApiKey(value: unknown, key: string): unknown {
+function redactApiKey(value: unknown, key: string, depth = 0): unknown {
+  // A valid-but-pathological body ([[[[…]]]]) would otherwise recurse until the stack gives out.
+  // Past the ceiling this is not a composition worth returning, so the caller falls back instead.
+  if (depth > MAX_REDACT_DEPTH) throw new TooDeepError();
   if (typeof value === "string") return value.includes(key) ? value.split(key).join("[redacted]") : value;
-  if (Array.isArray(value)) return value.map((entry) => redactApiKey(entry, key));
+  if (Array.isArray(value)) return value.map((entry) => redactApiKey(entry, key, depth + 1));
   if (value !== null && typeof value === "object") {
     const out: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(value as Record<string, unknown>)) out[k] = redactApiKey(v, key);
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) out[k] = redactApiKey(v, key, depth + 1);
     return out;
   }
   return value;
+}
+
+/** `redactApiKey`, but `undefined` instead of a throw when the body is nested past the ceiling. */
+function redactSafely(value: GatewayComposeResult, key: string): GatewayComposeResult | undefined {
+  try {
+    return redactApiKey(value, key) as GatewayComposeResult;
+  } catch (err) {
+    if (err instanceof TooDeepError) return undefined;
+    throw err;
+  }
 }
 
 /**
@@ -249,10 +268,15 @@ export const waveComposeTools: WaveToolDef[] = [
       if (apiKey) {
         const outcome = await callGatewayCompose(intent, budgetUsd);
         if (outcome.ok) {
-          const answer = redactApiKey(outcome.value, apiKey) as GatewayComposeResult;
-          return textContent(JSON.stringify({ ...answer, grounding: "gateway" }));
+          const answer = redactSafely(outcome.value, apiKey);
+          if (answer !== undefined) {
+            return textContent(JSON.stringify({ ...answer, grounding: "gateway" }));
+          }
+          // Nested past anything a proposal could be — treat it as the unusable shape it is.
+          fallbackReason = "gateway-unexpected-shape";
+        } else {
+          fallbackReason = outcome.reason;
         }
-        fallbackReason = outcome.reason;
         // A configured key that produced no live answer is an outage, not a normal offline run:
         // say so on stderr (never stdout, which carries the MCP protocol) with the fixed reason
         // string only — no URL, no header, no response body.
