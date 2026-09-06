@@ -1,6 +1,6 @@
 {
   "name": "@wave-av/mcp-server",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "WAVE MCP Server - Exposes WAVE streaming APIs as tools for AI agents",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -22,6 +22,7 @@
   },
   "files": [
     "dist",
+    "knowledge",
     "README.md",
     "LICENSE",
     "MCP-DEBUGGING.md",
@@ -31,7 +32,10 @@
     "build": "tsup && tsc --emitDeclarationOnly --declarationMap false",
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit",
+    "pretest": "tsc -p tsconfig.test.json",
+    "test": "node scripts/run-tests.mjs",
     "lint": "eslint src/ --max-warnings 0",
+    "check:capabilities": "tsx scripts/check-capabilities-drift.ts",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -79,6 +83,7 @@
     "@types/node": "^25.9.1",
     "eslint": "^10.4.1",
     "tsup": "^8.0.0",
+    "tsx": "^4.23.13",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.1"
   }

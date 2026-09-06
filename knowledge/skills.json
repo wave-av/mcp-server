@@ -1,0 +1,3646 @@
+[
+  {
+    "name": "accessibility-studio",
+    "path": "/v1/accessibility-studio",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE accessibility-studio API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "accessibility-studio:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/accessibility-studio.json"
+  },
+  {
+    "name": "acp",
+    "path": "/v1/acp",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE acp API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "acp:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/acp.json"
+  },
+  {
+    "name": "aegis",
+    "path": "/v1/aegis",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE aegis API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "aegis:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/aegis.json"
+  },
+  {
+    "name": "agentic-media",
+    "path": "/v1/agentic-media",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE agentic-media API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "agentic-media:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/agentic-media.json"
+  },
+  {
+    "name": "agents",
+    "path": "/v1/agents",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE agents API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "agents:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/agents.json"
+  },
+  {
+    "name": "ai",
+    "path": "/v1/ai",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE ai API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "ai:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_ai_tokens_haiku_input",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/ai.json"
+  },
+  {
+    "name": "analytics",
+    "path": "/v1/analytics",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE analytics API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "analytics:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/analytics.json"
+  },
+  {
+    "name": "api-gateway",
+    "path": "/v1/api-gateway",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE api-gateway API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "api-gateway:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/api-gateway.json"
+  },
+  {
+    "name": "archive",
+    "path": "/v1/archive",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE archive API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "archive:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/archive.json"
+  },
+  {
+    "name": "argus",
+    "path": "/v1/argus",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE argus API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "argus:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/argus.json"
+  },
+  {
+    "name": "audience-engagement",
+    "path": "/v1/audience-engagement",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE audience-engagement API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "audience-engagement:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/audience-engagement.json"
+  },
+  {
+    "name": "audio-mastering",
+    "path": "/v1/audio-mastering",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE audio-mastering API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "audio-mastering:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/audio-mastering.json"
+  },
+  {
+    "name": "auth",
+    "path": "/v1/auth",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE auth API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "auth:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/auth.json"
+  },
+  {
+    "name": "autopilot",
+    "path": "/v1/autopilot",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE autopilot API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "autopilot:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/autopilot.json"
+  },
+  {
+    "name": "av",
+    "path": "/v1/av",
+    "methods": [
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE av API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "av:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_av_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/av.json"
+  },
+  {
+    "name": "behavioral-intelligence",
+    "path": "/v1/behavioral-intelligence",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE behavioral-intelligence API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "behavioral-intelligence:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/behavioral-intelligence.json"
+  },
+  {
+    "name": "benchmark",
+    "path": "/v1/benchmark",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE benchmark API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "benchmark:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/benchmark.json"
+  },
+  {
+    "name": "billing",
+    "path": "/v1/billing",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE billing API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "billing:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/billing.json"
+  },
+  {
+    "name": "bmd",
+    "path": "/v1/bmd",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE bmd API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "bmd:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/bmd.json"
+  },
+  {
+    "name": "bridge",
+    "path": "/v1/bridge",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE bridge API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "bridge:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_bridge_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/bridge.json"
+  },
+  {
+    "name": "broadcast",
+    "path": "/v1/broadcast",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE broadcast API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "broadcast:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/broadcast.json"
+  },
+  {
+    "name": "camera-control",
+    "path": "/v1/camera-control",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE camera-control API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "camera-control:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/camera-control.json"
+  },
+  {
+    "name": "cameras",
+    "path": "/v1/cameras",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE cameras API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "cameras:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/cameras.json"
+  },
+  {
+    "name": "campus",
+    "path": "/v1/campus",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE campus API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "campus:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/campus.json"
+  },
+  {
+    "name": "captions",
+    "path": "/v1/captions",
+    "methods": [
+      "GET",
+      "POST",
+      "DELETE"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE captions API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "captions:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_caption_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/captions.json"
+  },
+  {
+    "name": "challenge",
+    "path": "/v1/challenge",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE challenge API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "challenge:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/challenge.json"
+  },
+  {
+    "name": "chapters",
+    "path": "/v1/chapters",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE chapters API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "chapters:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_chapters_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/chapters.json"
+  },
+  {
+    "name": "ci",
+    "path": "/v1/ci",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE ci API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "ci:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/ci.json"
+  },
+  {
+    "name": "clips",
+    "path": "/v1/clips",
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH",
+      "DELETE"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE clips API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "clips:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_clip_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/clips.json"
+  },
+  {
+    "name": "cloud-switcher",
+    "path": "/v1/cloud-switcher",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE cloud-switcher API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "cloud-switcher:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/cloud-switcher.json"
+  },
+  {
+    "name": "collab",
+    "path": "/v1/collab",
+    "methods": [
+      "GET",
+      "POST",
+      "DELETE"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE collab API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "collab:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/collab.json"
+  },
+  {
+    "name": "companion",
+    "path": "/v1/companion",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE companion API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "companion:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/companion.json"
+  },
+  {
+    "name": "competitive-intel",
+    "path": "/v1/competitive-intel",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE competitive-intel API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "competitive-intel:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/competitive-intel.json"
+  },
+  {
+    "name": "compliance",
+    "path": "/v1/compliance",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE compliance API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "compliance:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/compliance.json"
+  },
+  {
+    "name": "connect",
+    "path": "/v1/connect",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE connect API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "connect:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/connect.json"
+  },
+  {
+    "name": "cookie-consent",
+    "path": "/v1/cookie-consent",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE cookie-consent API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "cookie-consent:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/cookie-consent.json"
+  },
+  {
+    "name": "cost",
+    "path": "/v1/cost",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE cost API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "cost:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/cost.json"
+  },
+  {
+    "name": "creator",
+    "path": "/v1/creator",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE creator API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "creator:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/creator.json"
+  },
+  {
+    "name": "creator-economy",
+    "path": "/v1/creator-economy",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE creator-economy API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "creator-economy:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/creator-economy.json"
+  },
+  {
+    "name": "creator-storefront",
+    "path": "/v1/creator-storefront",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE creator-storefront API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "creator-storefront:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/creator-storefront.json"
+  },
+  {
+    "name": "crest",
+    "path": "/v1/crest",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE crest API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "crest:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_crest_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/crest.json"
+  },
+  {
+    "name": "cro",
+    "path": "/v1/cro",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE cro API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "cro:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/cro.json"
+  },
+  {
+    "name": "data-exchange",
+    "path": "/v1/data-exchange",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE data-exchange API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "data-exchange:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_data_exchange_queries",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/data-exchange.json"
+  },
+  {
+    "name": "director",
+    "path": "/v1/director",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE director API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "director:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/director.json"
+  },
+  {
+    "name": "discovery",
+    "path": "/v1/discovery",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE discovery API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "discovery:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/discovery.json"
+  },
+  {
+    "name": "dispatch",
+    "path": "/v1/dispatch",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE dispatch API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "dispatch:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_dispatch_decisions",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/dispatch.json"
+  },
+  {
+    "name": "dmca",
+    "path": "/v1/dmca",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE dmca API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "dmca:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/dmca.json"
+  },
+  {
+    "name": "dsar",
+    "path": "/v1/dsar",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE dsar API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "dsar:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/dsar.json"
+  },
+  {
+    "name": "dub",
+    "path": "/v1/dub",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE dub API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "dub:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/dub.json"
+  },
+  {
+    "name": "echo",
+    "path": "/v1/echo",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE echo API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "echo:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/echo.json"
+  },
+  {
+    "name": "edge",
+    "path": "/v1/edge",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE edge API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "edge:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_edge_delivered_units",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/edge.json"
+  },
+  {
+    "name": "editor",
+    "path": "/v1/editor",
+    "methods": [
+      "GET",
+      "POST",
+      "PATCH",
+      "DELETE"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE editor API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "editor:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/editor.json"
+  },
+  {
+    "name": "engagement",
+    "path": "/v1/engagement",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE engagement API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "engagement:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/engagement.json"
+  },
+  {
+    "name": "example",
+    "path": "/v1/example",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE example API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "example:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/example.json"
+  },
+  {
+    "name": "experiments",
+    "path": "/v1/experiments",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE experiments API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "experiments:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/experiments.json"
+  },
+  {
+    "name": "fleet",
+    "path": "/v1/fleet",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE fleet API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "fleet:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/fleet.json"
+  },
+  {
+    "name": "forecast",
+    "path": "/v1/forecast",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE forecast API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "forecast:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/forecast.json"
+  },
+  {
+    "name": "geo",
+    "path": "/v1/geo",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE geo API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "geo:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/geo.json"
+  },
+  {
+    "name": "ghost-producer",
+    "path": "/v1/ghost-producer",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE ghost-producer API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "ghost-producer:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/ghost-producer.json"
+  },
+  {
+    "name": "graphics-engine",
+    "path": "/v1/graphics-engine",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE graphics-engine API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "graphics-engine:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/graphics-engine.json"
+  },
+  {
+    "name": "integrations",
+    "path": "/v1/integrations",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE integrations API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "integrations:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/integrations.json"
+  },
+  {
+    "name": "intel",
+    "path": "/v1/intel",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE intel API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "intel:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/intel.json"
+  },
+  {
+    "name": "internal",
+    "path": "/v1/internal",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE internal API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": null,
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "free",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/internal.json"
+  },
+  {
+    "name": "live-annotation",
+    "path": "/v1/live-annotation",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE live-annotation API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "live-annotation:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/live-annotation.json"
+  },
+  {
+    "name": "live-commerce",
+    "path": "/v1/live-commerce",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE live-commerce API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "live-commerce:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/live-commerce.json"
+  },
+  {
+    "name": "local-ai",
+    "path": "/v1/local-ai",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE local-ai API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "local-ai:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/local-ai.json"
+  },
+  {
+    "name": "me",
+    "path": "/v1/me",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE me API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "me:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/me.json"
+  },
+  {
+    "name": "memory",
+    "path": "/v1/memory",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE memory API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "memory:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/memory.json"
+  },
+  {
+    "name": "mesh",
+    "path": "/v1/mesh",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE mesh API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "mesh:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_mesh_requests_routed",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/mesh.json"
+  },
+  {
+    "name": "mobile-producer",
+    "path": "/v1/mobile-producer",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE mobile-producer API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "mobile-producer:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/mobile-producer.json"
+  },
+  {
+    "name": "moderate",
+    "path": "/v1/moderate",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE moderate API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "moderate:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/moderate.json"
+  },
+  {
+    "name": "monetization",
+    "path": "/v1/monetization",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE monetization API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "monetization:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/monetization.json"
+  },
+  {
+    "name": "monitoring",
+    "path": "/v1/monitoring",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE monitoring API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "monitoring:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/monitoring.json"
+  },
+  {
+    "name": "mpp",
+    "path": "/v1/mpp",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE mpp API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "mpp:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/mpp.json"
+  },
+  {
+    "name": "ndi",
+    "path": "/v1/ndi",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE ndi API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "ndi:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/ndi.json"
+  },
+  {
+    "name": "nvr",
+    "path": "/v1/nvr",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE nvr API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "nvr:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/nvr.json"
+  },
+  {
+    "name": "orbit",
+    "path": "/v1/orbit",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE orbit API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "orbit:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/orbit.json"
+  },
+  {
+    "name": "organizations",
+    "path": "/v1/organizations",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE organizations API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "organizations:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/organizations.json"
+  },
+  {
+    "name": "outliers",
+    "path": "/v1/outliers",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE outliers API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "outliers:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/outliers.json"
+  },
+  {
+    "name": "payments",
+    "path": "/v1/payments",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE payments API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "payments:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/payments.json"
+  },
+  {
+    "name": "phone",
+    "path": "/v1/phone",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE phone API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "phone:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_phone_connected_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/phone.json"
+  },
+  {
+    "name": "podcast",
+    "path": "/v1/podcast",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE podcast API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "podcast:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/podcast.json"
+  },
+  {
+    "name": "preferences",
+    "path": "/v1/preferences",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE preferences API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "preferences:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/preferences.json"
+  },
+  {
+    "name": "presence",
+    "path": "/v1/presence",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE presence API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "presence:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/presence.json"
+  },
+  {
+    "name": "privy",
+    "path": "/v1/privy",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE privy API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "privy:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/privy.json"
+  },
+  {
+    "name": "production",
+    "path": "/v1/production",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE production API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "production:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/production.json"
+  },
+  {
+    "name": "production-graph",
+    "path": "/v1/production-graph",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE production-graph API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "production-graph:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/production-graph.json"
+  },
+  {
+    "name": "productions",
+    "path": "/v1/productions",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE productions API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "productions:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/productions.json"
+  },
+  {
+    "name": "products",
+    "path": "/v1/products",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE products API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "products:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/products.json"
+  },
+  {
+    "name": "pulse",
+    "path": "/v1/pulse",
+    "methods": [
+      "GET"
+    ],
+    "methods_source": "gateway",
+    "summary": "WAVE pulse API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "pulse:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "free",
+      "meter": "wave_pulse_queries",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/pulse.json"
+  },
+  {
+    "name": "qr-system",
+    "path": "/v1/qr-system",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE qr-system API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "qr-system:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/qr-system.json"
+  },
+  {
+    "name": "quality-scorecard",
+    "path": "/v1/quality-scorecard",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE quality-scorecard API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "quality-scorecard:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/quality-scorecard.json"
+  },
+  {
+    "name": "radar",
+    "path": "/v1/radar",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE radar API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "radar:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/radar.json"
+  },
+  {
+    "name": "rate-limit",
+    "path": "/v1/rate-limit",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE rate-limit API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "rate-limit:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/rate-limit.json"
+  },
+  {
+    "name": "recommend",
+    "path": "/v1/recommend",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE recommend API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "recommend:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/recommend.json"
+  },
+  {
+    "name": "render",
+    "path": "/v1/render",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE render API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "render:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_render_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/render.json"
+  },
+  {
+    "name": "remotion",
+    "path": "/v1/remotion",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE remotion API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "remotion:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/remotion.json"
+  },
+  {
+    "name": "renders",
+    "path": "/v1/renders",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE renders API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "renders:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_render_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/renders.json"
+  },
+  {
+    "name": "replay",
+    "path": "/v1/replay",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE replay API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "replay:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/replay.json"
+  },
+  {
+    "name": "replay-engine",
+    "path": "/v1/replay-engine",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE replay-engine API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "replay-engine:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/replay-engine.json"
+  },
+  {
+    "name": "routes",
+    "path": "/v1/routes",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE routes API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "routes:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/routes.json"
+  },
+  {
+    "name": "runtime",
+    "path": "/v1/runtime",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE runtime API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "runtime:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_runtime_delivered_units",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/runtime.json"
+  },
+  {
+    "name": "sandbox",
+    "path": "/v1/sandbox",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE sandbox API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "sandbox:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_sandbox_exec",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/sandbox.json"
+  },
+  {
+    "name": "scene",
+    "path": "/v1/scene",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE scene API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "scene:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/scene.json"
+  },
+  {
+    "name": "search",
+    "path": "/v1/search",
+    "methods": [
+      "GET",
+      "POST",
+      "DELETE"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE search API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "search:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_search_queries",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/search.json"
+  },
+  {
+    "name": "sentiment",
+    "path": "/v1/sentiment",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE sentiment API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "sentiment:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/sentiment.json"
+  },
+  {
+    "name": "signal",
+    "path": "/v1/signal",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE signal API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "signal:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/signal.json"
+  },
+  {
+    "name": "signal-generator",
+    "path": "/v1/signal-generator",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE signal-generator API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "signal-generator:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/signal-generator.json"
+  },
+  {
+    "name": "signal-verifier",
+    "path": "/v1/signal-verifier",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE signal-verifier API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "signal-verifier:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/signal-verifier.json"
+  },
+  {
+    "name": "slides-to-video",
+    "path": "/v1/slides-to-video",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE slides-to-video API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "slides-to-video:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/slides-to-video.json"
+  },
+  {
+    "name": "social-distribution",
+    "path": "/v1/social-distribution",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE social-distribution API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "social-distribution:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/social-distribution.json"
+  },
+  {
+    "name": "sports-data",
+    "path": "/v1/sports-data",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE sports-data API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "sports-data:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/sports-data.json"
+  },
+  {
+    "name": "srt",
+    "path": "/v1/srt",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE srt API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "srt:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/srt.json"
+  },
+  {
+    "name": "stream-router",
+    "path": "/v1/stream-router",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE stream-router API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "streams:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/stream-router.json"
+  },
+  {
+    "name": "streamdeck",
+    "path": "/v1/streamdeck",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE streamdeck API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "streamdeck:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/streamdeck.json"
+  },
+  {
+    "name": "streaming",
+    "path": "/v1/streaming",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE streaming API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "streaming:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/streaming.json"
+  },
+  {
+    "name": "streams",
+    "path": "/v1/streams",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE streams API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "streams:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_stream_bridge_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/streams.json"
+  },
+  {
+    "name": "studio",
+    "path": "/v1/studio",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE studio API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "studio:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/studio.json"
+  },
+  {
+    "name": "studio-ai",
+    "path": "/v1/studio-ai",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE studio-ai API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "studio-ai:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/studio-ai.json"
+  },
+  {
+    "name": "studio-automation",
+    "path": "/v1/studio-automation",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE studio-automation API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "studio-automation:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/studio-automation.json"
+  },
+  {
+    "name": "switcher",
+    "path": "/v1/switcher",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE switcher API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "switcher:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/switcher.json"
+  },
+  {
+    "name": "tempo",
+    "path": "/v1/tempo",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE tempo API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "tempo:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/tempo.json"
+  },
+  {
+    "name": "transcode",
+    "path": "/v1/transcode",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE transcode API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "transcode:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_transcode_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/transcode.json"
+  },
+  {
+    "name": "transcribe",
+    "path": "/v1/transcribe",
+    "methods": [
+      "GET",
+      "POST",
+      "DELETE"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE transcribe API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "transcribe:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_transcription_minutes",
+      "currency": "pathUSD",
+      "network": "tempo"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/transcribe.json"
+  },
+  {
+    "name": "twilio",
+    "path": "/v1/twilio",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE twilio API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "twilio:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/twilio.json"
+  },
+  {
+    "name": "unsubscribe",
+    "path": "/v1/unsubscribe",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE unsubscribe API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "unsubscribe:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/unsubscribe.json"
+  },
+  {
+    "name": "usb-relay",
+    "path": "/v1/usb-relay",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE usb-relay API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "usb-relay:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/usb-relay.json"
+  },
+  {
+    "name": "vault",
+    "path": "/v1/vault",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE vault API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "vault:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/vault.json"
+  },
+  {
+    "name": "video-gen",
+    "path": "/v1/video-gen",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE video-gen API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "video-gen:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/video-gen.json"
+  },
+  {
+    "name": "viewer",
+    "path": "/v1/viewer",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE viewer API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "viewer:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/viewer.json"
+  },
+  {
+    "name": "virtual-studio",
+    "path": "/v1/virtual-studio",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE virtual-studio API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "virtual-studio:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/virtual-studio.json"
+  },
+  {
+    "name": "vision",
+    "path": "/v1/vision",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE vision API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "vision:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_vision_summarize_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/vision.json"
+  },
+  {
+    "name": "visual-programming",
+    "path": "/v1/visual-programming",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE visual-programming API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "visual-programming:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/visual-programming.json"
+  },
+  {
+    "name": "vod",
+    "path": "/v1/vod",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE vod API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "vod:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_vod_delivered_gb",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/vod.json"
+  },
+  {
+    "name": "voice",
+    "path": "/v1/voice",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE voice API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "voice:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_voice_minutes_premium",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/voice.json"
+  },
+  {
+    "name": "wave-console",
+    "path": "/v1/wave-console",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE wave-console API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "wave-console:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/wave-console.json"
+  },
+  {
+    "name": "wave-node",
+    "path": "/v1/wave-node",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE wave-node API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "wave-node:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/wave-node.json"
+  },
+  {
+    "name": "wave-sdk",
+    "path": "/v1/wave-sdk",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE wave-sdk API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "wave-sdk:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/wave-sdk.json"
+  },
+  {
+    "name": "wave-tokens",
+    "path": "/v1/wave-tokens",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE wave-tokens API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "wave-tokens:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/wave-tokens.json"
+  },
+  {
+    "name": "webrtc",
+    "path": "/v1/webrtc",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE webrtc API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "webrtc:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/webrtc.json"
+  },
+  {
+    "name": "workflow-engine",
+    "path": "/v1/workflow-engine",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE workflow-engine API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "workflow-engine:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/workflow-engine.json"
+  },
+  {
+    "name": "x402",
+    "path": "/v1/x402",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE x402 API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "x402:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/x402.json"
+  },
+  {
+    "name": "zero-trust-vault",
+    "path": "/v1/zero-trust-vault",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE zero-trust-vault API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "zero-trust-vault:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/zero-trust-vault.json"
+  },
+  {
+    "name": "zoom",
+    "path": "/v1/zoom",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE zoom API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "zoom:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "metered",
+      "meter": "wave_zoom_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/zoom.json"
+  },
+  {
+    "name": "zoom-integration",
+    "path": "/v1/zoom-integration",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE zoom-integration API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "zoom-integration:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/zoom-integration.json"
+  },
+  {
+    "name": "rtmp",
+    "path": "/v1/rtmp",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE rtmp API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "rtmp:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/rtmp.json"
+  },
+  {
+    "name": "dante",
+    "path": "/v1/dante",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE dante API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "dante:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_dante_observe_ingests",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/dante.json"
+  },
+  {
+    "name": "omt",
+    "path": "/v1/omt",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE omt API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "omt:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/omt.json"
+  },
+  {
+    "name": "moq",
+    "path": "/v1/moq",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE moq API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "moq:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_moq_session_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/moq.json"
+  },
+  {
+    "name": "mxl",
+    "path": "/v1/mxl",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE mxl API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "mxl:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/mxl.json"
+  },
+  {
+    "name": "rist",
+    "path": "/v1/rist",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE rist API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "rist:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/rist.json"
+  },
+  {
+    "name": "aes67",
+    "path": "/v1/aes67",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE aes67 API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "aes67:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/aes67.json"
+  },
+  {
+    "name": "st2110",
+    "path": "/v1/st2110",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE st2110 API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "st2110:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/st2110.json"
+  },
+  {
+    "name": "volumetric",
+    "path": "/v1/volumetric",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE volumetric API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "volumetric:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/volumetric.json"
+  },
+  {
+    "name": "usage",
+    "path": "/v1/usage",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE usage API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "usage:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/usage.json"
+  },
+  {
+    "name": "stream",
+    "path": "/v1/stream",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE stream API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "stream:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_stream_bridge_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/stream.json"
+  },
+  {
+    "name": "perception",
+    "path": "/v1/perception",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE perception API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "perception:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/perception.json"
+  },
+  {
+    "name": "embeddings",
+    "path": "/v1/embeddings",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE embeddings API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "embeddings:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_embeddings_tokens",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/embeddings.json"
+  },
+  {
+    "name": "pipelines",
+    "path": "/v1/pipelines",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE pipelines API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "pipelines:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/pipelines.json"
+  },
+  {
+    "name": "router",
+    "path": "/v1/router",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE router API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "router:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/router.json"
+  },
+  {
+    "name": "batch",
+    "path": "/v1/batch",
+    "methods": [
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE batch API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "batch:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/batch.json"
+  },
+  {
+    "name": "realtime",
+    "path": "/v1/realtime",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE realtime API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "realtime:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_realtime_video_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/realtime.json"
+  },
+  {
+    "name": "mux",
+    "path": "/v1/mux",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE mux API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "mux:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_mux_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/mux.json"
+  },
+  {
+    "name": "engine",
+    "path": "/v1/engine",
+    "methods": [
+      "GET"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE engine API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "engine:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/engine.json"
+  },
+  {
+    "name": "acuity",
+    "path": "/v1/acuity",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE acuity API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "acuity:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_acuity_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/acuity.json"
+  },
+  {
+    "name": "whip",
+    "path": "/v1/whip",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE whip API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "whip:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_whip_ingest_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/whip.json"
+  },
+  {
+    "name": "whep",
+    "path": "/v1/whep",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE whep API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "whep:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_whep_egress_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/whep.json"
+  },
+  {
+    "name": "gpu",
+    "path": "/v1/gpu",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE gpu API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "gpu:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/gpu.json"
+  },
+  {
+    "name": "visual-qa",
+    "path": "/v1/visual-qa",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE visual-qa API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "visual-qa:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_visual_qa_runs",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/visual-qa.json"
+  },
+  {
+    "name": "live",
+    "path": "/v1/live",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE live API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "captions:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/live.json"
+  },
+  {
+    "name": "listen",
+    "path": "/v1/listen",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE listen API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "listen:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_listen_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/listen.json"
+  },
+  {
+    "name": "braid",
+    "path": "/v1/braid",
+    "methods": [
+      "POST",
+      "DELETE"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE braid API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "moq:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/braid.json"
+  },
+  {
+    "name": "enhance",
+    "path": "/v1/enhance",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE enhance API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "enhance:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_enhance_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/enhance.json"
+  },
+  {
+    "name": "review",
+    "path": "/v1/review",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE review API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "review:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_review_calls",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/review.json"
+  },
+  {
+    "name": "encode",
+    "path": "/v1/encode",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE encode API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "encode:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_encode_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/encode.json"
+  },
+  {
+    "name": "decode",
+    "path": "/v1/decode",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE decode API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "decode:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_decode_minutes",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/decode.json"
+  },
+  {
+    "name": "mlvc",
+    "path": "/v1/mlvc",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE mlvc API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "mlvc:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/mlvc.json"
+  },
+  {
+    "name": "ops",
+    "path": "/v1/ops",
+    "methods": [],
+    "methods_source": "unknown",
+    "summary": "WAVE ops API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "ops:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/ops.json"
+  },
+  {
+    "name": "videos",
+    "path": "/v1/videos",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "summary": "WAVE videos API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "chapters:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": null,
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/videos.json"
+  }
+]

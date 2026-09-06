@@ -1,0 +1,79 @@
+name: Version surfaces
+
+# Regression gate for the defect that shipped in @wave-av/mcp-server@0.2.0: the MCP
+# `initialize` handshake answered serverInfo.version = "0.1.0" while the package it came
+# from was 0.2.0. A client asking the server what it is got a wrong answer.
+#
+# scripts/check-version-surfaces.mjs asserts EQUALITY between package.json's version and
+# every place this package states its own version -- serverInfo, --version, the --help
+# banner, and the outbound User-Agent captured off a loopback listener -- plus a scan of
+# src/ for hardcoded semver literals, which is the defect CLASS rather than the value.
+#
+# Two arms, because they fail differently:
+#   built    -- catches a regression in the source on this PR.
+#   packed   -- catches a regression that only appears in the installed layout. The version
+#               is resolved at runtime by walking to the nearest package.json, and the repo
+#               build (src/, dist/) and a consumer's tree (node_modules/@wave-av/mcp-server)
+#               are not the same layout. Only this arm proves what a user actually gets.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: version-surfaces-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  version-surfaces:
+    name: Version surfaces agree with package.json
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22']
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      # Arm 1 -- the build in this working tree.
+      - name: Version surfaces (built tree)
+        run: node scripts/check-version-surfaces.mjs
+
+      # Arm 2 -- the artifact a consumer installs. `npm pack` then a clean-room install
+      # outside the workspace, so nothing resolves through the repo's own node_modules.
+      - name: Pack and install into a clean room
+        run: |
+          set -euo pipefail
+          TARBALL="$(npm pack --json | node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(0,'utf8'))[0].filename)")"
+          case "$TARBALL" in
+            *.tgz) ;;
+            *) echo "::error::npm pack --json reported '$TARBALL', not a .tgz filename"; exit 1 ;;
+          esac
+          test -f "$TARBALL"
+          mkdir -p "$RUNNER_TEMP/verspace"
+          cd "$RUNNER_TEMP/verspace"
+          npm init -y >/dev/null
+          npm install "$GITHUB_WORKSPACE/$TARBALL" --registry=https://registry.npmjs.org
+          npm ls @wave-av/mcp-server
+
+      - name: Version surfaces (installed artifact)
+        run: |
+          node scripts/check-version-surfaces.mjs \
+            "$RUNNER_TEMP/verspace/node_modules/@wave-av/mcp-server"
