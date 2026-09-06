@@ -1,0 +1,15 @@
+{
+  "artifact": "skills.json",
+  "fetchedAt": "2026-09-05T23:06:00Z",
+  "url": "https://gateway.wave.online/.well-known/wave-skills.json",
+  "command": "curl -sS https://gateway.wave.online/.well-known/wave-skills.json",
+  "sha256": "d08e60c51e8596315cde494f4ceebaffc4e9ebc21a242f909fe6487cbf79f97c",
+  "counts": {
+    "total": 179,
+    "priced": 40,
+    "x402Shaped": 176,
+    "free": 2,
+    "metered": 1
+  },
+  "notes": "priced = pricing.meter is non-null (a real Metronome meter assigned); x402Shaped = pricing.model === 'x402'. Matches FRONT-DOOR-SYSTEM.md's claimed 40 priced / 176 x402-shaped exactly."
+}
