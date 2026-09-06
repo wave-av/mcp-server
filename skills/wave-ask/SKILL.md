@@ -9,6 +9,9 @@ description: "Propose a WAVE media pipeline (captions/clips/dub/realtime/identit
 
 An agent has a media-processing goal (captions, clips, dub, identity, x402
 rails) and wants the WAVE product/MCP tool/price shape for it before calling.
+"Identity" resolves via the real `identity_resolve` MCP tool only — no
+dedicated identity product exists in the catalog yet, so its proposal's
+`productIds` is empty by design, never a fabricated id.
 
 ## When NOT to use
 

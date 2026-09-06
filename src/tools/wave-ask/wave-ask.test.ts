@@ -39,6 +39,15 @@ test("input schema rejects an empty question", () => {
   assert.throws(() => InputSchema.parse({ question: "" }));
 });
 
+test("input schema trims and rejects a whitespace-only question", () => {
+  assert.throws(() => InputSchema.parse({ question: "   \n\t  " }));
+});
+
+test("input schema trims surrounding whitespace off an otherwise valid question", () => {
+  const parsed = InputSchema.parse({ question: "  clip a two-hour stream  " });
+  assert.equal(parsed.question, "clip a two-hour stream");
+});
+
 test("input schema rejects a question over 500 characters", () => {
   assert.throws(() => InputSchema.parse({ question: "a".repeat(501) }));
 });

@@ -1,9 +1,14 @@
 // `wave.ask` — the agent rendering of the WAVE conversational front door
-// composer. Registered as tool #70 in the gateway's MCP listing per
-// designs/front-door/AGENT-MANIFEST-PLAN-2026-09-05.md §3(c): it PROPOSES a
-// composition of WAVE products/tools/meters for a plain-language goal and
-// NEVER executes anything — it calls no other tool, fetches no network
-// resource, and its output always carries the literal `executes: false`.
+// composer. Registered here as the 24th tool in THIS package's own registry
+// (src/tools/index.ts) — becoming "tool #70" in the live gateway's `/mcp`
+// listing (the design plan's numbering) is a separate deploy of the gateway
+// itself, not something this repo does. The schema/behavior follow
+// designs/front-door/AGENT-MANIFEST-PLAN-2026-09-05.md §3(c) in the
+// wave-pen-register-wt repo (that design doc is NOT part of this checkout;
+// cited for provenance only). It PROPOSES a composition of WAVE
+// products/tools/meters for a plain-language goal and NEVER executes
+// anything — it calls no other tool, fetches no network resource, and its
+// output always carries the literal `executes: false`.
 //
 // Description/field-doc prose below is adapted from the wave-writer pass at
 // wave-pen-register-wt designs/front-door/AGENT-COPY-2026-09-05/
@@ -36,6 +41,7 @@ export const waveAskTools: WaveToolDef[] = [
     inputSchema: {
       question: z
         .string()
+        .trim()
         .min(1, "question must not be empty")
         .max(500, "question must be 500 characters or fewer")
         .describe(

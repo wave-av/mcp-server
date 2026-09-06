@@ -10,8 +10,8 @@
 // question arrived — the same question always produces the same composition
 // (determinism), and the output is filtered through the knowledge Sets again
 // at call time as a second, defense-in-depth grounding check (see
-// `groundToKnownProducts`/`groundToKnownTools` below) in case a future edit to
-// this table introduces a typo.
+// `groundProductIds`/`groundTools` below) in case a future edit to this table
+// introduces a typo.
 //
 // This module makes NO network calls and calls NO other tool — `executes` is
 // always the literal `false`, never derived from input.
@@ -32,7 +32,13 @@ export interface PriceRow {
 }
 
 export interface AskProposal {
-  /** The goal restated in one line — a direct echo/trim of the input, never a source of fact about products, tools, or price. */
+  /**
+   * The goal restated in one line — a direct trim of the caller's own `question` text, UNVALIDATED
+   * and untrusted. This is a display label only; it is never checked against the knowledge set and
+   * MUST NOT be read as a grounded fact or an endorsement of any name it happens to contain (a
+   * caller can put anything here, including a fabricated product/tool name). Only `productIds`,
+   * `tools`, and `meters` are grounding-checked — never `intent`.
+   */
   readonly intent: string;
   /** The pipeline steps for the proposed flow, e.g. `["realtime", "captions"]`. */
   readonly stages: readonly string[];
@@ -87,7 +93,7 @@ const GOAL_SIGNATURES: readonly GoalSignature[] = [
     // (cited verbatim in src/tools/wave-ask/wave-ask.test.ts).
     productIds: ["sentiment", "search", "clips"],
     tools: ["wave_detect_clips", "wave_create_clip", "wave_list_clips"],
-    adjacent: "agent path via MCP: call wave_create_clip directly for a visitor building an integration",
+    adjacent: "captions burned into each clip before it is shared",
   },
   {
     id: "sentiment",
@@ -105,7 +111,7 @@ const GOAL_SIGNATURES: readonly GoalSignature[] = [
     // resolve to the same transcribe -> voice -> podcast pipeline.
     productIds: ["transcribe", "voice", "podcast"],
     tools: ["wave_create_transcription", "wave_generate_speech", "wave_create_podcast_episode", "wave_create_podcast_show"],
-    adjacent: "saved-flow signup: keep this dub pipeline for the next episode (post-GA)",
+    adjacent: "chapters generated from the same transcript for the episode description",
   },
   {
     id: "chapters",
@@ -154,14 +160,24 @@ const GOAL_SIGNATURES: readonly GoalSignature[] = [
     triggers: ["control room", "shared control room", "remote crew"],
     productIds: ["collab"],
     tools: ["wave_create_collab_room", "wave_get_collab_room", "wave_list_collab_rooms"],
-    adjacent: "agent path via MCP: call wave_create_collab_room directly",
+    adjacent: "record the shared control room session for later editing",
   },
   {
     id: "editor",
     triggers: ["describe a cut", "finished video back", "no editor"],
     productIds: ["editor"],
     tools: ["wave_render_video", "wave_render_poll"],
-    adjacent: "agent path via MCP: call wave_render_video directly",
+    adjacent: "auto-chapter the finished cut before publishing",
+  },
+  {
+    id: "identity",
+    triggers: ["resolve identity", "verify identity", "identity resolution", "verify a wallet", "who is this caller"],
+    // No dedicated "identity" product exists in knowledge/products.json today (verified against
+    // the 53-entry snapshot) — grounded via the real identity_resolve MCP tool only, never a
+    // fabricated product id. See skills/wave-ask/SKILL.md's note on this.
+    productIds: [],
+    tools: ["identity_resolve"],
+    adjacent: "check facilitator/x402 rail status alongside identity resolution",
   },
   {
     id: "gateway",
@@ -254,16 +270,18 @@ function buildNext(
   const rungs: string[] = [];
   if (typeof budgetUsd === "number") {
     rungs.push(
-      `budget check: confirm the live 402 quote for each priceRow against your $${budgetUsd} budget ` +
-        "before calling — quotes are only accurate at call time, never pre-computed here",
+      `budget check: confirm the live 402 quote for each priceRow against your $${budgetUsd.toFixed(2)} ` +
+        "budget before calling — quotes are only accurate at call time, never pre-computed here",
     );
   }
   rungs.push(`adjacent capability: ${signature.adjacent}`);
   const flatRow = priceRows.find((row) => row.meter === null);
   if (flatRow) {
+    // Labeled by pricing SHAPE, not by cost: this module never fetches a live quote, so it never
+    // compares flatRow's price against a metered alternative and must not claim it is "cheaper".
     rungs.push(
-      `cheaper route: ${flatRow.productId} bills a flat x402 floor price with no per-unit meter — ` +
-        "confirm the live 402 quote before calling",
+      `flat-priced route: ${flatRow.productId} bills a flat x402 floor price with no per-unit meter ` +
+        "— confirm the live 402 quote before calling",
     );
   }
   if (tools.length > 0) {

@@ -150,3 +150,40 @@ test("budgetUsd reorders next[] to lead with a budget-check suggestion, never a 
   assert.deepEqual(withBudget.productIds, withoutBudget.productIds);
   assert.deepEqual(withBudget.priceRows, withoutBudget.priceRows);
 });
+
+test("budgetUsd is formatted to 2 decimal places in next[], never unbounded precision", () => {
+  const proposal = compose("live captions from my mic", 12.3456789);
+  assert.ok(proposal.next[0]!.includes("$12.35"));
+  assert.ok(!proposal.next[0]!.includes("12.3456789"));
+});
+
+test("identity resolves via identity_resolve with no fabricated product id", () => {
+  const proposal = compose("verify identity for this caller");
+  assert.deepEqual(proposal.productIds, []);
+  assert.deepEqual(proposal.tools, ["identity_resolve"]);
+  assert.deepEqual(proposal.priceRows, []);
+  assert.equal(proposal.executes, false);
+});
+
+test("no signature's next[] duplicates the same rung category twice", () => {
+  const categories = (rungs: readonly string[]): string[] =>
+    rungs.map((r) => r.split(":")[0]!.trim());
+  for (const question of [
+    "clip a two-hour stream",
+    "turn a recording into a podcast",
+    "open a shared control room for my remote crew",
+    "describe a cut and get a finished video back, no editor",
+    ...SEEDED_INTENTS,
+  ]) {
+    const proposal = compose(question);
+    const cats = categories(proposal.next);
+    assert.equal(new Set(cats).size, cats.length, `"${question}" produced duplicate rung categories: ${cats.join(", ")}`);
+  }
+});
+
+test("a flat-rate priceRow is labeled by pricing shape, never claimed 'cheaper' without a comparison", () => {
+  const proposal = compose("turn a recording into a podcast"); // podcast skill has meter: null
+  const flatRung = proposal.next.find((n) => n.startsWith("flat-priced route:"));
+  assert.ok(flatRung, "expected a flat-priced route suggestion");
+  assert.ok(!proposal.next.some((n) => n.startsWith("cheaper route:")));
+});

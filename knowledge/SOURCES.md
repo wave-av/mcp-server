@@ -1,5 +1,17 @@
 # Front-door knowledge set — sources
 
+> **Scope note for this checkout (wave-av/mcp-server):** this file is copied verbatim from
+> `wave-pen-register-wt` `designs/front-door/knowledge/SOURCES.md` (source repo, not part of this
+> checkout) for full fetch provenance. Only THREE of the artifacts described below are actually
+> bundled here, alongside this file, under this repo's own `knowledge/`: `products.json`,
+> `skills.json`, `mcp-tools.json` (each with its `.meta.json` sidecar) — these are exactly what
+> `src/knowledge.ts` loads and `src/tools/wave-ask/compose.ts` grounds against. The other rows
+> (`openapi-paths.json`, `models.json`, `catalog-projection.json`) and the `git -C api-spec` /
+> `git -C wave-www` reproduction commands below describe the SOURCE repo's broader knowledge set
+> and are kept for context/provenance only — they are not files in this repo and their commands
+> cannot be re-run from here. `front-door.copy.json` and `tools/front-door-parity.mjs` (mentioned
+> below) are likewise source-repo-only artifacts, not present in this checkout.
+
 Every file in `designs/front-door/knowledge/` is a real, fetched-or-git-shown artifact with a
 sidecar `<name>.meta.json` (fetchedAt, url/command, sha256, counts). Nothing here is re-derived
 from memory or from the design doc's prose — the design doc (`FRONT-DOOR-SYSTEM.md`) now cites
