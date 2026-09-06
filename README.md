@@ -109,22 +109,23 @@ is rejected before anything runs.
 | `WAVE_PEN_EXTRACT_ROOT` | `$HOME/wave-av/wave-pen-register-wt/packages/pen-extract` | Root of the `@wave-av/pen-extract` checkout |
 | `WAVE_LOC_STUDY_ROOT` | `$HOME/wave-av/wave-design-study-wt/tools/loc-study` | Root of the `@wave-av/loc-study` checkout |
 
-## Available tools — Ask (front door composer)
+## Available tools — Compose (front door composer)
 
-`wave.ask` is the agent rendering of the WAVE conversational front door
-composer (`designs/front-door/AGENT-MANIFEST-PLAN-2026-09-05.md` in
-`wave-pen-register-wt`): given a goal in plain language, it **proposes** a
-composition of WAVE products/tools/meters — it never executes anything and
-never fetches the network.
+`wave_compose` is the agent rendering of the WAVE conversational front door
+composer (`designs/front-door/PR4-BRIEF.md` in `wave-pen-register-wt`): given
+a goal in plain language, it **proposes** a composition of WAVE
+products/tools/meters — it never executes anything itself.
 
 | Tool | Description |
 | --- | --- |
-| `wave.ask` | Propose a WAVE media pipeline (captions/clips/dub/realtime/identity/...) for a goal stated in plain language. Read-only, propose-only: calls no other tool, makes no network request. |
+| `wave_compose` | Propose a WAVE media pipeline (captions/clips/dub/realtime/identity/...) for a goal stated in plain language. Calls the live gateway `POST /v1/compose` when `WAVE_API_KEY` is configured (`grounding: "gateway"`); falls back to a bundled snapshot composition when no key is set or the live call fails, errors, or times out after 3s (`grounding: "snapshot"`) — never a dead end. Propose-only: calls no other tool itself. |
+| `wave.ask` | **Deprecated** — use `wave_compose` instead. Kept as an offline-only alias for one release (calls no other tool, makes no network request; identical composition logic to `wave_compose`'s snapshot fallback, without the `grounding` field). |
 
-- **Input**: `{ question: string, budgetUsd?: number }`.
-- **Output**: `{ intent, stages[], productIds[], tools[], meters[], priceRows[], executes: false, next[] }` — always `executes: false`, never a `model` field (no sourced Dispatch model catalog exists yet).
-- **Grounded, not generated**: every `productIds[]`/`tools[]`/`meters[]` entry is checked against a bundled, measured snapshot of the live platform (`knowledge/products.json` — 53 products, `knowledge/skills.json` — 179 skills with pricing, `knowledge/mcp-tools.json` — 69 live gateway tools; see `knowledge/SOURCES.md` for fetch provenance). A goal the composer doesn't recognize, or one that mentions a name outside that snapshot, always falls back to a real, grounded composition — never a fabricated one and never a dead end.
-- **Pricing is never invented**: each `priceRows[]` entry carries the skill's real `meter` (or `null` for flat-rate skills) and a `priceShape` read straight off the skill's pricing block; the `quote` field is always `"quote at call time"` — this tool never calls the gateway's live 402 endpoint, so it never guesses a number.
+- **Input**: `{ intent: string, budgetUsd?: number }` (`wave_compose`) / `{ question: string, budgetUsd?: number }` (`wave.ask`, deprecated).
+- **Output**: `{ intent, stages[], productIds[], tools[], meters[], priceRows[], executes: false, next[], grounding }` (`wave_compose`; `grounding` is `"gateway"` or `"snapshot"`) or the gateway's own object verbatim plus `grounding: "gateway"` when a live call succeeds. `wave.ask`'s output omits `grounding` but is otherwise identical. Always `executes: false`, never a `model` field (no sourced Dispatch model catalog exists yet).
+- **Grounded, not generated, in the snapshot path**: every `productIds[]`/`tools[]`/`meters[]` entry is checked against a bundled, measured snapshot of the live platform (`knowledge/products.json` — 59 products, `knowledge/skills.json` — 179 skills with pricing, `knowledge/mcp-tools.json` — 93 live gateway tools; see `knowledge/SOURCES.md` for fetch provenance). A goal the composer doesn't recognize, or one that mentions a name outside that snapshot, always falls back to a real, grounded composition — never a fabricated one and never a dead end.
+- **Pricing is never invented** in the snapshot path: each `priceRows[]` entry carries the skill's real `meter` (or `null` for flat-rate skills) and a `priceShape` read straight off the skill's pricing block; the `quote` field is always `"quote at call time"`.
+- **The `WAVE_API_KEY` never goes anywhere but the gateway**: `wave_compose`'s live call sends it only as the `Authorization` header on `POST {WAVE_BASE_URL}/v1/compose`; it is never logged and never echoed into the tool's returned content, including on a failed call (which falls back to the snapshot path instead of surfacing an error).
 - See `skills/wave-ask/SKILL.md` for the full agent-facing how-to-call contract.
 
 ## Available tools — Voice
@@ -275,7 +276,8 @@ MIT
 | Compose and validate a design-contract.json from an extract dir. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Measure a print image or rasterized plate SVG with loc-study. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Validate an existing design-contract.json against the schema. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Propose a WAVE media pipeline (captions/clips/dub/realtime/...) for a goal in plain language; never executes. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Deprecated (use wave_compose): propose a WAVE media pipeline (captions/clips/dub/realtime/...) for a goal in plain language; never executes. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Propose a WAVE media pipeline for a goal in plain language. Calls the live gateway when a key is configured; falls back to a bundled snapshot otherwise. Never executes. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 
 ## For AI agents
 
@@ -290,7 +292,7 @@ Every claim below is checked by `npm run verify` against the live repo or endpoi
 | Documentation surface is docs.wave.online/mcp | resolved by grepping `package.json` |
 | Published npm package name is @wave-av/mcp-server | resolved by grepping `package.json` |
 | wave_control_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
-| Exposes 24 MCP tools | resolved by grepping `capabilities.json` |
+| Exposes 25 MCP tools | resolved by grepping `capabilities.json` |
 | wave_voice_converse tool defined in src/tools/voice.ts | resolved by grepping `src/tools/voice.ts` |
 | wave_design_extract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
 | wave_design_contract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
@@ -315,6 +317,7 @@ Every claim below is checked by `npm run verify` against the live repo or endpoi
 | wave_get_usage tool defined in src/tools/billing.ts | resolved by grepping `src/tools/billing.ts` |
 | Server connects via stdio transport (no network listener) | resolved by grepping `src/server.ts` |
 | wave.ask tool defined in src/tools/wave-ask/wave-ask.ts | resolved by grepping `src/tools/wave-ask/wave-ask.ts` |
+| wave_compose tool defined in src/tools/wave-ask/wave-compose.ts | resolved by grepping `src/tools/wave-ask/wave-compose.ts` |
 
 ## Topics
 

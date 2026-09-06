@@ -1,12 +1,13 @@
 {
   "artifact": "products.json",
-  "fetchedAt": "2026-09-05T23:06:00Z",
+  "fetchedAt": "2026-09-06T03:52:45Z",
   "url": "https://api.wave.online/.well-known/wave-products.json",
   "command": "curl -sS https://api.wave.online/.well-known/wave-products.json",
-  "sha256": "1c7686709abc10254d4751f2912fa5864b1d0ffaa7ffec031a693adbbadbfd27",
+  "sha256": "3cb3ece3baf9da22b26216d3b543d3a805111be64303f43b4ca10552ef649709",
   "counts": {
-    "total": 53,
+    "total": 59,
     "live": 9,
-    "preview": 44
-  }
+    "preview": 50
+  },
+  "note": "Re-fetched 2026-09-06; 6 new preview products since the 2026-09-05T23:06:00Z snapshot: acuity, badge, codec, email, gpu, interchange (all status: preview; live count unchanged at 9). No products removed."
 }

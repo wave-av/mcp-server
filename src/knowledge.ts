@@ -66,13 +66,13 @@ const productsFile = require("../knowledge/products.json") as ProductsFile;
 const skillsFile = require("../knowledge/skills.json") as readonly SkillEntry[];
 const mcpToolsFile = require("../knowledge/mcp-tools.json") as McpToolsFile;
 
-/** The 53-entry (measured 2026-09-05) product manifest — `wave-products.json`. */
+/** The 59-entry (measured 2026-09-06) product manifest — `wave-products.json`. */
 export const KNOWLEDGE_PRODUCTS: readonly ProductEntry[] = productsFile.products;
 
-/** The 179-entry (measured 2026-09-05) skills/pricing manifest — `wave-skills.json`. */
+/** The 179-entry (measured 2026-09-06) skills/pricing manifest — `wave-skills.json`. */
 export const KNOWLEDGE_SKILLS: readonly SkillEntry[] = skillsFile;
 
-/** The 69-entry (measured 2026-09-05) live MCP tool listing — `GET /mcp`. */
+/** The 93-entry (measured 2026-09-06) live MCP tool listing — `GET /mcp`. */
 export const KNOWLEDGE_MCP_TOOLS: readonly McpToolEntry[] = mcpToolsFile.tools;
 
 /** Fail loudly at import if the bundled snapshot drifts from its own measured shape. */

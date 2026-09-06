@@ -11,6 +11,16 @@
 > and are kept for context/provenance only — they are not files in this repo and their commands
 > cannot be re-run from here. `front-door.copy.json` and `tools/front-door-parity.mjs` (mentioned
 > below) are likewise source-repo-only artifacts, not present in this checkout.
+>
+> **Refreshed 2026-09-06 (mcp-server PR4-MCP)** to the source repo's next snapshot
+> (`fetchedAt: 2026-09-06T03:52:45Z`): `products.json` 53→**59** (6 new preview products: acuity,
+> badge, codec, email, gpu, interchange; live count unchanged at 9), `mcp-tools.json` 69→**93** (24
+> new tools: camera/production/stream/analytics/billing/usage/moderation coverage groups),
+> `skills.json` unchanged at **179** entries (content moved under the same names; see that file's
+> own `.meta.json` `notes`). The Index table and the counts elsewhere in this file below this
+> notice describe the PRIOR (2026-09-05) snapshot and are kept for the reconciliation narrative's
+> own internal consistency — the three bundled `.meta.json` sidecars in this repo's `knowledge/`
+> are the current, authoritative counts; see those files' own `counts`/`fetchedAt`/`sha256`.
 
 Every file in `designs/front-door/knowledge/` is a real, fetched-or-git-shown artifact with a
 sidecar `<name>.meta.json` (fetchedAt, url/command, sha256, counts). Nothing here is re-derived

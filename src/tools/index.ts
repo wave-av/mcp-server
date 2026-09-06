@@ -14,6 +14,7 @@ import { productionTools } from "./production.js";
 import { voiceTools } from "./voice.js";
 import { designTools } from "./design.js";
 import { waveAskTools } from "./wave-ask/wave-ask.js";
+import { waveComposeTools } from "./wave-ask/wave-compose.js";
 
 export const allTools: readonly WaveToolDef[] = [
   ...streamTools,
@@ -24,6 +25,7 @@ export const allTools: readonly WaveToolDef[] = [
   ...voiceTools,
   ...designTools,
   ...waveAskTools,
+  ...waveComposeTools,
 ];
 
 // Drift/typo guard: tool names must be unique. Runs once at import (cheap) and

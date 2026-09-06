@@ -23,6 +23,12 @@
 // as an omitted/placeholder value, and the productIds/tools/meters/priceRows/
 // executes/next field names are this repo's own (not that file's
 // utterance/products/callShape/priceShape/nextSuggestion names).
+//
+// DEPRECATED (PR4-MCP): `wave_compose` (./wave-compose.ts) is the registered
+// successor — it calls the live gateway `/v1/compose` route when a key is
+// configured and falls back to this exact same offline `compose()` otherwise.
+// `wave.ask` is kept, unchanged, as an offline-only alias for one release so
+// existing callers do not break; new callers should use `wave_compose`.
 import { z } from "zod";
 import { compose } from "./compose.js";
 import { defineTool, textContent, type WaveToolDef } from "../shared.js";
@@ -31,13 +37,14 @@ export const waveAskTools: WaveToolDef[] = [
   defineTool({
     name: "wave.ask",
     description:
-      "Propose a WAVE flow (product + MCP tool + price shape) for a media-processing goal stated in " +
-      "plain language (captions/clips/dub/realtime/identity/x402/...). Reads only: checks a bundled, " +
-      "measured snapshot of the product/skill/tool manifests (knowledge/*.json) — never the live network. " +
-      "Never executes: calls no other tool, signs no payment, and makes no side-effecting or network " +
-      "request. Returns a proposal object for you to call yourself; always carries the literal " +
-      "`executes: false` and never a `model` field (no sourced Dispatch model catalog exists). See " +
-      "skills/wave-ask/SKILL.md for the full contract.",
+      "Deprecated: use `wave_compose` instead. `wave.ask` is kept as an offline-only alias for one " +
+      "release and will be removed after that. Propose a WAVE flow (product + MCP tool + price shape) " +
+      "for a media-processing goal stated in plain language (captions/clips/dub/realtime/identity/" +
+      "x402/...). Reads only: checks a bundled, measured snapshot of the product/skill/tool manifests " +
+      "(knowledge/*.json) — never the live network. Never executes: calls no other tool, signs no " +
+      "payment, and makes no side-effecting or network request. Returns a proposal object for you to " +
+      "call yourself; always carries the literal `executes: false` and never a `model` field (no " +
+      "sourced Dispatch model catalog exists). See skills/wave-ask/SKILL.md for the full contract.",
     inputSchema: {
       question: z
         .string()

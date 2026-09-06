@@ -140,18 +140,23 @@
     },
     {
       "id": "wave.ask",
-      "does": "Propose a WAVE media pipeline (captions/clips/dub/realtime/...) for a goal stated in plain language, grounded in a bundled products/skills/mcp-tools snapshot. Never executes; makes no network request.",
+      "does": "Deprecated (use wave_compose): propose a WAVE media pipeline (captions/clips/dub/realtime/...) for a goal stated in plain language, grounded in a bundled products/skills/mcp-tools snapshot. Never executes; makes no network request.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_compose",
+      "does": "Propose a WAVE media pipeline for a goal stated in plain language. Calls the live gateway POST /v1/compose when WAVE_API_KEY is configured; falls back to the same bundled products/skills/mcp-tools snapshot as wave.ask when no key is set or the live call fails. Never executes.",
       "status": "preview"
     }
   ],
   "claims": [
     {
       "id": "claim-tool-count",
-      "text": "Exposes 24 MCP tools",
+      "text": "Exposes 25 MCP tools",
       "resolver": {
         "type": "grep",
         "target": "capabilities.json",
-        "expect": "24-tools"
+        "expect": "25-tools"
       }
     },
     {
@@ -395,6 +400,15 @@
         "type": "grep",
         "target": "src/tools/wave-ask/wave-ask.ts",
         "expect": "wave.ask"
+      }
+    },
+    {
+      "id": "claim-tool-compose",
+      "text": "wave_compose tool defined in src/tools/wave-ask/wave-compose.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/wave-ask/wave-compose.ts",
+        "expect": "wave_compose"
       }
     }
   ],

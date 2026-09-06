@@ -263,6 +263,18 @@
       ]
     },
     {
+      "id": "acuity",
+      "name": "Acuity",
+      "url": "https://acuity.wave.online",
+      "accent": "#3fe6c0",
+      "status": "preview",
+      "blurb": "regression watchtower \u2014 catch a fix that made things worse before it ships",
+      "cta": [
+        "Watch a fix for regressions",
+        "Gate a release on before/after quality"
+      ]
+    },
+    {
       "id": "aes67",
       "name": "AES67",
       "url": "https://aes67.wave.online",
@@ -299,6 +311,18 @@
       ]
     },
     {
+      "id": "badge",
+      "name": "Badge",
+      "url": "https://badge.wave.online",
+      "accent": "#31e5d1",
+      "status": "preview",
+      "blurb": "verification badges \u2014 prove a stream or clip is authentic WAVE output",
+      "cta": [
+        "Badge a stream as verified",
+        "Prove a clip's provenance"
+      ]
+    },
+    {
       "id": "blog",
       "name": "Blog",
       "url": "https://blog.wave.online",
@@ -320,6 +344,18 @@
       "cta": [
         "See what shipped this week",
         "Track platform changes by date"
+      ]
+    },
+    {
+      "id": "codec",
+      "name": "Codec",
+      "url": "https://codec.wave.online",
+      "accent": "#f05c3e",
+      "status": "preview",
+      "blurb": "codec negotiation and packaging for delivery at the edge",
+      "cta": [
+        "Negotiate a codec by API",
+        "Package media for any player"
       ]
     },
     {
@@ -371,6 +407,18 @@
       ]
     },
     {
+      "id": "email",
+      "name": "Email",
+      "url": "https://email.wave.online",
+      "accent": "#c0ce51",
+      "status": "preview",
+      "blurb": "inbound email capture, sender verification, and human-approved AI replies",
+      "cta": [
+        "Capture inbound email by API",
+        "Approve an AI reply before it sends"
+      ]
+    },
+    {
       "id": "encode",
       "name": "Encode",
       "url": "https://encode.wave.online",
@@ -419,6 +467,18 @@
       ]
     },
     {
+      "id": "gpu",
+      "name": "GPU Edge",
+      "url": "https://gpu.wave.online",
+      "accent": "#3fe6c1",
+      "status": "preview",
+      "blurb": "GPU-accelerated media jobs at the edge",
+      "cta": [
+        "Run a GPU job at the edge",
+        "Accelerate a render with GPU"
+      ]
+    },
+    {
       "id": "inference",
       "name": "Inference",
       "url": "https://inference.wave.online",
@@ -428,6 +488,18 @@
       "cta": [
         "Run a model over your media",
         "Score frames as they arrive"
+      ]
+    },
+    {
+      "id": "interchange",
+      "name": "Interchange",
+      "url": "https://interchange.wave.online",
+      "accent": "#23cce4",
+      "status": "preview",
+      "blurb": "format interchange \u2014 move media and metadata between systems",
+      "cta": [
+        "Interchange media between systems",
+        "Move metadata across formats"
       ]
     },
     {

@@ -8,12 +8,12 @@ name: Smoke install
 #      count, so it can never go stale the way a hand-bumped number does (see
 #      scripts/smoke-mcp.mjs's `capabilities` mode).
 #   3. A live --all run calls the 18 gateway-backed tools (design tools,
-#      wave_voice_converse, and wave.ask are local/propose-only and not
-#      gateway routes, so --all skips them) against https://api.wave.online
-#      with the repo secret and prints one row per tool. Some rows are
-#      expected to fail until dependent WAVE services finish deploying (see
-#      CHANGELOG); the job still asserts tools/list matches capabilities.json
-#      and the --all row count is 18 either way.
+#      wave_voice_converse, wave.ask, and wave_compose are local/propose-only
+#      and not gateway CRUD routes, so --all skips them) against
+#      https://api.wave.online with the repo secret and prints one row per
+#      tool. Some rows are expected to fail until dependent WAVE services
+#      finish deploying (see CHANGELOG); the job still asserts tools/list
+#      matches capabilities.json and the --all row count is 18 either way.
 # Step 3 skips honestly when WAVE_GATEWAY_API_KEY is absent (forks, unset).
 on:
   push:

@@ -1,9 +1,9 @@
 {
   "artifact": "skills.json",
-  "fetchedAt": "2026-09-05T23:06:00Z",
+  "fetchedAt": "2026-09-06T03:52:45Z",
   "url": "https://gateway.wave.online/.well-known/wave-skills.json",
   "command": "curl -sS https://gateway.wave.online/.well-known/wave-skills.json",
-  "sha256": "d08e60c51e8596315cde494f4ceebaffc4e9ebc21a242f909fe6487cbf79f97c",
+  "sha256": "68ac7162d28276536149a27feab59d0bc14d1545285168319a5771286b2a293f",
   "counts": {
     "total": 179,
     "priced": 40,
@@ -11,5 +11,5 @@
     "free": 2,
     "metered": 1
   },
-  "notes": "priced = pricing.meter is non-null (a real Metronome meter assigned); x402Shaped = pricing.model === 'x402'. Matches FRONT-DOOR-SYSTEM.md's claimed 40 priced / 176 x402-shaped exactly."
+  "notes": "priced = pricing.meter is non-null (a real Metronome meter assigned); x402Shaped = pricing.model === 'x402'. Matches FRONT-DOOR-SYSTEM.md's claimed 40 priced / 176 x402-shaped exactly. Total/priced/x402/free/metered counts UNCHANGED from the 2026-09-05T23:06:00Z snapshot (re-fetch with the `command` above and diff), but content moved under the same names: 8 skills gained real methods[] (methods_source now 'openapi' instead of 'unknown') -- analytics, billing, cameras, moderate, productions, streams, usage, matching the same 7 new MCP-tool groups added live (cameras/productions/streams/analytics/billing/usage/moderation), plus live (/v1/live, methods ['POST']). transcribe's pricing.currency/network also corrected from a stray 'pathUSD'/'tempo' typo to the standard 'USDC'/'base'."
 }
