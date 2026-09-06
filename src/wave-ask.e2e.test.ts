@@ -158,3 +158,162 @@ test("e2e: tools/call wave.ask surfaces an invalid input (empty question) as isE
     await close();
   }
 });
+
+// ---------------------------------------------------------------------------
+// wave_compose — the registered successor to wave.ask. See
+// src/tools/wave-ask/wave-compose.ts for the fallback contract this exercises:
+// live gateway call when WAVE_API_KEY is set and the call succeeds
+// (grounding: "gateway"), the same offline wave.ask proposal otherwise
+// (grounding: "snapshot"), never a dead end. `fetch` is monkey-patched
+// in-process for the gateway-path tests below — no real outbound HTTP is
+// ever made; every stub asserts its own call count as an extra guard.
+// ---------------------------------------------------------------------------
+const ComposeProposalSchema = AskProposalSchema.extend({ grounding: z.literal("snapshot") });
+
+const ORIGINAL_FETCH = globalThis.fetch;
+const ORIGINAL_API_KEY = process.env["WAVE_API_KEY"];
+
+function restoreFetchAndKey(): void {
+  globalThis.fetch = ORIGINAL_FETCH;
+  if (ORIGINAL_API_KEY === undefined) delete process.env["WAVE_API_KEY"];
+  else process.env["WAVE_API_KEY"] = ORIGINAL_API_KEY;
+}
+
+test("e2e: server tools/list includes wave_compose alongside wave.ask", async () => {
+  const { client, close } = await connectedClient();
+  try {
+    const { tools } = await client.listTools();
+    const names = tools.map((t) => t.name);
+    assert.ok(names.includes("wave.ask"), "wave.ask missing from tools/list");
+    assert.ok(names.includes("wave_compose"), "wave_compose missing from tools/list");
+    assert.equal(new Set(names).size, names.length, "duplicate tool name registered");
+
+    const waveCompose = tools.find((t) => t.name === "wave_compose")!;
+    assert.match(waveCompose.description ?? "", /never execute/i);
+    assert.match(waveCompose.description ?? "", /registered successor/i);
+    assert.equal(waveCompose.inputSchema.type, "object");
+    const props = waveCompose.inputSchema.properties as Record<string, unknown> | undefined;
+    assert.ok(props, "wave_compose inputSchema has no properties");
+    assert.ok("intent" in props!, "wave_compose inputSchema missing `intent`");
+    assert.ok("budgetUsd" in props!, "wave_compose inputSchema missing `budgetUsd`");
+    assert.deepEqual(waveCompose.inputSchema.required, ["intent"]);
+
+    const waveAsk = tools.find((t) => t.name === "wave.ask")!;
+    assert.match(waveAsk.description ?? "", /deprecated/i);
+    assert.match(waveAsk.description ?? "", /wave_compose/);
+  } finally {
+    await close();
+  }
+});
+
+test("e2e: tools/call wave_compose with no WAVE_API_KEY set returns a valid snapshot proposal and never calls fetch", async () => {
+  delete process.env["WAVE_API_KEY"];
+  let fetchCalls = 0;
+  globalThis.fetch = (async () => {
+    fetchCalls++;
+    throw new Error("fetch must not be called when WAVE_API_KEY is unset");
+  }) as typeof fetch;
+
+  const { client, close } = await connectedClient();
+  try {
+    const result = await client.callTool({
+      name: "wave_compose",
+      arguments: { intent: "live captions from my mic" },
+    });
+    const parsed = ComposeProposalSchema.parse(parseToolText(result));
+    assert.equal(parsed.grounding, "snapshot");
+    assert.deepEqual(parsed.productIds, ["realtime", "transcribe", "captions"]);
+    assert.equal(fetchCalls, 0);
+  } finally {
+    await close();
+    restoreFetchAndKey();
+  }
+});
+
+test("e2e: tools/call wave_compose with a stubbed 200 gateway response returns the gateway object as-is, tagged grounding: gateway", async () => {
+  process.env["WAVE_API_KEY"] = "test-key-not-real";
+  const gatewayBody = {
+    intent: "live captions from my mic",
+    productIds: ["realtime", "transcribe", "captions"],
+    stages: [{ product: "realtime", why: "carries your webinar audio" }],
+    tools: ["perception_subscribe"],
+    executes: false,
+    next: ["add chapters after the webinar ends"],
+  };
+  let fetchCalls = 0;
+  let capturedUrl = "";
+  let capturedAuth: string | undefined;
+  globalThis.fetch = (async (url: string | URL, init?: RequestInit) => {
+    fetchCalls++;
+    capturedUrl = String(url);
+    capturedAuth = (init?.headers as Record<string, string> | undefined)?.["Authorization"];
+    return new Response(JSON.stringify(gatewayBody), { status: 200 });
+  }) as typeof fetch;
+
+  const { client, close } = await connectedClient();
+  try {
+    const result = await client.callTool({
+      name: "wave_compose",
+      arguments: { intent: "live captions from my mic" },
+    });
+    const parsed = parseToolText(result) as Record<string, unknown>;
+    assert.equal(parsed["grounding"], "gateway");
+    assert.deepEqual(parsed["productIds"], gatewayBody.productIds);
+    assert.deepEqual(parsed["stages"], gatewayBody.stages);
+    assert.equal(fetchCalls, 1);
+    assert.match(capturedUrl, /\/v1\/compose$/);
+    assert.equal(capturedAuth, "Bearer test-key-not-real");
+  } finally {
+    await close();
+    restoreFetchAndKey();
+  }
+});
+
+test("e2e: tools/call wave_compose with a stubbed 5xx gateway response falls back to a valid snapshot proposal", async () => {
+  process.env["WAVE_API_KEY"] = "test-key-not-real";
+  let fetchCalls = 0;
+  globalThis.fetch = (async () => {
+    fetchCalls++;
+    return new Response(JSON.stringify({ error: { code: "NOT_IMPLEMENTED" } }), { status: 501 });
+  }) as typeof fetch;
+
+  const { client, close } = await connectedClient();
+  try {
+    const result = await client.callTool({
+      name: "wave_compose",
+      arguments: { intent: "live captions from my mic" },
+    });
+    const parsed = ComposeProposalSchema.parse(parseToolText(result));
+    assert.equal(parsed.grounding, "snapshot");
+    assert.deepEqual(parsed.productIds, ["realtime", "transcribe", "captions"]);
+    assert.equal(fetchCalls, 1);
+  } finally {
+    await close();
+    restoreFetchAndKey();
+  }
+});
+
+test("e2e: tools/call wave_compose falls back to a valid snapshot proposal when the gateway call throws (network error)", async () => {
+  process.env["WAVE_API_KEY"] = "test-key-not-real";
+  globalThis.fetch = (async () => {
+    throw new Error("simulated network failure — must never surface, and must never mention the key");
+  }) as typeof fetch;
+
+  const { client, close } = await connectedClient();
+  try {
+    const result = await client.callTool({
+      name: "wave_compose",
+      arguments: { intent: "clip a two-hour stream" },
+    });
+    const parsed = ComposeProposalSchema.parse(parseToolText(result));
+    assert.equal(parsed.grounding, "snapshot");
+    assert.deepEqual(parsed.productIds, ["sentiment", "search", "clips"]);
+    // The tool's own returned text must never carry the stubbed error message or the key.
+    const raw = (result.content as Array<{ text?: string }>)[0]?.text ?? "";
+    assert.ok(!raw.includes("test-key-not-real"));
+    assert.ok(!raw.includes("simulated network failure"));
+  } finally {
+    await close();
+    restoreFetchAndKey();
+  }
+});
