@@ -11,7 +11,11 @@ name: Release (public npm)
 #                    PACKS the real tarball, installs it into a throwaway
 #                    project, and imports it -- root AND the ./sdk-server
 #                    subpath. ESM only: this package ships no `require`
-#                    condition, so a CJS arm would be a false failure.
+#                    condition, so a CJS arm would be a false failure. The
+#                    smoke then type-checks the installed tarball from the
+#                    CONSUMER's side (#77): root without the optional peer
+#                    dependency, ./sdk-server with it. Shipping a .d.ts is not
+#                    the same claim as shipping one that resolves.
 #   3. publish     — only after 1+2 pass. The tag version MUST equal
 #                    package.json version, and the npm dist-tag is derived from
 #                    the version: any prerelease -> `next`, stable -> `latest`,
@@ -207,6 +211,82 @@ jobs:
               process.exit(1);
             }
             console.log('types ok:',[...targets].join(', '));"
+
+          # -------------------------------------------------------------------
+          # Consumer-side TYPE RESOLUTION (#77).
+          #
+          # The check above proves the .d.ts files are IN the tarball. It does
+          # not prove they RESOLVE, and only the second is something a consumer
+          # experiences. `dist/sdk-server.d.ts` references a type from
+          # @anthropic-ai/claude-agent-sdk, which is an OPTIONAL peer, so the
+          # existence check would stay green on a package that fails to
+          # type-check for anyone who did not install that peer.
+          #
+          # Decision (a) on #77: requiring the peer to type-check ./sdk-server
+          # is honest -- that subpath exists to build a config for the Agent
+          # SDK, so a consumer using it has the SDK by definition. The contract
+          # this gate enforces is therefore:
+          #
+          #   root         must type-check WITHOUT the optional peer
+          #   ./sdk-server must type-check WITH it
+          #
+          # It deliberately does NOT assert that ./sdk-server fails without the
+          # peer. That would freeze today's behaviour into the gate and turn a
+          # future switch to self-contained declarations (option (b)) into a
+          # spurious release failure.
+          #
+          # Each arm gets its own throwaway project so its install shape is
+          # exactly what it claims to test -- re-running `npm install --no-save`
+          # in the smoke dir above would rebuild that tree from its (empty)
+          # package.json and could drop the tarball itself.
+          # -------------------------------------------------------------------
+          cd "$GITHUB_WORKSPACE"
+          # Pin both installs to the versions this repo's lockfile resolves. A
+          # floating `typescript@latest` would let a compiler release nobody
+          # vetted decide whether a publish goes out, and a floating peer could
+          # type-check against a different major than the one we build against.
+          #
+          # Read from package-lock.json, NOT `require('<pkg>/package.json')`:
+          # @anthropic-ai/claude-agent-sdk ships an `exports` map with no
+          # "./package.json" entry, so requiring its manifest as a subpath
+          # throws ERR_PACKAGE_PATH_NOT_EXPORTED -- the same trap the bin check
+          # above already documents for this package. And a package missing
+          # from the lockfile fails here rather than silently becoming an empty
+          # version string that installs whatever `latest` happens to be.
+          LOCKED="$(node -e "
+            const lock=require('./package-lock.json');
+            const pick=n=>{
+              const e=(lock.packages||{})['node_modules/'+n];
+              if(!e||!e.version){
+                console.error('::error title=version not pinned in lockfile::'+n+' has no resolved version in package-lock.json - refusing to install a floating version into the release gate');
+                process.exit(1);
+              }
+              return e.version;
+            };
+            process.stdout.write([pick('typescript'),pick('@types/node'),pick('@anthropic-ai/claude-agent-sdk')].join(' '));
+          ")"
+          read -r TSC_VERSION TYPES_NODE_VERSION PEER_VERSION <<< "$LOCKED"
+          echo "type-resolution arms: typescript@$TSC_VERSION, @types/node@$TYPES_NODE_VERSION, optional peer @anthropic-ai/claude-agent-sdk@$PEER_VERSION"
+
+          # ARM 1 — the plain consumer: the tarball and nothing else. @types/node
+          # is a stand-in for the ambient environment any Node consumer has, not
+          # a dependency of ours; see tsconfig.base.json.
+          ARM_ROOT="$(mktemp -d)"
+          cp -R "$GITHUB_WORKSPACE/scripts/smoke/consumer-types" "$ARM_ROOT/typecheck"
+          cd "$ARM_ROOT"
+          npm init -y >/dev/null 2>&1
+          npm install --no-save --ignore-scripts "$TARBALL" "typescript@$TSC_VERSION" "@types/node@$TYPES_NODE_VERSION" >/dev/null 2>&1
+          bash "$GITHUB_WORKSPACE/scripts/smoke/consumer-types/run-arm.sh" \
+            "$ARM_ROOT" tsconfig.root.json "root entry, optional peer NOT installed"
+
+          # ARM 2 — the Agent SDK consumer: the tarball plus the optional peer.
+          ARM_SDK="$(mktemp -d)"
+          cp -R "$GITHUB_WORKSPACE/scripts/smoke/consumer-types" "$ARM_SDK/typecheck"
+          cd "$ARM_SDK"
+          npm init -y >/dev/null 2>&1
+          npm install --no-save --ignore-scripts "$TARBALL" "typescript@$TSC_VERSION" "@types/node@$TYPES_NODE_VERSION" "@anthropic-ai/claude-agent-sdk@$PEER_VERSION" >/dev/null 2>&1
+          bash "$GITHUB_WORKSPACE/scripts/smoke/consumer-types/run-arm.sh" \
+            "$ARM_SDK" tsconfig.sdk-server.json "./sdk-server subpath, optional peer installed"
 
   # ---------------------------------------------------------------------------
   # Gate 3 — publish. Runs ONLY if secret-scan + verify are green.
