@@ -394,12 +394,20 @@ jobs:
   # 2026-04-02 while npm moved on to 0.2.1 and beyond — an older Release
   # advertised as "latest" while a newer version is the one anyone actually
   # gets from `npm install`, exactly the drift VER-001 (source ↔ tag ↔
-  # GitHub Release ↔ registry all agree) exists to catch
-  # (governance/ga-gate/evidence/VER-001-release-ledger-2026-09-06.md,
-  # wave-av/claude-workstation). Modelled on the proven, already-running
-  # `release` job in wave-av/sdk-python's release.yml, which creates/edits the
-  # Release the same idempotent way (gh release view -> create or upload).
-  # `contents: write` is scoped to ONLY this job — every other job in this
+  # GitHub Release ↔ registry all agree) exists to catch. Modelled on the
+  # proven, already-running `release` job in wave-av/sdk-python's release.yml,
+  # which creates/edits the Release the same idempotent way
+  # (gh release view -> create or edit).
+  #
+  # Three guards keep the Release honest: (1) the tag must still resolve to
+  # this run's commit — `gh release create` would otherwise re-create a deleted
+  # tag from the default branch, and a moved tag would bind the Release to a
+  # commit that was never published; (2) `*-*` versions go to npm's `next`
+  # dist-tag, so the same rule marks the Release `--prerelease` rather than
+  # letting an rc be advertised as "latest"; (3) an existing Release is left
+  # as-is only when it is actually published (a draft is published in place),
+  # and anything other than a confirmed not-found fails instead of racing on
+  # to a create. `contents: write` is scoped to ONLY this job — every other job in this
   # workflow stays `contents: read` (or unset, inheriting the top-level read).
   # ---------------------------------------------------------------------------
   create-release:
@@ -418,13 +426,46 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+          EXPECTED_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
-            echo "::notice::release $TAG already exists — leaving it as-is"
+
+          # Guard 1 — the tag must still point at the commit this run published.
+          ref_json="$(gh api "repos/$REPO/git/ref/tags/$TAG")"
+          tag_sha="$(printf '%s' "$ref_json" | jq -r '.object.sha')"
+          if [ "$(printf '%s' "$ref_json" | jq -r '.object.type')" = "tag" ]; then
+            # annotated tag: peel the tag object to the commit it points at
+            tag_sha="$(gh api "repos/$REPO/git/tags/$tag_sha" --jq '.object.sha')"
+          fi
+          if [ "$tag_sha" != "$EXPECTED_SHA" ]; then
+            echo "::error::tag $TAG resolves to $tag_sha, not the published commit $EXPECTED_SHA — refusing to create a Release for a moved tag"
+            exit 1
+          fi
+
+          # Guard 2 — mirror the publish job's dist-tag rule: `*-*` is a prerelease.
+          prerelease=false
+          case "$TAG" in
+            *-*) prerelease=true ;;
+          esac
+
+          # Guard 3 — distinguish "no Release yet" from auth / rate-limit / network failures.
+          view_err="$(mktemp)"
+          if existing="$(gh release view "$TAG" --repo "$REPO" --json isDraft,isPrerelease 2>"$view_err")"; then
+            if [ "$(printf '%s' "$existing" | jq -r '.isDraft')" = "true" ]; then
+              echo "::notice::release $TAG exists as a draft — publishing it (prerelease=$prerelease)"
+              gh release edit "$TAG" --repo "$REPO" --draft=false --prerelease="$prerelease"
+            else
+              echo "::notice::release $TAG already exists and is published — leaving it as-is"
+            fi
+          elif grep -qi 'release not found' "$view_err"; then
+            create_args=(--repo "$REPO" --verify-tag --title "$TAG" --generate-notes)
+            if [ "$prerelease" = "true" ]; then
+              create_args+=(--prerelease)
+            fi
+            gh release create "$TAG" "${create_args[@]}"
           else
-            gh release create "$TAG" \
-              --repo "${{ github.repository }}" \
-              --title "$TAG" \
-              --generate-notes
+            echo "::error::could not determine whether release $TAG exists:"
+            cat "$view_err" >&2
+            exit 1
           fi
