@@ -23,18 +23,30 @@ export interface PriceRow {
   readonly meter: string | null;
   /** `${pricing.model} · ${pricing.currency} · ${pricing.network}`, read verbatim off the skill. */
   readonly priceShape: string;
-  /** Always "quote at call time" here — this tool never fetches a live 402 quote. */
+  /**
+   * Always the literal "quote at call time" here — this tool never fetches a live 402 quote, so
+   * no specific amount is ever a stored or model-authored number (adapted from wave-pen-register-wt
+   * designs/front-door/AGENT-COPY-2026-09-05/wave-ask-descriptions.json's `priceShape` field doc).
+   */
   readonly quote: string;
 }
 
 export interface AskProposal {
+  /** The goal restated in one line — a direct echo/trim of the input, never a source of fact about products, tools, or price. */
   readonly intent: string;
+  /** The pipeline steps for the proposed flow, e.g. `["realtime", "captions"]`. */
   readonly stages: readonly string[];
+  /** Product ids for the flow, checked against the bundled `knowledge/products.json` snapshot; an id not found there is dropped, never rendered. */
   readonly productIds: readonly string[];
+  /** MCP tool names for the flow, checked against the bundled `knowledge/mcp-tools.json` snapshot; a name not found there is dropped, never rendered. */
   readonly tools: readonly string[];
+  /** Deduplicated, non-null `pricing.meter` values from `priceRows`, checked against the bundled `knowledge/skills.json` snapshot. */
   readonly meters: readonly string[];
+  /** One row per grounded productId with a matching skill entry — see {@link PriceRow}. */
   readonly priceRows: readonly PriceRow[];
+  /** Always the literal `false` — this tool proposes, never executes; no other tool is ever called. */
   readonly executes: false;
+  /** Adjacent-step suggestions (a related capability, a cheaper route, the same flow via MCP, a saved-flow signup) — never fabricated, always grounded in this same composition. */
   readonly next: readonly string[];
 }
 

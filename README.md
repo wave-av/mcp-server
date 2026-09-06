@@ -125,7 +125,7 @@ never fetches the network.
 - **Output**: `{ intent, stages[], productIds[], tools[], meters[], priceRows[], executes: false, next[] }` — always `executes: false`, never a `model` field (no sourced Dispatch model catalog exists yet).
 - **Grounded, not generated**: every `productIds[]`/`tools[]`/`meters[]` entry is checked against a bundled, measured snapshot of the live platform (`knowledge/products.json` — 53 products, `knowledge/skills.json` — 179 skills with pricing, `knowledge/mcp-tools.json` — 69 live gateway tools; see `knowledge/SOURCES.md` for fetch provenance). A goal the composer doesn't recognize, or one that mentions a name outside that snapshot, always falls back to a real, grounded composition — never a fabricated one and never a dead end.
 - **Pricing is never invented**: each `priceRows[]` entry carries the skill's real `meter` (or `null` for flat-rate skills) and a `priceShape` read straight off the skill's pricing block; the `quote` field is always `"quote at call time"` — this tool never calls the gateway's live 402 endpoint, so it never guesses a number.
-- See `SKILL.md` (repo root) for the full agent-facing how-to-call contract.
+- See `skills/wave-ask/SKILL.md` for the full agent-facing how-to-call contract.
 
 ## Available tools — Voice
 

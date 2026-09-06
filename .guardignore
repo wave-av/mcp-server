@@ -1,0 +1,15 @@
+# public-repo-guard exclusions (scripts/public-repo-guard/content-policy.sh).
+# One glob per line; lines starting with # are comments.
+
+# knowledge/mcp-tools.json is a byte-for-byte copy of the LIVE, PUBLIC response
+# from `GET https://api.wave.online/mcp` (anyone can curl this endpoint with no
+# auth — see knowledge/mcp-tools.meta.json for the fetch command + sha256). Its
+# top-level "name" field is that public API's own self-reported server name,
+# which happens to string-match an entry in this org's private-repo blocklist
+# even though the value is a live, publicly-served API response field, not a
+# reference to an internal repo. It cannot carry an inline `# guard:allow`
+# comment (this is JSON), and editing the byte content would invalidate the
+# sha256 provenance the wave.ask grounding contract depends on
+# (src/knowledge.ts / knowledge/mcp-tools.meta.json) — so the file is excluded
+# here instead of altered.
+knowledge/mcp-tools.json

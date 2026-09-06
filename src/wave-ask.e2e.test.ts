@@ -15,6 +15,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 
 import { buildServer } from "./server.js";
+import { PKG_VERSION } from "./version.js";
 import { PRODUCT_IDS, MCP_TOOL_NAMES, METER_NAMES } from "./knowledge.js";
 
 const PriceRowSchema = z
@@ -42,7 +43,7 @@ const AskProposalSchema = z
 async function connectedClient(): Promise<{ client: Client; close: () => Promise<void> }> {
   const server = buildServer();
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-  const client = new Client({ name: "wave-ask-e2e-test-client", version: "0.0.0" });
+  const client = new Client({ name: "wave-ask-e2e-test-client", version: PKG_VERSION });
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
   return {
     client,
