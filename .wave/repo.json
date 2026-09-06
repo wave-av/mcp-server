@@ -608,5 +608,12 @@
       "heading": "License",
       "body": "MIT"
     }
+  ],
+  "policyWaivers": [
+    {
+      "host": "www.npmjs.com",
+      "pathPrefix": "/package/@anthropic-ai/claude-agent-sdk",
+      "reason": "The optional peer dependency documented in the SDK-server section. Path-scoped to that one package, so a link to any other third-party package is still reported."
+    }
   ]
 }
