@@ -12,8 +12,8 @@
 // tagged `grounding: "snapshot"` — so an agent calling this tool NEVER gets a
 // dead end, only a lower-grounding answer.
 //
-// The gateway route this tool calls is a stub returning `501 NOT_IMPLEMENTED`
-// as of this writing (wave-gateway PR #1649, `src/compose-route.ts`), so in
+// The gateway route this tool calls (`POST /v1/compose` on the public WAVE
+// API surface) answers `501 NOT_IMPLEMENTED` as of this writing, so in
 // practice every call today falls through to the offline path; the gateway
 // branch is written and tested now so this tool needs no further change once
 // that route goes live.

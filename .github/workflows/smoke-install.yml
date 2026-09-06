@@ -3,15 +3,15 @@ name: Smoke install
 # Fresh-install regression guard. Packs the built tarball, installs it in a clean
 # directory the way a user would, and exercises the published surface:
 #   1. `wave-mcp-server --version` prints the package version.
-#   2. The stdio handshake + tools/list returns every tool (count asserted: 24
+#   2. The stdio handshake + tools/list returns every tool (count asserted: 25
 #      total — bump this whenever a tool is added or removed).
 #   3. A live --all run calls the 18 gateway-backed tools (design tools,
-#      wave_voice_converse, and wave.ask are local/propose-only and not
-#      gateway routes, so --all skips them) against https://api.wave.online
-#      with the repo secret and prints one row per tool. Some rows are
-#      expected to fail until dependent WAVE services finish deploying (see
-#      CHANGELOG); the job still asserts the tools/list count is 24 and the
-#      --all row count is 18 either way.
+#      wave_voice_converse, wave.ask, and wave_compose are local/propose-only
+#      and not gateway CRUD routes, so --all skips them) against
+#      https://api.wave.online with the repo secret and prints one row per
+#      tool. Some rows are expected to fail until dependent WAVE services
+#      finish deploying (see CHANGELOG); the job still asserts the tools/list
+#      count is 25 and the --all row count is 18 either way.
 # Step 3 skips honestly when WAVE_GATEWAY_API_KEY is absent (forks, unset).
 on:
   push:
@@ -71,7 +71,7 @@ jobs:
       - name: Stdio handshake and tools/list
         run: |
           cd "$RUNNER_TEMP/smoke"
-          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 24
+          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 25
 
       - name: Live --all against api.wave.online (all 18 tools)
         env:
@@ -82,4 +82,4 @@ jobs:
             exit 0
           fi
           cd "$RUNNER_TEMP/smoke"
-          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 24 --all
+          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 25 --all
