@@ -3,6 +3,7 @@
   "kind": "mcp-server",
   "domain": "agent-ops",
   "purpose": "WAVE is media infrastructure for the agentic internet: one call shape moves live and on-demand media across every transport, and both kinds of user, people and agents, discover it, call it, and pay for it per call. This package is how an agent discovers and calls that call shape over MCP. The hosted server answers at https://mcp.wave.online/mcp, the agent card is published at https://gateway.wave.online/.well-known/agent-card.json, and the skills index at https://gateway.wave.online/.well-known/wave-skills.json. `npx @wave-av/mcp-server` runs a WAVE MCP server locally over stdio for Claude Code, Cursor, and Windsurf.",
+  "description": "WAVE MCP Server — exposes the WAVE media APIs to Claude Code, Cursor and Windsurf over MCP.",
   "visibility": "public",
   "primaryLanguage": "TypeScript",
   "topics": [
@@ -607,6 +608,20 @@
       "kind": "prose",
       "heading": "License",
       "body": "MIT"
+    }
+  ],
+  "policyWaivers": [
+    {
+      "host": "www.npmjs.com",
+      "pathPrefix": "/package/@anthropic-ai",
+      "reason": "The README documents this server's own MCP client compatibility, and @anthropic-ai/claude-agent-sdk is the published package a reader installs to use it. Scoped to that one npm org, not the whole host, so an arbitrary third-party package link is still reported."
+    }
+  ],
+  "disclosureWaivers": [
+    {
+      "rule": "config-state",
+      "match": "WAVE_API_KEY",
+      "reason": "Troubleshooting step instructing the READER to check their OWN environment (`echo $WAVE_API_KEY`). It discloses no WAVE deployment state — the variable belongs to the person installing the MCP server, not to us."
     }
   ]
 }
