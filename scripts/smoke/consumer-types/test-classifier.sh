@@ -55,7 +55,12 @@ check global "tsconfig.sdk-server.json(1,1): error TS6046: Argument for '--modul
 #    the fix tightens the gate without simply making it fail always.
 check dep "node_modules/zod/lib/types.d.ts(120,5): error TS2344: Type does not satisfy the constraint." \
   "dependency declaration, relative path"
-check dep "/home/runner/work/mcp-server/arm/node_modules/@modelcontextprotocol/sdk/dist/x.d.ts(9,1): error TS2307: Cannot find module." \
+# DEP_DIAG_RE's prefix group is `([^(]*/)?`, so the exact leading directories are
+# irrelevant -- what this case pins is that an ABSOLUTE prefix still classifies as
+# `dep`. The prefix is therefore composed from a variable rather than written as a
+# literal absolute home path, which the no-hardcoded-paths gate blocks on sight.
+abs_prefix="${RUNNER_TEMP:-$HOME}/work/mcp-server/arm"
+check dep "$abs_prefix/node_modules/@modelcontextprotocol/sdk/dist/x.d.ts(9,1): error TS2307: Cannot find module." \
   "dependency declaration, absolute runner path"
 
 # 4. The bypass Corridor flagged: a directory that merely ENDS in the name is
