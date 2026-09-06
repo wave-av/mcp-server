@@ -35,7 +35,8 @@
       { "name": "wave_design_contract" },
       { "name": "wave_design_measure" },
       { "name": "wave_design_contract_check" },
-      { "name": "wave.ask" }
+      { "name": "wave.ask" },
+      { "name": "wave_compose" }
     ]
   },
   "consumes": {
@@ -51,7 +52,7 @@
   "tags": [
     "mcp-server",
     "public",
-    "24-tools",
+    "25-tools",
     "agent-ops"
   ]
 }

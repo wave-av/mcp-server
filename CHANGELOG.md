@@ -6,6 +6,26 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+
+- `wave_compose` (25th tool): the registered successor to `wave.ask`. When `WAVE_API_KEY` is
+  configured, calls the live gateway `POST /v1/compose` and returns its answer as-is
+  (`grounding: "gateway"`); when no key is configured, or the call fails, errors, or does not
+  answer within 3 seconds, falls back to the same deterministic composition `wave.ask` already
+  shipped (`grounding: "snapshot"`) — never a dead end. The `WAVE_API_KEY` is sent only to that
+  one gateway request and is never logged or echoed into the tool's output.
+- Bundled `knowledge/` snapshot refreshed to the 2026-09-06T03:52:45Z measurement: `products.json`
+  53→59 (6 new preview products), `mcp-tools.json` 69→93 (24 new tools across new
+  camera/production/stream/analytics/billing/usage/moderation coverage groups), `skills.json`
+  unchanged at 179 entries (content moved under the same names; `transcribe`'s `pricing.currency`/
+  `network` corrected from a stray `pathUSD`/`tempo` typo to the standard `USDC`/`base`).
+
+### Deprecated
+
+- `wave.ask` is deprecated in favor of `wave_compose` and will be removed after one release. It is
+  otherwise unchanged and keeps working exactly as before (offline, deterministic, no network
+  call) for the deprecation window.
+
 ## [0.3.0] - 2026-09-03
 
 Every tool now calls a real `api.wave.online` route with that route's own request
