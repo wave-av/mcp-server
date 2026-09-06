@@ -2,7 +2,7 @@
   "name": "@wave-av/mcp-server",
   "kind": "mcp-server",
   "domain": "agent-ops",
-  "purpose": "MCP (Model Context Protocol) server that exposes WAVE streaming APIs as tools for AI coding assistants (Claude Code, Cursor, Windsurf).",
+  "purpose": "WAVE is media infrastructure for the agentic internet: one call shape moves live and on-demand media across every transport, and both kinds of user, people and agents, discover it, call it, and pay for it per call. This package is how an agent discovers and calls that call shape over MCP. The hosted server answers at https://mcp.wave.online/mcp, the agent card is published at https://gateway.wave.online/.well-known/agent-card.json, and the skills index at https://gateway.wave.online/.well-known/wave-skills.json. `npx @wave-av/mcp-server` runs a WAVE MCP server locally over stdio for Claude Code, Cursor, and Windsurf.",
   "visibility": "public",
   "primaryLanguage": "TypeScript",
   "topics": [
@@ -112,16 +112,46 @@
       "id": "wave_mark_highlight",
       "does": "Mark a moment in a stream as a highlight for later clipping.",
       "status": "preview"
+    },
+    {
+      "id": "wave_voice_converse",
+      "does": "Drive a full headless conversation with the WAVE voice agent (WAV in, PCM reply out, no browser/WebRTC).",
+      "status": "preview"
+    },
+    {
+      "id": "wave_design_extract",
+      "does": "Run @wave-av/pen-extract's `all` pipeline on a .pen board; returns the manifest (files, sha256s, owed).",
+      "status": "preview"
+    },
+    {
+      "id": "wave_design_contract",
+      "does": "Compose and validate a design-contract.json from an extract dir; returns the validator line and key counts.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_design_measure",
+      "does": "Run @wave-av/loc-study's `measure` on an image (masked by geometry) or a rasterized plate SVG.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_design_contract_check",
+      "does": "Validate an existing design-contract.json against the schema and acceptance-tests catalogue, no compose.",
+      "status": "preview"
+    },
+    {
+      "id": "wave.ask",
+      "does": "Propose a WAVE media pipeline (captions/clips/dub/realtime/...) for a goal stated in plain language, grounded in a bundled products/skills/mcp-tools snapshot. Never executes; makes no network request.",
+      "status": "preview"
     }
   ],
   "claims": [
     {
       "id": "claim-tool-count",
-      "text": "Exposes 18 MCP tools",
+      "text": "Exposes 24 MCP tools",
       "resolver": {
         "type": "grep",
         "target": "capabilities.json",
-        "expect": "18-tools"
+        "expect": "24-tools"
       }
     },
     {
@@ -312,6 +342,60 @@
         "target": "src/tools/production.ts",
         "expect": "wave_mark_highlight"
       }
+    },
+    {
+      "id": "claim-tool-voice-converse",
+      "text": "wave_voice_converse tool defined in src/tools/voice.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/voice.ts",
+        "expect": "wave_voice_converse"
+      }
+    },
+    {
+      "id": "claim-tool-design-extract",
+      "text": "wave_design_extract tool defined in src/tools/design.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/design.ts",
+        "expect": "wave_design_extract"
+      }
+    },
+    {
+      "id": "claim-tool-design-contract",
+      "text": "wave_design_contract tool defined in src/tools/design.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/design.ts",
+        "expect": "wave_design_contract"
+      }
+    },
+    {
+      "id": "claim-tool-design-measure",
+      "text": "wave_design_measure tool defined in src/tools/design.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/design.ts",
+        "expect": "wave_design_measure"
+      }
+    },
+    {
+      "id": "claim-tool-design-contract-check",
+      "text": "wave_design_contract_check tool defined in src/tools/design.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/design.ts",
+        "expect": "wave_design_contract_check"
+      }
+    },
+    {
+      "id": "claim-tool-ask",
+      "text": "wave.ask tool defined in src/tools/wave-ask/wave-ask.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/wave-ask/wave-ask.ts",
+        "expect": "wave.ask"
+      }
     }
   ],
   "install": [
@@ -333,11 +417,11 @@
     {
       "kind": "prose",
       "heading": "Setup",
-      "body": "### 1. Get an API key\n\n```bash\n# Via CLI\nwave auth login\n\n# Or create at https://wave.online/settings/api-keys\n```\n\n### 2. Configure your AI tool\n\nAdd to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) — see the Quick start config above."
+      "body": "### 1. Get an API key\n\n```bash\n# Via CLI\nwave auth login\n\n# Or create at https://console.wave.online/dashboard#keys\n```\n\n### 2. Configure your AI tool\n\nAdd to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) \u2014 see the Quick start config above."
     },
     {
       "kind": "table",
-      "heading": "Available tools — Streams",
+      "heading": "Available tools \u2014 Streams",
       "columns": [
         "Tool",
         "Description"
@@ -367,7 +451,7 @@
     },
     {
       "kind": "table",
-      "heading": "Available tools — Studio",
+      "heading": "Available tools \u2014 Studio",
       "columns": [
         "Tool",
         "Description"
@@ -385,7 +469,7 @@
     },
     {
       "kind": "table",
-      "heading": "Available tools — Analytics",
+      "heading": "Available tools \u2014 Analytics",
       "columns": [
         "Tool",
         "Description"
@@ -403,7 +487,7 @@
     },
     {
       "kind": "table",
-      "heading": "Available tools — Billing",
+      "heading": "Available tools \u2014 Billing",
       "columns": [
         "Tool",
         "Description"
@@ -416,6 +500,51 @@
         [
           "`wave_get_usage`",
           "Get current period usage and limits"
+        ]
+      ]
+    },
+    {
+      "kind": "table",
+      "heading": "Available tools \u2014 Voice",
+      "columns": [
+        "Tool",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`wave_voice_converse`",
+          "Drive a full headless conversation with the WAVE voice agent: bind to a room, send a WAV of the caller's speech, receive the reply as raw PCM. No browser, no WebRTC. Requires WAVE_INTERNAL_SECRET."
+        ]
+      ]
+    },
+    {
+      "kind": "prose",
+      "heading": "Design tools",
+      "body": "Thin wrappers over the design-to-engineer pipeline's two standalone libraries (`@wave-av/pen-extract`, `@wave-av/loc-study`). Neither library is published to npm yet, so each tool resolves its library from a sibling checkout, $HOME-first, with an env override. Every path argument is confined to `$HOME/wave-av` or the OS temp dir — a call outside those roots is rejected before anything runs."
+    },
+    {
+      "kind": "table",
+      "heading": "Available tools — Design",
+      "columns": [
+        "Tool",
+        "Description"
+      ],
+      "rows": [
+        [
+          "`wave_design_extract`",
+          "Run pen-extract's `all` pipeline on a `.pen` board; returns the manifest (files, sha256s, owed)"
+        ],
+        [
+          "`wave_design_contract`",
+          "Compose + validate a `design-contract.json` from an extract dir; returns the validator line and key counts"
+        ],
+        [
+          "`wave_design_measure`",
+          "Run loc-study's `measure` on an image (masked by geometry) or a rasterized plate SVG"
+        ],
+        [
+          "`wave_design_contract_check`",
+          "Validate an existing `design-contract.json`, no compose"
         ]
       ]
     },
@@ -443,15 +572,15 @@
         [
           "`WAVE_BASE_URL`",
           "No",
-          "`https://wave.online`",
-          "API base URL"
+          "`https://api.wave.online`",
+          "API origin. Tool paths are `/v1/*` on the WAVE gateway."
         ]
       ]
     },
     {
       "kind": "prose",
       "heading": "In-process (Claude Agent SDK) mode",
-      "body": "For consumers already running inside a [Claude Agent SDK](https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk)\nsession, the same tools are available in-process — skipping the stdio subprocess\nhop (~50 ms vs ~500 ms cold start). The tool list is shared with the stdio\nserver (`src/tools/index.ts`), so the two transports never drift.\n\n`@anthropic-ai/claude-agent-sdk` is an **optional peer dependency**: stdio users\nnever need it. Install it only for this mode:\n\n```bash\nnpm install @wave-av/mcp-server @anthropic-ai/claude-agent-sdk\n```\n\n```ts\nimport { query } from \"@anthropic-ai/claude-agent-sdk\";\nimport { createWaveSdkMcpServer } from \"@wave-av/mcp-server/sdk-server\";\n\nconst wave = await createWaveSdkMcpServer();\nfor await (const message of query({\n  prompt: \"List my active streams\",\n  options: { mcpServers: { wave }, env: { WAVE_API_KEY: process.env.WAVE_API_KEY } },\n})) {\n  // handle messages\n}\n```"
+      "body": "For consumers already running inside a [Claude Agent SDK](https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk)\nsession, the same tools are available in-process \u2014 skipping the stdio subprocess\nhop (~50 ms vs ~500 ms cold start). The tool list is shared with the stdio\nserver (`src/tools/index.ts`), so the two transports never drift.\n\n`@anthropic-ai/claude-agent-sdk` is an **optional peer dependency**: stdio users\nnever need it. Install it only for this mode:\n\n```bash\nnpm install @wave-av/mcp-server @anthropic-ai/claude-agent-sdk\n```\n\n```ts\nimport { query } from \"@anthropic-ai/claude-agent-sdk\";\nimport { createWaveSdkMcpServer } from \"@wave-av/mcp-server/sdk-server\";\n\nconst wave = await createWaveSdkMcpServer();\nfor await (const message of query({\n  prompt: \"List my active streams\",\n  options: { mcpServers: { wave }, env: { WAVE_API_KEY: process.env.WAVE_API_KEY } },\n})) {\n  // handle messages\n}\n```"
     },
     {
       "kind": "prose",
@@ -466,7 +595,7 @@
     {
       "kind": "prose",
       "heading": "Related packages",
-      "body": "- [@wave-av/sdk](https://www.npmjs.com/package/@wave-av/sdk) — TypeScript SDK (34 API modules)\n- [@wave-av/adk](https://www.npmjs.com/package/@wave-av/adk) — Agent Developer Kit\n- [@wave-av/cli](https://www.npmjs.com/package/@wave-av/cli) — Command-line interface\n- [@wave-av/create-app](https://www.npmjs.com/package/@wave-av/create-app) — Scaffold a new project\n- [OpenAPI spec](https://github.com/wave-av/api-spec) — Full API specification"
+      "body": "- [@wave-av/sdk](https://www.npmjs.com/package/@wave-av/sdk) \u2014 TypeScript SDK (34 API modules)\n- [@wave-av/adk](https://www.npmjs.com/package/@wave-av/adk) \u2014 Agent Developer Kit\n- [@wave-av/cli](https://www.npmjs.com/package/@wave-av/cli) \u2014 Command-line interface\n- [@wave-av/create-app](https://www.npmjs.com/package/@wave-av/create-app) \u2014 Scaffold a new project\n- [OpenAPI spec](https://github.com/wave-av/api-spec) \u2014 Full API specification"
     },
     {
       "kind": "code",

@@ -1,5 +1,6 @@
-node_modules/
+node_modules
 dist/
+.ts-out/
 *.log
 
 # `npm pack` — which the release smoke runs, and which anyone reproducing it

@@ -1,0 +1,12 @@
+{
+  "artifact": "products.json",
+  "fetchedAt": "2026-09-05T23:06:00Z",
+  "url": "https://api.wave.online/.well-known/wave-products.json",
+  "command": "curl -sS https://api.wave.online/.well-known/wave-products.json",
+  "sha256": "1c7686709abc10254d4751f2912fa5864b1d0ffaa7ffec031a693adbbadbfd27",
+  "counts": {
+    "total": 53,
+    "live": 9,
+    "preview": 44
+  }
+}

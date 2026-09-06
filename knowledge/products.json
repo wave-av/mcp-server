@@ -1,0 +1,651 @@
+{
+  "master": {
+    "id": "wave",
+    "name": "WAVE",
+    "url": "https://wave.online",
+    "blurb": "the WAVE platform \u2014 every product is one color of this wave"
+  },
+  "products": [
+    {
+      "id": "gateway",
+      "name": "Gateway",
+      "url": "https://api.wave.online",
+      "accent": "#21BCE7",
+      "status": "live",
+      "blurb": "unified auth \u00b7 scope \u00b7 meter \u00b7 x402 edge for every WAVE API",
+      "cta": [
+        "Get a key, call any WAVE API",
+        "Pay per call with x402 \u2014 no account required",
+        "Authenticate once, reach every product"
+      ]
+    },
+    {
+      "id": "dispatch",
+      "name": "Dispatch",
+      "url": "https://dispatch.wave.online",
+      "accent": "#16d6aa",
+      "status": "live",
+      "blurb": "AI model routing \u2014 pay-per-use LLM inference (x402 mainnet)",
+      "cta": [
+        "Route a prompt, pay per token",
+        "Call any model behind one endpoint",
+        "Settle inference on Base with x402"
+      ]
+    },
+    {
+      "id": "clips",
+      "name": "Clips",
+      "url": "https://clips.wave.online",
+      "accent": "#ec92e5",
+      "status": "live",
+      "blurb": "Clip Engine \u2014 turn live streams into shareable clips",
+      "cta": [
+        "Turn a stream into a clip",
+        "Cut highlights by API",
+        "Export clips to social in one call"
+      ]
+    },
+    {
+      "id": "moq",
+      "name": "MoQ",
+      "url": "https://moq.wave.online",
+      "accent": "#00d4d5",
+      "status": "preview",
+      "blurb": "Media-over-QUIC low-latency transport edge",
+      "cta": [
+        "Stream over QUIC with sub-second latency",
+        "Publish a track, subscribe from the edge"
+      ]
+    },
+    {
+      "id": "srt",
+      "name": "SRT",
+      "url": "https://srt.wave.online",
+      "accent": "#00b0b1",
+      "status": "preview",
+      "blurb": "Secure Reliable Transport ingest / egress",
+      "cta": [
+        "Ingest SRT, deliver anywhere",
+        "Point your encoder at a WAVE endpoint"
+      ]
+    },
+    {
+      "id": "ndi",
+      "name": "NDI",
+      "url": "https://ndi.wave.online",
+      "accent": "#00d6c0",
+      "status": "preview",
+      "blurb": "NDI network video transport",
+      "cta": [
+        "Bridge NDI to the cloud",
+        "Send NDI beyond the LAN"
+      ]
+    },
+    {
+      "id": "dante",
+      "name": "Dante",
+      "url": "https://dante.wave.online",
+      "accent": "#00d1e8",
+      "status": "preview",
+      "blurb": "Dante audio-over-IP transport",
+      "cta": [
+        "Move Dante audio over IP",
+        "Carry AES67 to the cloud"
+      ]
+    },
+    {
+      "id": "omt",
+      "name": "OMT",
+      "url": "https://omt.wave.online",
+      "accent": "#00aec1",
+      "status": "preview",
+      "blurb": "Open Media Transport",
+      "cta": [
+        "Transport Open Media over IP",
+        "Send OMT to the cloud"
+      ]
+    },
+    {
+      "id": "bridge",
+      "name": "Bridge",
+      "url": "https://bridge.wave.online",
+      "accent": "#65bdff",
+      "status": "preview",
+      "blurb": "any-to-any contribution gateway",
+      "cta": [
+        "Connect any source to WAVE",
+        "Bring SRT, RTMP, or WebRTC in"
+      ]
+    },
+    {
+      "id": "pulse",
+      "name": "Pulse",
+      "url": "https://pulse.wave.online",
+      "accent": "#81ce70",
+      "status": "preview",
+      "blurb": "real-time stream analytics",
+      "cta": [
+        "Watch your stream in real time",
+        "Track viewers and quality live"
+      ]
+    },
+    {
+      "id": "realtime",
+      "name": "Realtime",
+      "url": "https://wave.online/protocol",
+      "accent": "#ff715d",
+      "status": "preview",
+      "blurb": "live control & event plane \u2014 presence, pub/sub, streaming events (Durable Objects)",
+      "cta": [
+        "Add presence and pub/sub",
+        "Stream events over Durable Objects",
+        "Build live control into your app"
+      ]
+    },
+    {
+      "id": "voice",
+      "name": "Voice",
+      "url": "https://voice.wave.online",
+      "accent": "#ff9858",
+      "status": "preview",
+      "blurb": "real-time and batch voice \u2014 transcription, synthesis, and voice cloning",
+      "cta": [
+        "Add real-time speech to your app",
+        "Transcribe, synthesize, or clone a voice"
+      ]
+    },
+    {
+      "id": "captions",
+      "name": "Captions",
+      "url": "https://captions.wave.online",
+      "accent": "#c579be",
+      "status": "preview",
+      "blurb": "live and on-demand captions \u2014 multi-language, broadcast-grade",
+      "cta": [
+        "Caption any stream live",
+        "Add multi-language captions by API"
+      ]
+    },
+    {
+      "id": "chapters",
+      "name": "Chapters",
+      "url": "https://chapters.wave.online",
+      "accent": "#df97f5",
+      "status": "preview",
+      "blurb": "auto-chaptering for any recording \u2014 segments, titles, and timestamps",
+      "cta": [
+        "Auto-chapter any recording",
+        "Generate titles and timestamps by API"
+      ]
+    },
+    {
+      "id": "editor",
+      "name": "Editor",
+      "url": "https://editor.wave.online",
+      "accent": "#a5abff",
+      "status": "preview",
+      "blurb": "programmatic timeline editing \u2014 cut, splice, and render video by API",
+      "cta": [
+        "Edit video by API",
+        "Cut and render timelines programmatically"
+      ]
+    },
+    {
+      "id": "collab",
+      "name": "Collab",
+      "url": "https://collab.wave.online",
+      "accent": "#ce9dff",
+      "status": "preview",
+      "blurb": "multi-user sessions \u2014 shared control rooms, presence, and live co-production",
+      "cta": [
+        "Share a control room",
+        "Co-produce live with your team"
+      ]
+    },
+    {
+      "id": "podcast",
+      "name": "Podcast",
+      "url": "https://podcast.wave.online",
+      "accent": "#ce76af",
+      "status": "preview",
+      "blurb": "recording-to-podcast \u2014 episodes, RSS, and distribution from a single source",
+      "cta": [
+        "Turn a recording into a podcast",
+        "Publish episodes and RSS by API"
+      ]
+    },
+    {
+      "id": "studio-ai",
+      "name": "Studio AI",
+      "url": "https://studio-ai.wave.online",
+      "accent": "#14b28d",
+      "status": "preview",
+      "blurb": "AI production director \u2014 automated switching, framing, and scene calls",
+      "cta": [
+        "Let AI direct your production",
+        "Automate switching and framing"
+      ]
+    },
+    {
+      "id": "transcribe",
+      "name": "Transcribe",
+      "url": "https://transcribe.wave.online",
+      "accent": "#59d38c",
+      "status": "preview",
+      "blurb": "fast, accurate transcription \u2014 streaming and batch, any language",
+      "cta": [
+        "Transcribe streaming or batch audio",
+        "Get transcripts in any language"
+      ]
+    },
+    {
+      "id": "sentiment",
+      "name": "Sentiment",
+      "url": "https://sentiment.wave.online",
+      "accent": "#6bac5c",
+      "status": "preview",
+      "blurb": "real-time sentiment and moderation signals on audio, chat, and video",
+      "cta": [
+        "Score sentiment in real time",
+        "Add moderation signals to media"
+      ]
+    },
+    {
+      "id": "search",
+      "name": "Search",
+      "url": "https://search.wave.online",
+      "accent": "#549de5",
+      "status": "preview",
+      "blurb": "semantic search across your media \u2014 transcripts, scenes, and clips",
+      "cta": [
+        "Search across your media",
+        "Find scenes, clips, and transcripts"
+      ]
+    },
+    {
+      "id": "aes67",
+      "name": "AES67",
+      "url": "https://aes67.wave.online",
+      "accent": "#ef7d3b",
+      "status": "preview",
+      "blurb": "AES67 audio-over-IP \u2014 standards-based studio audio across the network",
+      "cta": [
+        "Carry AES67 audio over IP",
+        "Bridge a studio audio network to WAVE"
+      ]
+    },
+    {
+      "id": "agents",
+      "name": "Agents",
+      "url": "https://agents.wave.online",
+      "accent": "#e2b33e",
+      "status": "preview",
+      "blurb": "WAVE for agents \u2014 every product reachable by an autonomous caller",
+      "cta": [
+        "Give an agent a video toolchain",
+        "Pay per call with x402, no account"
+      ]
+    },
+    {
+      "id": "audio",
+      "name": "Audio",
+      "url": "https://audio.wave.online",
+      "accent": "#f05b3e",
+      "status": "preview",
+      "blurb": "audio processing \u2014 mixing, loudness, and cleanup by API",
+      "cta": [
+        "Process an audio track by API",
+        "Normalize loudness across a catalog"
+      ]
+    },
+    {
+      "id": "blog",
+      "name": "Blog",
+      "url": "https://blog.wave.online",
+      "accent": "#50daa1",
+      "status": "preview",
+      "blurb": "engineering notes and release write-ups from the WAVE team",
+      "cta": [
+        "Read how WAVE is built",
+        "Follow release write-ups by feed"
+      ]
+    },
+    {
+      "id": "changelog",
+      "name": "Changelog",
+      "url": "https://changelog.wave.online",
+      "accent": "#dbcc40",
+      "status": "preview",
+      "blurb": "what shipped and when, across every WAVE product",
+      "cta": [
+        "See what shipped this week",
+        "Track platform changes by date"
+      ]
+    },
+    {
+      "id": "crest",
+      "name": "Crest",
+      "url": "https://crest.wave.online",
+      "accent": "#f2653c",
+      "status": "preview",
+      "blurb": "stream control plane \u2014 session state and orchestration",
+      "cta": [
+        "Drive a live session's state",
+        "Orchestrate streams from one plane"
+      ]
+    },
+    {
+      "id": "decode",
+      "name": "Decode",
+      "url": "https://decode.wave.online",
+      "accent": "#ec8b3b",
+      "status": "preview",
+      "blurb": "decode any input format to raw frames at the edge",
+      "cta": [
+        "Decode a source to frames",
+        "Normalize mixed input formats"
+      ]
+    },
+    {
+      "id": "developer",
+      "name": "Developers",
+      "url": "https://developer.wave.online",
+      "accent": "#ea943c",
+      "status": "preview",
+      "blurb": "developer hub \u2014 keys, quickstarts, and API reference",
+      "cta": [
+        "Get an API key and ship",
+        "Start with a quickstart"
+      ]
+    },
+    {
+      "id": "docs",
+      "name": "Docs",
+      "url": "https://docs.wave.online",
+      "accent": "#28e4dc",
+      "status": "live",
+      "blurb": "platform documentation \u2014 guides and full API reference",
+      "cta": [
+        "Read the API reference",
+        "Follow a guide end to end"
+      ]
+    },
+    {
+      "id": "encode",
+      "name": "Encode",
+      "url": "https://encode.wave.online",
+      "accent": "#e2b53e",
+      "status": "preview",
+      "blurb": "encode to any delivery format \u2014 ladders, codecs, and packaging",
+      "cta": [
+        "Encode a rendition ladder",
+        "Package for HLS or DASH"
+      ]
+    },
+    {
+      "id": "engine",
+      "name": "Media Engine",
+      "url": "https://engine.wave.online",
+      "accent": "#ed5c5a",
+      "status": "preview",
+      "blurb": "the media processing core behind encode, decode, and transcode",
+      "cta": [
+        "Run a media job on the engine",
+        "Compose processing steps"
+      ]
+    },
+    {
+      "id": "enhance",
+      "name": "Enhance",
+      "url": "https://enhance.wave.online",
+      "accent": "#f2613c",
+      "status": "preview",
+      "blurb": "restore and upscale media \u2014 denoise, sharpen, and clean up",
+      "cta": [
+        "Upscale a source clip",
+        "Denoise and restore archive media"
+      ]
+    },
+    {
+      "id": "flow",
+      "name": "Flow",
+      "url": "https://flow.wave.online",
+      "accent": "#ef7e3b",
+      "status": "preview",
+      "blurb": "media workflow orchestration \u2014 chain steps into one pipeline",
+      "cta": [
+        "Chain media steps into a pipeline",
+        "Run a workflow on every upload"
+      ]
+    },
+    {
+      "id": "inference",
+      "name": "Inference",
+      "url": "https://inference.wave.online",
+      "accent": "#ee813b",
+      "status": "live",
+      "blurb": "run models against media \u2014 batch and streaming",
+      "cta": [
+        "Run a model over your media",
+        "Score frames as they arrive"
+      ]
+    },
+    {
+      "id": "listen",
+      "name": "Listen",
+      "url": "https://listen.wave.online",
+      "accent": "#36e5cc",
+      "status": "live",
+      "blurb": "audio capture and monitoring across live sources",
+      "cta": [
+        "Monitor live audio sources",
+        "Capture an audio feed"
+      ]
+    },
+    {
+      "id": "mcp",
+      "name": "MCP",
+      "url": "https://mcp.wave.online",
+      "accent": "#f0713c",
+      "status": "preview",
+      "blurb": "Model Context Protocol server \u2014 WAVE tools inside any agent runtime",
+      "cta": [
+        "Add WAVE tools to your agent",
+        "Connect an MCP client to WAVE"
+      ]
+    },
+    {
+      "id": "mesh",
+      "name": "Mesh",
+      "url": "https://mesh.wave.online",
+      "accent": "#e3af3e",
+      "status": "preview",
+      "blurb": "multi-region delivery mesh for live media",
+      "cta": [
+        "Deliver across regions",
+        "Route media over the mesh"
+      ]
+    },
+    {
+      "id": "metrics",
+      "name": "Metrics",
+      "url": "https://metrics.wave.online",
+      "accent": "#ed6365",
+      "status": "preview",
+      "blurb": "platform metrics \u2014 throughput, latency, and delivery quality",
+      "cta": [
+        "Read platform metrics",
+        "Track delivery quality over time"
+      ]
+    },
+    {
+      "id": "partners",
+      "name": "Partners",
+      "url": "https://partners.wave.online",
+      "accent": "#ee5f59",
+      "status": "preview",
+      "blurb": "integration partners and the WAVE partner program",
+      "cta": [
+        "Explore integration partners",
+        "Find a partner for your stack"
+      ]
+    },
+    {
+      "id": "receipts",
+      "name": "Receipts",
+      "url": "https://api.wave.online/v1/receipts",
+      "accent": "#eb6370",
+      "status": "live",
+      "blurb": "signed x402 payment receipts \u2014 verify any settled call (free)",
+      "cta": [
+        "Verify a settled x402 payment",
+        "Look up a receipt by transaction hash"
+      ]
+    },
+    {
+      "id": "rt",
+      "name": "Realtime Edge",
+      "url": "https://rt.wave.online",
+      "accent": "#40e6bf",
+      "status": "preview",
+      "blurb": "WebRTC SFU edge \u2014 sub-second fan-out for live sessions",
+      "cta": [
+        "Fan out a live session",
+        "Publish and subscribe over WebRTC"
+      ]
+    },
+    {
+      "id": "runtime",
+      "name": "Runtime",
+      "url": "https://runtime.wave.online",
+      "accent": "#3de6c3",
+      "status": "live",
+      "blurb": "managed execution for media jobs at the edge",
+      "cta": [
+        "Run a media job at the edge",
+        "Schedule work without servers"
+      ]
+    },
+    {
+      "id": "sandbox",
+      "name": "Sandbox",
+      "url": "https://sandbox.wave.online",
+      "accent": "#f2633c",
+      "status": "preview",
+      "blurb": "try WAVE against throwaway keys and sample media",
+      "cta": [
+        "Try the API with no commitment",
+        "Experiment against sample media"
+      ]
+    },
+    {
+      "id": "sdk",
+      "name": "SDKs",
+      "url": "https://sdk.wave.online",
+      "accent": "#f2623c",
+      "status": "preview",
+      "blurb": "client libraries for the WAVE API across languages",
+      "cta": [
+        "Install a client library",
+        "Call WAVE from your language"
+      ]
+    },
+    {
+      "id": "seo",
+      "name": "Discover",
+      "url": "https://seo.wave.online",
+      "accent": "#ef7c3b",
+      "status": "live",
+      "blurb": "make your media discoverable \u2014 structured data and indexing",
+      "cta": [
+        "Make a library discoverable",
+        "Publish structured media metadata"
+      ]
+    },
+    {
+      "id": "st2110",
+      "name": "ST 2110",
+      "url": "https://st2110.wave.online",
+      "accent": "#ef783b",
+      "status": "preview",
+      "blurb": "SMPTE ST 2110 uncompressed video over IP",
+      "cta": [
+        "Carry ST 2110 over IP",
+        "Bridge a 2110 plant to the cloud"
+      ]
+    },
+    {
+      "id": "transcode",
+      "name": "Transcode",
+      "url": "https://transcode.wave.online",
+      "accent": "#23d1e3",
+      "status": "preview",
+      "blurb": "format-to-format conversion at the edge",
+      "cta": [
+        "Transcode a file by API",
+        "Convert a catalog in bulk"
+      ]
+    },
+    {
+      "id": "trust",
+      "name": "Trust",
+      "url": "https://trust.wave.online",
+      "accent": "#f05f4b",
+      "status": "preview",
+      "blurb": "security posture, subprocessors, and compliance reporting",
+      "cta": [
+        "Review the security posture",
+        "Check subprocessors and compliance"
+      ]
+    },
+    {
+      "id": "vision",
+      "name": "Vision",
+      "url": "https://vision.wave.online",
+      "accent": "#24d6e2",
+      "status": "preview",
+      "blurb": "visual understanding for media \u2014 scenes, objects, and frames",
+      "cta": [
+        "Describe what is on screen",
+        "Index a video by what it shows"
+      ]
+    },
+    {
+      "id": "visual-qa",
+      "name": "Visual QA",
+      "url": "https://visual-qa.wave.online",
+      "accent": "#62d38b",
+      "status": "preview",
+      "blurb": "automated visual checks on rendered output",
+      "cta": [
+        "Check a render for defects",
+        "Gate a build on a visual diff"
+      ]
+    },
+    {
+      "id": "webhook",
+      "name": "Webhook",
+      "url": "https://webhook.wave.online",
+      "accent": "#f05e4b",
+      "status": "preview",
+      "blurb": "per-tenant webhook delivery with retries and signing",
+      "cta": [
+        "Receive signed WAVE events",
+        "Retry delivery without writing a queue"
+      ]
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom",
+      "url": "https://zoom.wave.online",
+      "accent": "#f15c3e",
+      "status": "preview",
+      "blurb": "bring Zoom sessions into WAVE for recording and processing",
+      "cta": [
+        "Pull a Zoom session into WAVE",
+        "Record and process a meeting"
+      ]
+    }
+  ],
+  "note": "status: live = GA \u00b7 preview = reachable but early. Each product is one flat color of the wave; wave.online is the gradient."
+}

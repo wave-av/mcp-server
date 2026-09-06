@@ -2,7 +2,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
+import { assertConfigValid } from "./auth.js";
 import { allTools } from "./tools/index.js";
+import { PKG_VERSION } from "./version.js";
 import { registerStreamResources } from "./resources/streams.js";
 import { registerProductionResources } from "./resources/productions.js";
 
@@ -10,7 +12,7 @@ import { registerProductionResources } from "./resources/productions.js";
 export function buildServer(): McpServer {
   const server = new McpServer({
     name: "wave-mcp-server",
-    version: "0.1.0",
+    version: PKG_VERSION,
   });
 
   // Register tools from the single source of truth (src/tools/index.ts).
@@ -26,6 +28,10 @@ export function buildServer(): McpServer {
 }
 
 export async function startServer(): Promise<void> {
+  // Fail loud, at startup, on a malformed WAVE_BASE_URL (#89) — before the transport binds, so a
+  // misconfigured server dies with one actionable message instead of failing inside every tool call.
+  assertConfigValid();
+
   const server = buildServer();
 
   const transport = new StdioServerTransport();
