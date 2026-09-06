@@ -384,3 +384,47 @@ jobs:
           fi
           cd "$RUNNER_TEMP/verify"
           node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js 18 wave_list_streams '{}'
+
+  # ---------------------------------------------------------------------------
+  # Gate 5 — create the GitHub Release for this tag. Runs ONLY after
+  # verify-publish confirms the version is actually live on npm — a Release
+  # is a public claim "this is deployed", so it is never created ahead of that
+  # proof. Until this job existed, NO step in this workflow ever created a
+  # Release: `releases/latest` stayed pinned to a stale, hand-made v0.1.2 from
+  # 2026-04-02 while npm moved on to 0.2.1 and beyond — an older Release
+  # advertised as "latest" while a newer version is the one anyone actually
+  # gets from `npm install`, exactly the drift VER-001 (source ↔ tag ↔
+  # GitHub Release ↔ registry all agree) exists to catch
+  # (governance/ga-gate/evidence/VER-001-release-ledger-2026-09-06.md,
+  # wave-av/claude-workstation). Modelled on the proven, already-running
+  # `release` job in wave-av/sdk-python's release.yml, which creates/edits the
+  # Release the same idempotent way (gh release view -> create or upload).
+  # `contents: write` is scoped to ONLY this job — every other job in this
+  # workflow stays `contents: read` (or unset, inheriting the top-level read).
+  # ---------------------------------------------------------------------------
+  create-release:
+    name: Create GitHub Release
+    needs: verify-publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - name: Create or update the GitHub Release for this tag (idempotent)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "::notice::release $TAG already exists — leaving it as-is"
+          else
+            gh release create "$TAG" \
+              --repo "${{ github.repository }}" \
+              --title "$TAG" \
+              --generate-notes
+          fi
