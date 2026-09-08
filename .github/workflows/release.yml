@@ -480,14 +480,53 @@ jobs:
   sbom:
     name: SBOM (SPDX) — attach to GitHub Release
     needs: release
-    if: always() && (needs.release.result == 'success' || (github.event_name == 'workflow_dispatch' && needs.release.result == 'skipped'))
+    # !cancelled() (not always()): a cancelled run must NOT still create or
+    # overwrite a release asset. The workflow_dispatch/skipped-release branch
+    # is unchanged for the intentional backfill path.
+    if: ${{ !cancelled() && (needs.release.result == 'success' || (github.event_name == 'workflow_dispatch' && needs.release.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write   # attach the SBOM asset to the release for this tag — nothing else
     steps:
+      # Resolve the target tag BEFORE checkout so the checkout (and therefore
+      # package.json / package-lock.json read by the script) reflects the
+      # HISTORICAL tag being SBOM'd, not whatever `main` currently is -- on a
+      # workflow_dispatch backfill those can differ (name/scope/deps change).
+      - name: Resolve target tag
+        id: resolve-tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_TAG: ${{ github.ref_name }}
+          TAG_INPUT: ${{ github.event.inputs.tag }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            if [[ -n "$TAG_INPUT" ]]; then
+              TAG_NAME="$TAG_INPUT"
+            else
+              echo "no tag input given — resolving the latest GitHub Release"
+              TAG_NAME="$(gh release view --json tagName --jq .tagName)"
+            fi
+          else
+            TAG_NAME="$REF_TAG"
+          fi
+          if [[ -z "$TAG_NAME" ]]; then
+            echo "::error::could not resolve a tag to attach an SBOM to"
+            exit 1
+          fi
+          if [[ ! "$TAG_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-+.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::TAG_NAME '$TAG_NAME' does not look like a semver tag (expected vX.Y.Z)"
+            exit 1
+          fi
+          echo "target tag: $TAG_NAME"
+          echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
+          ref: ${{ steps.resolve-tag.outputs.tag }}
           persist-credentials: false
 
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -499,7 +538,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          EVENT_NAME: ${{ github.event_name }}
-          REF_TAG: ${{ github.ref_name }}
-          TAG_INPUT: ${{ github.event.inputs.tag }}
+          TAG_NAME: ${{ steps.resolve-tag.outputs.tag }}
         run: bash scripts/sbom/generate-and-attach-sbom.sh
