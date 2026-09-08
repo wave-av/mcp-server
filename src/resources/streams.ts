@@ -18,7 +18,7 @@ export function registerStreamResources(server: McpServer): void {
         };
       }
 
-      const res = await fetch(`${getBaseUrl()}/api/v1/streams/${id}`, {
+      const res = await fetch(`${getBaseUrl()}/v1/streams/${encodeURIComponent(id)}`, {
         headers: getAuthHeaders(),
       });
       if (!res.ok) {

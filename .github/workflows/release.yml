@@ -24,6 +24,17 @@ name: Release (public npm)
 on:
   push:
     tags: ['v*']
+  # SUPPLY-001 (cw #4803) backfill path: manually (re)generate + attach the
+  # SBOM for an EXISTING release tag without re-running the npm-publish gates.
+  # Every job below except `sbom` is hard-gated to `github.event_name ==
+  # 'push'`, so a workflow_dispatch run NEVER re-publishes to npm — it only
+  # runs the sbom job.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to attach an SBOM to (e.g. v0.3.0). Leave empty to use the latest GitHub Release.'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -40,6 +51,7 @@ jobs:
   # ---------------------------------------------------------------------------
   secret-scan:
     name: Secret scan
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -77,6 +89,7 @@ jobs:
   # ---------------------------------------------------------------------------
   verify:
     name: Build + e2e-smoke
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -87,7 +100,7 @@ jobs:
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: '22'
-          cache: 'npm'
+          package-manager-cache: false
 
       - run: npm ci
 
@@ -223,6 +236,7 @@ jobs:
   publish:
     name: Publish to npm (gated)
     needs: [secret-scan, verify]
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -236,7 +250,7 @@ jobs:
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: '22'
-          cache: 'npm'
+          package-manager-cache: false
           registry-url: 'https://registry.npmjs.org'
 
       # Trusted publishing (OIDC) requires npm >= 11.5.1; Node 22 ships an older
@@ -281,13 +295,281 @@ jobs:
           echo "dist-tag=$DIST_TAG"
           echo "dist_tag=$DIST_TAG" >> "$GITHUB_OUTPUT"
 
-      # Auth comes from the OIDC token (id-token: write) exchanged by npm
+      # Primary auth is the OIDC token (id-token: write) exchanged by npm
       # against the Trusted Publisher registered for @wave-av/mcp-server -- NO
-      # NODE_AUTH_TOKEN / NPM_TOKEN / .npmrc _authToken. --provenance is free
-      # under OIDC: it supplies the signing identity for the attestation.
-      - name: npm publish (OIDC trusted publishing)
+      # NODE_AUTH_TOKEN is set for that path. If an NPM_TOKEN repository secret
+      # exists (e.g. before the Trusted Publisher is registered, or as a
+      # break-glass fallback), it is written to .npmrc as a classic auth token
+      # and npm uses it instead; an absent/empty secret never touches .npmrc,
+      # so the OIDC path is unaffected. --provenance works either way: it only
+      # needs `id-token: write` on this job to mint the sigstore attestation.
+      - name: Configure npm auth (NPM_TOKEN fallback only — OIDC trusted publishing needs no config here)
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -n "$NPM_TOKEN" ]; then
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+            echo "npm auth: using NPM_TOKEN secret fallback"
+          else
+            echo "npm auth: no NPM_TOKEN secret set — relying on OIDC trusted publishing"
+          fi
+
+      - name: npm publish (OIDC trusted publishing, NPM_TOKEN fallback)
         env:
           DIST_TAG: ${{ steps.ver.outputs.dist_tag }}
         run: |
           set -euo pipefail
           npm publish --access public --provenance --tag "$DIST_TAG"
+
+  # ---------------------------------------------------------------------------
+  # Gate 4 — post-publish verification. Proves the version that just left this
+  # workflow is actually live and correct on the real registry, not just that
+  # `npm publish` returned 0. Installs the published package (not the packed
+  # tarball verify already checked) and re-runs the same stdio smoke this repo
+  # already trusts for fresh installs (scripts/smoke-mcp.mjs, also used by
+  # smoke-install.yml). The live tools/call step is the receipt that the
+  # published binary talks to api.wave.online, never the wave.online marketing
+  # site — it fails on an HTML response and passes only on a real gateway
+  # answer (2xx or a gateway error contract).
+  # ---------------------------------------------------------------------------
+  verify-publish:
+    name: Verify published package (live registry)
+    needs: publish
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Resolve expected version from tag
+        id: ver
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: echo "version=${TAG_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: npm view — published version is live on the registry
+        env:
+          EXPECTED: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5 6 7 8; do
+            PUBLISHED="$(npm view @wave-av/mcp-server@"$EXPECTED" version 2>/dev/null || true)"
+            if [ "$PUBLISHED" = "$EXPECTED" ]; then break; fi
+            echo "waiting for the registry to index @wave-av/mcp-server@$EXPECTED (attempt $i)"
+            sleep 15
+          done
+          if [ "$PUBLISHED" != "$EXPECTED" ]; then
+            echo "::error::npm view never returned $EXPECTED for @wave-av/mcp-server"
+            exit 1
+          fi
+          echo "npm view: @wave-av/mcp-server@$EXPECTED confirmed live"
+
+      - name: Fresh install from the real registry (not the packed tarball)
+        env:
+          EXPECTED: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/verify"
+          cd "$RUNNER_TEMP/verify"
+          npm init -y >/dev/null
+          npm install "@wave-av/mcp-server@$EXPECTED" --registry=https://registry.npmjs.org
+          GOT="$(node node_modules/.bin/wave-mcp-server --version)"
+          echo "expected=$EXPECTED got=$GOT"
+          test "$GOT" = "$EXPECTED"
+
+      - name: Stdio handshake — tools/list answers over the published binary
+        run: |
+          cd "$RUNNER_TEMP/verify"
+          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js capabilities
+
+      - name: Live tools/call reaches api.wave.online, never wave.online
+        env:
+          WAVE_API_KEY: ${{ secrets.WAVE_GATEWAY_API_KEY }}
+        run: |
+          if [ -z "$WAVE_API_KEY" ]; then
+            echo "skipped: WAVE_GATEWAY_API_KEY absent (fork or unset)"
+            exit 0
+          fi
+          cd "$RUNNER_TEMP/verify"
+          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js capabilities wave_list_streams '{}'
+
+  # ---------------------------------------------------------------------------
+  # Gate 5 — VER-001. Create the GitHub Release for the tag once the artifact is
+  # confirmed live on npm (needs BOTH `publish` and `verify-publish` to succeed
+  # — never on a failed/skipped publish, and never on a publish that "returned
+  # 0" but was not actually confirmed live). Idempotent: if a Release already
+  # exists for this tag (e.g. a re-run), the tarball is re-uploaded with
+  # --clobber instead of failing on "already exists".
+  # ---------------------------------------------------------------------------
+  release:
+    name: Create GitHub Release
+    needs: [publish, verify-publish]
+    if: github.event_name == 'push' && needs.publish.result == 'success' && needs.verify-publish.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write   # create/upload the Release for this tag — nothing else
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - run: npm ci
+
+      - run: npm run build
+
+      # TAG_NAME comes from the environment (never interpolated into the
+      # script body) even though `github.ref_name` on a tag push is not
+      # attacker-controlled the way a workflow_dispatch input would be — this
+      # keeps the same "no ${{ }} inside run:" discipline the rest of this
+      # workflow already follows (see "Verify tag matches package.json
+      # version" above).
+      - name: Create or update the GitHub Release (idempotent)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.ref_name }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          TARBALL="$(npm pack --json | node -e "process.stdout.write(JSON.parse(require('fs').readFileSync(0,'utf8'))[0].filename)")"
+          echo "packed: $TARBALL"
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            echo "release $TAG_NAME already exists — uploading tarball (idempotent path, --clobber)"
+            gh release upload "$TAG_NAME" "$TARBALL" --clobber
+          else
+            echo "release $TAG_NAME does not exist — creating with generated notes"
+            gh release create "$TAG_NAME" "$TARBALL" --title "$TAG_NAME" --generate-notes
+          fi
+          echo "verifying the release exists and carries the tarball"
+          ASSETS="$(gh release view "$TAG_NAME" --json assets --jq '[.assets[].name] | join(" ")')"
+          echo "release assets: $ASSETS"
+          case "$ASSETS" in
+            *"$TARBALL"*) ;;
+            *)
+              echo "::error::$TARBALL missing from release $TAG_NAME after upload"
+              exit 1
+              ;;
+          esac
+          echo "VER-001: GitHub Release for $TAG_NAME exists and carries the packed tarball."
+
+  # ---------------------------------------------------------------------------
+  # Gate 6 — SUPPLY-001 (cw #4803). Attach an SPDX SBOM to the release.
+  #
+  # Runs after `release` on the normal tag-push path. Also runs standalone on
+  # `workflow_dispatch` to backfill an SBOM onto an already-published version
+  # (e.g. 0.3.0, published before this job existed) — every OTHER job above is
+  # gated `if: github.event_name == 'push'`, so a manual dispatch never
+  # re-triggers a publish, it only runs this job.
+  #
+  # All resolve/pack/scan/upload logic lives in
+  # scripts/sbom/generate-and-attach-sbom.sh (kept out of this workflow file to
+  # keep the YAML diff small); this step is just wiring env -> script.
+  # ---------------------------------------------------------------------------
+  sbom:
+    name: SBOM (SPDX) — attach to GitHub Release
+    needs: release
+    # !cancelled() (not always()): a cancelled run must NOT still create or
+    # overwrite a release asset. The workflow_dispatch/skipped-release branch
+    # is unchanged for the intentional backfill path.
+    if: ${{ !cancelled() && (needs.release.result == 'success' || (github.event_name == 'workflow_dispatch' && needs.release.result == 'skipped')) }}
+    # The workflow-level concurrency group above keys on `github.ref`, which
+    # for workflow_dispatch is the ref the run was dispatched FROM (e.g.
+    # refs/heads/main), not the `tag` INPUT being backfilled. Without a
+    # tag-scoped group here, a dispatch backfill for a tag and a concurrent
+    # tag `push` of that same tag (or two overlapping dispatches for the same
+    # backfill tag) could run this job's release view/create/upload
+    # check-then-act sequence concurrently. Serialize per resolved tag.
+    concurrency:
+      group: mcp-server-release-sbom-${{ github.event.inputs.tag || github.ref_name }}
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write   # attach the SBOM asset to the release for this tag — nothing else
+    steps:
+      # Resolve the target tag BEFORE checkout so the checkout (and therefore
+      # package.json / package-lock.json read by the script) reflects the
+      # HISTORICAL tag being SBOM'd, not whatever `main` currently is -- on a
+      # workflow_dispatch backfill those can differ (name/scope/deps change).
+      - name: Resolve target tag
+        id: resolve-tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_TAG: ${{ github.ref_name }}
+          TAG_INPUT: ${{ github.event.inputs.tag }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            if [[ -n "$TAG_INPUT" ]]; then
+              TAG_NAME="$TAG_INPUT"
+            else
+              echo "no tag input given — resolving the latest GitHub Release"
+              TAG_NAME="$(gh release view --json tagName --jq .tagName)"
+            fi
+          else
+            TAG_NAME="$REF_TAG"
+          fi
+          if [[ -z "$TAG_NAME" ]]; then
+            echo "::error::could not resolve a tag to attach an SBOM to"
+            exit 1
+          fi
+          if [[ ! "$TAG_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-+.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::TAG_NAME '$TAG_NAME' does not look like a semver tag (expected vX.Y.Z)"
+            exit 1
+          fi
+          echo "target tag: $TAG_NAME"
+          echo "tag=$TAG_NAME" >> "$GITHUB_OUTPUT"
+
+      # Primary checkout: the RESOLVED TAG, into the default workspace path.
+      # This is what the script reads package.json / package-lock.json from
+      # (the historical, released version) -- unchanged from before.
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: ${{ steps.resolve-tag.outputs.tag }}
+          persist-credentials: false
+
+      # Tooling checkout: the CURRENT workflow ref (github.sha -- for a tag
+      # push this IS the tag commit; for workflow_dispatch it's whatever ref
+      # the run was dispatched from, normally main), into a SEPARATE
+      # directory. The sbom SCRIPT ITSELF must come from here, never from the
+      # tag checkout above: on a workflow_dispatch backfill of a tag that
+      # predates this SBOM job (e.g. 0.3.0), the tag's own tree does not
+      # contain scripts/sbom/generate-and-attach-sbom.sh -- `bash
+      # scripts/sbom/...` against the tag checkout would fail with "no such
+      # file". Verified locally: `git show v0.3.0:scripts/sbom/generate-and-
+      # attach-sbom.sh` fails ("exists on disk, but not in 'v0.3.0'").
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: ${{ github.sha }}
+          path: _sbom-tooling
+          persist-credentials: false
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Generate SPDX SBOM for the published tarball and attach it to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ steps.resolve-tag.outputs.tag }}
+        # Runs with cwd = the tag checkout ($GITHUB_WORKSPACE, the default
+        # path above) so `./package.json` / `./package-lock.json` resolve to
+        # the historical release -- only the script PATH itself is read from
+        # the tooling checkout.
+        run: bash _sbom-tooling/scripts/sbom/generate-and-attach-sbom.sh

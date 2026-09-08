@@ -1,6 +1,7 @@
 name: public-repo-guard
 
-# Pre-publication content gate for WAVE public repos. Two complementary checks:
+# Pre-publication content gate for WAVE public repos. Two complementary checks,
+# split across TWO workflow files (this one, plus public-repo-guard-body.yml):
 #   1. gitleaks  — formatted secrets (API keys, tokens, private keys) in the tree.
 #   2. content-policy.sh — WAVE-specific leaks gitleaks misses: live Stripe account
 #      IDs, hardcoded Cloudflare account_ids, developer absolute paths, references
@@ -13,36 +14,83 @@ name: public-repo-guard
 # wave-av/.github must not be able to alter another repo's secret scanner). The
 # gitleaks binary is version-pinned AND SHA-256-verified before it runs.
 #
-# To install on a new repo, copy all three files together:
+# To install on a new repo, copy all six files together (the guard job runs the
+# fixture tests, so a repo missing the tests file fails on every run):
 #   .github/workflows/public-repo-guard.yml
+#   .github/workflows/public-repo-guard-body.yml
 #   .gitleaks.toml
 #   scripts/public-repo-guard/content-policy.sh
+#   scripts/public-repo-guard/body-policy.sh
+#   scripts/public-repo-guard/tests/body-policy.test.sh
 #
 # Scan scope: the published working TREE (gitleaks --no-git), NOT git history. The
 # goal is "what is public right now is clean", so a shallow checkout is sufficient.
 #
 # Allowlisting: annotate a verified-safe line with `# guard:allow <reason>`, add a
 # path glob to a repo-root `.guardignore`, or extend the repo-local `.gitleaks.toml`.
+#
+# WHY THIS IS A SEPARATE WORKFLOW FROM public-repo-guard-body.yml (this used to be
+# one file with two jobs sharing one `on:` block):
+#
+# The `guard` job below produces the check-run named "Secrets + content policy",
+# which is the REQUIRED status context in this repo's branch-protection ruleset
+# (public-repo-guard-required). Before this split, that job's shared `on:` block
+# had to include pull_request_review / pull_request_review_comment (needed only by
+# the sibling body scan), and the job used a job-level `if:` to skip those events
+# for the tree scan (a title/comment/review event cannot change the tree). GitHub
+# still publishes a check-run named "Secrets + content policy" with conclusion
+# `skipped` for every skipped event, on the same head SHA. Branch-protection/
+# ruleset required-status-check evaluation treats `skipped` as passing and reads
+# only the NEWEST check-run of a given name — so a review comment (or any other
+# skipped event) could flip an already-failed, or never-yet-completed, required
+# tree scan to green with nothing re-examining the tree. Confirmed on this exact
+# repo: PR #87 (merged), head 8aee818f3399bd73073b056238bd7404226db551 — the tree
+# job's only non-skipped run on that SHA was `cancelled`, followed by a dozen
+# `skipped` runs; the required check's final state was `skipped` (passing) despite
+# no completed real verdict ever having been produced for that SHA.
+#
+# Splitting into two workflow FILES — not just two jobs — removes the shared
+# trigger set entirely: this file's `on:` block now lists ONLY events that can
+# change the published tree (pull_request open/reopen/sync, push, workflow_dispatch,
+# merge_group). A review comment or a title/body edit never matches this
+# workflow's trigger at all, so GitHub never runs it and never publishes ANY
+# check-run — skipped, cancelled, or otherwise — under the required name for that
+# event. There is nothing left to mask. Coverage is unchanged: every event that
+# could previously produce a real (non-skipped) tree-scan run still produces that
+# same real run after the split.
 
 on:
   pull_request:
+    types: [opened, reopened, synchronize]
   push:
     branches: [main, master]
   workflow_dispatch:
+  # Required by the merge queue: a `merge_group` build never runs the `pull_request`
+  # trigger above, so without this the required "Secrets + content policy" check
+  # never reports on the queue's temporary ref and every queued PR waits forever.
+  merge_group:
 
+# `pull_request`, deliberately NOT `pull_request_target`: a fork PR must never get
+# a write token or repo secrets just because a gate wanted to read its body.
 permissions:
   contents: read
-
-concurrency:
-  group: public-repo-guard-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   guard:
     name: Secrets + content policy
+    # No job-level `if:` needed: the `on:` block above already scopes this job to
+    # exactly the tree-changing events, so every triggering event is a real run —
+    # never skipped, never a candidate for the masking bug described above.
+    concurrency:
+      group: public-repo-guard-tree-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          # Nothing in this job pushes or calls the API, so the token has no
+          # business lingering in .git/config while repo-checked-out scripts run.
+          persist-credentials: false
 
       # gitleaks' GitHub Action requires a paid license for organizations; the CLI
       # itself is MIT-licensed and free. Pin the version AND verify the release
@@ -64,10 +112,24 @@ jobs:
       - name: gitleaks (secret scan — published tree)
         run: gitleaks detect --no-git --source . --config .gitleaks.toml --redact --no-banner --exit-code 1
 
-      - name: Install ripgrep
-        run: command -v rg >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ripgrep)
+      - name: Install ripgrep (and verify PCRE2 support)
+        run: |
+          command -v rg >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ripgrep)
+          # The policy rules use -P (PCRE2), and not every distro builds rg with it
+          # (Ubuntu jammy's apt package does not). Probe up front so a runner-image
+          # change fails HERE with a named cause, not downstream as an opaque
+          # scanner error blocking every PR.
+          echo probe | rg -qP 'p(?=robe)' \
+            || { echo "::error title=public-repo-guard::this ripgrep build lacks PCRE2 (-P) support, which the policy rules require"; exit 1; }
 
       - name: content policy (WAVE trade-secret / internal-leak gate)
         env:
           GUARD_PRIVATE_REPOS: ${{ vars.GUARD_PRIVATE_REPOS }}
         run: bash scripts/public-repo-guard/content-policy.sh .
+
+      # The body gate's own fixtures. Its negatives are the load-bearing half — a
+      # leak gate that blocks legitimate cross-repo references gets switched off,
+      # and then it protects nothing. Runs here so a regression is caught by CI
+      # rather than by a leak.
+      - name: body policy self-test (fixtures)
+        run: bash scripts/public-repo-guard/tests/body-policy.test.sh

@@ -4,55 +4,18 @@ import { defineTool, errorContent, textContent, waveFetch, type WaveToolDef } fr
 export const analyticsTools: WaveToolDef[] = [
   defineTool({
     name: "wave_get_viewers",
-    description:
-      "Get current viewer count and viewer demographics for a stream or across all streams",
+    description: "Get account-wide viewer engagement analytics (GET /v1/analytics/engagement) over an optional date range",
     inputSchema: {
-      stream_id: z
-        .string()
-        .uuid()
-        .optional()
-        .describe("Stream ID to get viewers for. Omit for account-wide totals."),
-      include_demographics: z
-        .boolean()
-        .optional()
-        .describe("Include geographic and device breakdown (default: false)"),
+      from: z.string().optional().describe("Range start (ISO 8601 timestamp), optional"),
+      to: z.string().optional().describe("Range end (ISO 8601 timestamp), optional"),
     },
-    handler: async ({ stream_id, include_demographics }) => {
+    handler: async ({ from, to }) => {
       const params = new URLSearchParams();
-      if (stream_id) params.set("stream_id", stream_id);
-      if (include_demographics) params.set("include_demographics", "true");
+      if (from) params.set("from", from);
+      if (to) params.set("to", to);
 
       const query = params.toString();
-      const path = `/api/v1/analytics/viewers${query ? `?${query}` : ""}`;
-      const res = await waveFetch(path);
-      if (!res.ok) return errorContent(res.status, res.body);
-
-      return textContent(res.body);
-    },
-  }),
-
-  defineTool({
-    name: "wave_get_stream_metrics",
-    description:
-      "Get detailed performance metrics for a stream including bitrate, latency, quality scores, and error rates",
-    inputSchema: {
-      stream_id: z.string().uuid().describe("The UUID of the stream"),
-      period: z
-        .enum(["1h", "6h", "24h", "7d", "30d"])
-        .optional()
-        .describe("Time period for metrics aggregation (default: 24h)"),
-      granularity: z
-        .enum(["1m", "5m", "1h", "1d"])
-        .optional()
-        .describe("Data point granularity (default: 5m)"),
-    },
-    handler: async ({ stream_id, period, granularity }) => {
-      const params = new URLSearchParams();
-      if (period) params.set("period", period);
-      if (granularity) params.set("granularity", granularity);
-
-      const query = params.toString();
-      const path = `/api/v1/analytics/streams/${stream_id}/metrics${query ? `?${query}` : ""}`;
+      const path = `/v1/analytics/engagement${query ? `?${query}` : ""}`;
       const res = await waveFetch(path);
       if (!res.ok) return errorContent(res.status, res.body);
 
