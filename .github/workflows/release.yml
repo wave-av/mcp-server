@@ -24,6 +24,17 @@ name: Release (public npm)
 on:
   push:
     tags: ['v*']
+  # SUPPLY-001 (cw #4803) backfill path: manually (re)generate + attach the
+  # SBOM for an EXISTING release tag without re-running the npm-publish gates.
+  # Every job below except `sbom` is hard-gated to `github.event_name ==
+  # 'push'`, so a workflow_dispatch run NEVER re-publishes to npm — it only
+  # runs the sbom job.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to attach an SBOM to (e.g. v0.3.0). Leave empty to use the latest GitHub Release.'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -40,6 +51,7 @@ jobs:
   # ---------------------------------------------------------------------------
   secret-scan:
     name: Secret scan
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -77,6 +89,7 @@ jobs:
   # ---------------------------------------------------------------------------
   verify:
     name: Build + e2e-smoke
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -223,6 +236,7 @@ jobs:
   publish:
     name: Publish to npm (gated)
     needs: [secret-scan, verify]
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -321,6 +335,7 @@ jobs:
   verify-publish:
     name: Verify published package (live registry)
     needs: publish
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -396,7 +411,7 @@ jobs:
   release:
     name: Create GitHub Release
     needs: [publish, verify-publish]
-    if: needs.publish.result == 'success' && needs.verify-publish.result == 'success'
+    if: github.event_name == 'push' && needs.publish.result == 'success' && needs.verify-publish.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -448,3 +463,43 @@ jobs:
               ;;
           esac
           echo "VER-001: GitHub Release for $TAG_NAME exists and carries the packed tarball."
+
+  # ---------------------------------------------------------------------------
+  # Gate 6 — SUPPLY-001 (cw #4803). Attach an SPDX SBOM to the release.
+  #
+  # Runs after `release` on the normal tag-push path. Also runs standalone on
+  # `workflow_dispatch` to backfill an SBOM onto an already-published version
+  # (e.g. 0.3.0, published before this job existed) — every OTHER job above is
+  # gated `if: github.event_name == 'push'`, so a manual dispatch never
+  # re-triggers a publish, it only runs this job.
+  #
+  # All resolve/pack/scan/upload logic lives in
+  # scripts/sbom/generate-and-attach-sbom.sh (kept out of this workflow file to
+  # keep the YAML diff small); this step is just wiring env -> script.
+  # ---------------------------------------------------------------------------
+  sbom:
+    name: SBOM (SPDX) — attach to GitHub Release
+    needs: release
+    if: always() && (needs.release.result == 'success' || (github.event_name == 'workflow_dispatch' && needs.release.result == 'skipped'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write   # attach the SBOM asset to the release for this tag — nothing else
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Generate SPDX SBOM for the published tarball and attach it to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_TAG: ${{ github.ref_name }}
+          TAG_INPUT: ${{ github.event.inputs.tag }}
+        run: bash scripts/sbom/generate-and-attach-sbom.sh
