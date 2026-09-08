@@ -484,6 +484,16 @@ jobs:
     # overwrite a release asset. The workflow_dispatch/skipped-release branch
     # is unchanged for the intentional backfill path.
     if: ${{ !cancelled() && (needs.release.result == 'success' || (github.event_name == 'workflow_dispatch' && needs.release.result == 'skipped')) }}
+    # The workflow-level concurrency group above keys on `github.ref`, which
+    # for workflow_dispatch is the ref the run was dispatched FROM (e.g.
+    # refs/heads/main), not the `tag` INPUT being backfilled. Without a
+    # tag-scoped group here, a dispatch backfill for a tag and a concurrent
+    # tag `push` of that same tag (or two overlapping dispatches for the same
+    # backfill tag) could run this job's release view/create/upload
+    # check-then-act sequence concurrently. Serialize per resolved tag.
+    concurrency:
+      group: mcp-server-release-sbom-${{ github.event.inputs.tag || github.ref_name }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

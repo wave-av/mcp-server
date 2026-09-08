@@ -108,12 +108,13 @@ fi
 RELEASE_VIEW_ERR="$WORKDIR/release-view.err"
 if gh release view "$TAG_NAME" >/dev/null 2>"$RELEASE_VIEW_ERR"; then
   echo "release $TAG_NAME already exists — reusing it"
-  # A draft release's assets are not visible on the public release page;
-  # publish it so the SBOM we're about to upload is actually reachable.
+  # A draft release's assets aren't visible on the public release page, but
+  # whether/when to PUBLISH a release is a maintainer decision -- not a side
+  # effect of attaching an SBOM. Warn and still attach the asset; never flip
+  # draft state ourselves (a maintainer may be mid-edit on release notes).
   IS_DRAFT="$(gh release view "$TAG_NAME" --json isDraft --jq .isDraft)"
   if [[ "$IS_DRAFT" == "true" ]]; then
-    echo "release $TAG_NAME is a draft — publishing it before attaching the SBOM"
-    gh release edit "$TAG_NAME" --draft=false
+    echo "::warning::release $TAG_NAME is a draft; SBOM will be attached but the release is left as a draft (publish it manually if intended)"
   fi
 elif grep -qi "release not found" "$RELEASE_VIEW_ERR"; then
   echo "release $TAG_NAME does not exist — creating it (generated notes, tag verified)"
