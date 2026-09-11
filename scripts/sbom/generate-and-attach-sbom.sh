@@ -168,10 +168,11 @@ sudo install -m 0755 "$WORKDIR/syft" /usr/local/bin/syft
 syft version
 
 # ---------------------------------------------------------------------------
-# 4. Generate SPDX JSON for the extracted (published) tarball contents.
+# 4. Generate SPDX JSON for the INSTALLED tree: the extracted (published)
+#    tarball contents plus the node_modules resolved above.
 # ---------------------------------------------------------------------------
 SPDX_RAW="$WORKDIR/raw.spdx.json"
-syft scan "dir:${PKG_DIR}" -o "spdx-json=${SPDX_RAW}"
+syft scan "dir:${PKG_DIR}" --source-name "$PKG_NAME" --source-version "$PKG_VERSION" -o "spdx-json=${SPDX_RAW}"
 
 PKG_COUNT="$(node -e "const s=require(process.argv[1]); process.stdout.write(String((s.packages||[]).length))" "$SPDX_RAW")"
 if [[ "$PKG_COUNT" -lt 1 ]]; then
@@ -179,6 +180,25 @@ if [[ "$PKG_COUNT" -lt 1 ]]; then
   exit 1
 fi
 echo "SPDX packages[] count: $PKG_COUNT"
+
+# ---------------------------------------------------------------------------
+# 4b. Fail closed unless the SBOM actually enumerates what ships. The count
+#     check above is necessary but not sufficient: an SBOM generated from a
+#     bare, never-installed tarball still has ONE entry (the package's own
+#     package.json), so "packages[] >= 1" would wave a dependency-less
+#     document through. validate-sbom.mjs (a sibling of this script, so it is
+#     always present under _sbom-tooling/ even when backfilling a tag that
+#     predates it) requires a versioned entry for $PKG_NAME@$PKG_VERSION AND
+#     for every key of the PUBLISHED package.json's `dependencies`, and lists
+#     the missing names on failure. The floor is derived from that manifest,
+#     never hardcoded, so it tracks dependency changes on its own.
+# ---------------------------------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+node "$SCRIPT_DIR/validate-sbom.mjs" \
+  --sbom "$SPDX_RAW" \
+  --manifest "$PKG_DIR/package.json" \
+  --name "$PKG_NAME" \
+  --version "$PKG_VERSION"
 
 # ---------------------------------------------------------------------------
 # 5. Name + upload the asset to the release.
