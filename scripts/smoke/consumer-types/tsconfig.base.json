@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    // `["node"]`, not `[]`. An empty list is not a purer test, it is a less
+    // realistic consumer: the optional peer's own declarations reference
+    // `stream`, `crypto`, `AbortSignal`, so `[]` buries the real signal under
+    // ~140 diagnostics about a dependency's need for @types/node. Anyone
+    // consuming a Node MCP server has them installed.
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+
+    // Deliberately FALSE. With skipLibCheck on, tsc does not look inside
+    // node_modules declarations at all -- which is exactly the class of defect
+    // this probe exists to catch (#77: dist/sdk-server.d.ts referencing an
+    // optional peer that the consumer may not have installed). Turning it on
+    // would make both arms pass unconditionally.
+    "skipLibCheck": false
+  }
+}
