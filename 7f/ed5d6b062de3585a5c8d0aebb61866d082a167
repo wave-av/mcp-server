@@ -1,0 +1,29 @@
+.github/workflows/release.yml
+  s_efe86faf2558e9::t_fbef766e68835b 54
+  s_efe86faf2558e9::t_3870d4a90c8773 338
+  s_efe86faf2558e9::t_444f3fb0064639 92
+  s_efe86faf2558e9::t_a40230b05aca15 27-37
+  s_efe86faf2558e9::t_672ac32c9dd2a8 239
+  s_efe86faf2558e9::t_4ac368553a4f5b 414
+  s_efe86faf2558e9::t_106a2121144db4 466-505
+scripts/sbom/generate-and-attach-sbom.sh
+  s_efe86faf2558e9::t_af75b40ae7adbf 1-93,106-122,124-150
+  s_efe86faf2558e9::t_d9114092689a71 123
+  s_efe86faf2558e9::t_62ebec35b01715 94-105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "7fed5d6b062de3585a5c8d0aebb61866d082a167",
+  "prompts": {},
+  "sessions": {
+    "s_efe86faf2558e9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f2b6e2e9-ab55-4d57-9d9f-d57a588ae688",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
