@@ -6,6 +6,12 @@ import { PKG_VERSION } from "./version.js";
  * Reads credentials from environment variables:
  * - WAVE_API_KEY: Required. Bearer token for WAVE API authentication.
  * - WAVE_BASE_URL: Optional. Defaults to https://api.wave.online.
+ * - WAVE_INSTALL_CHANNEL: Optional. Self-declared install-channel label forwarded to the WAVE API as
+ *   `X-Wave-Install-Channel`. Lets WAVE's onboarding config (e.g. a Skill/manifest-generated
+ *   .mcp.json) tag itself apart from a hand-written docs install for usage-attribution reporting.
+ *   Absent by default — unset is byte-identical to today. The label is a coarse bucket, not an
+ *   identifier: only allowlisted values are recognised server-side, and anything else (including
+ *   unset, or a value this client drops as malformed) is recorded as untagged. Safe to leave unset.
  *
  * WHY api.wave.online AND WHY THE TOOL PATHS ARE `/v1/*` (#89):
  * `https://wave.online` is the marketing/app origin — it 404s on the API surface, so every one of
@@ -22,6 +28,22 @@ const DEFAULT_BASE_URL = "https://api.wave.online";
 
 /** Where a human mints an API key. Must be a page that actually resolves (#89). */
 export const API_KEY_CONSOLE_URL = "https://console.wave.online/dashboard#keys";
+
+const INSTALL_CHANNEL_HEADER = "X-Wave-Install-Channel";
+
+/**
+ * The shape a WAVE_INSTALL_CHANNEL value must have before it goes on the wire: a short, bare token.
+ *
+ * The value is operator-supplied and is attached verbatim to every outbound request, so it is
+ * validated rather than trusted — the same posture `getBaseUrl()` takes with WAVE_BASE_URL. This
+ * rules out CR/LF (header injection) and every other character that cannot legally sit in a header
+ * value, and bounds the length so a stray multi-kilobyte env var cannot ride along on each call.
+ *
+ * Unlike WAVE_BASE_URL this deliberately does NOT throw. The header is pure optional attribution, an
+ * unrecognised label is already recorded as untagged server-side, and failing every tool call over a
+ * cosmetic label would be a strictly worse outcome than simply not sending it.
+ */
+const INSTALL_CHANNEL_PATTERN = /^[A-Za-z0-9._-]{1,64}$/;
 
 export function getApiKey(): string {
   const key = process.env["WAVE_API_KEY"];
@@ -102,11 +124,16 @@ export function assertConfigValid(): void {
 }
 
 export function getAuthHeaders(): Record<string, string> {
-  return {
+  const headers: Record<string, string> = {
     Authorization: `Bearer ${getApiKey()}`,
     "Content-Type": "application/json",
     "User-Agent": `wave-mcp-server/${PKG_VERSION}`,
   };
+  const installChannel = process.env["WAVE_INSTALL_CHANNEL"]?.trim();
+  if (installChannel && INSTALL_CHANNEL_PATTERN.test(installChannel)) {
+    headers[INSTALL_CHANNEL_HEADER] = installChannel;
+  }
+  return headers;
 }
 
 /**
