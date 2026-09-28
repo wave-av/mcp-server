@@ -24,28 +24,68 @@
   },
   "capabilities": [
     {
-      "id": "wave_list_streams",
-      "does": "List all streams in the WAVE account with pagination and status filtering.",
+      "id": "wave_mint_moq_publish_token",
+      "does": "Mint a MoQ (Media over QUIC) publish join-token for a namespace/track.",
       "status": "preview"
     },
     {
-      "id": "wave_create_stream",
-      "does": "Create a new stream (protocol, recording, region options).",
+      "id": "wave_mint_moq_subscribe_token",
+      "does": "Mint a MoQ subscribe join-token for a namespace/track.",
       "status": "preview"
     },
     {
-      "id": "wave_start_stream",
-      "does": "Start a stream by ID, transitioning it to the active state.",
+      "id": "wave_publish_braid_audio",
+      "does": "Publish a braided (interleaved multichannel) audio track under a namespace.",
       "status": "preview"
     },
     {
-      "id": "wave_stop_stream",
-      "does": "Stop an active stream by ID.",
+      "id": "wave_stop_braid_audio",
+      "does": "Stop a braided audio publish by namespace.",
       "status": "preview"
     },
     {
-      "id": "wave_get_stream_health",
-      "does": "Get real-time stream health metrics (bitrate, frame rate, latency).",
+      "id": "wave_engine_capabilities",
+      "does": "The media-engine capability contract: which transports, protocols and codecs this account's engine plane currently serves.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_create_srt_input",
+      "does": "Create an SRT input; returns an input id + SRT ingest URL to point an encoder at.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_list_srt_inputs",
+      "does": "List SRT inputs in the WAVE account.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_delete_srt_input",
+      "does": "Delete an SRT input by id.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_whip_publish",
+      "does": "Publish media via WHIP: send an SDP offer, receive an SDP answer plus the resource Location for later teardown.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_whep_subscribe",
+      "does": "Subscribe to media via WHEP: send an SDP offer for playback, receive an SDP answer for the requested stream.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_create_listen_session",
+      "does": "Attach an agent as a live listener over a supported transport; returns a session id + receive descriptor.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_create_crest_session",
+      "does": "Open a realtime processing session bound to a source; returns a session id + receive descriptor.",
+      "status": "preview"
+    },
+    {
+      "id": "wave_get_dante_observe_state",
+      "does": "Get the observed Dante devices/channels on the bound network segment.",
       "status": "preview"
     },
     {
@@ -61,11 +101,6 @@
     {
       "id": "wave_get_viewers",
       "does": "Get current viewer count and viewer demographics for a stream or account-wide.",
-      "status": "preview"
-    },
-    {
-      "id": "wave_get_stream_metrics",
-      "does": "Get detailed stream performance metrics (bitrate, latency, quality, error rates).",
       "status": "preview"
     },
     {
@@ -109,11 +144,6 @@
       "status": "preview"
     },
     {
-      "id": "wave_mark_highlight",
-      "does": "Mark a moment in a stream as a highlight for later clipping.",
-      "status": "preview"
-    },
-    {
       "id": "wave_voice_converse",
       "does": "Drive a full headless conversation with the WAVE voice agent (WAV in, PCM reply out, no browser/WebRTC).",
       "status": "preview"
@@ -152,11 +182,11 @@
   "claims": [
     {
       "id": "claim-tool-count",
-      "text": "Exposes 25 MCP tools",
+      "text": "Exposes 31 MCP tools",
       "resolver": {
         "type": "grep",
         "target": "capabilities.json",
-        "expect": "25-tools"
+        "expect": "31-tools"
       }
     },
     {
@@ -187,48 +217,120 @@
       }
     },
     {
-      "id": "claim-tool-list-streams",
-      "text": "wave_list_streams tool defined in src/tools/streams.ts",
+      "id": "claim-tool-mint-moq-publish",
+      "text": "wave_mint_moq_publish_token tool defined in src/tools/transport.ts",
       "resolver": {
         "type": "grep",
-        "target": "src/tools/streams.ts",
-        "expect": "wave_list_streams"
+        "target": "src/tools/transport.ts",
+        "expect": "wave_mint_moq_publish_token"
       }
     },
     {
-      "id": "claim-tool-create-stream",
-      "text": "wave_create_stream tool defined in src/tools/streams.ts",
+      "id": "claim-tool-mint-moq-subscribe",
+      "text": "wave_mint_moq_subscribe_token tool defined in src/tools/transport.ts",
       "resolver": {
         "type": "grep",
-        "target": "src/tools/streams.ts",
-        "expect": "wave_create_stream"
+        "target": "src/tools/transport.ts",
+        "expect": "wave_mint_moq_subscribe_token"
       }
     },
     {
-      "id": "claim-tool-start-stream",
-      "text": "wave_start_stream tool defined in src/tools/streams.ts",
+      "id": "claim-tool-publish-braid",
+      "text": "wave_publish_braid_audio tool defined in src/tools/transport.ts",
       "resolver": {
         "type": "grep",
-        "target": "src/tools/streams.ts",
-        "expect": "wave_start_stream"
+        "target": "src/tools/transport.ts",
+        "expect": "wave_publish_braid_audio"
       }
     },
     {
-      "id": "claim-tool-stop-stream",
-      "text": "wave_stop_stream tool defined in src/tools/streams.ts",
+      "id": "claim-tool-stop-braid",
+      "text": "wave_stop_braid_audio tool defined in src/tools/transport.ts",
       "resolver": {
         "type": "grep",
-        "target": "src/tools/streams.ts",
-        "expect": "wave_stop_stream"
+        "target": "src/tools/transport.ts",
+        "expect": "wave_stop_braid_audio"
       }
     },
     {
-      "id": "claim-tool-stream-health",
-      "text": "wave_get_stream_health tool defined in src/tools/streams.ts",
+      "id": "claim-tool-engine-capabilities",
+      "text": "wave_engine_capabilities tool defined in src/tools/transport.ts",
       "resolver": {
         "type": "grep",
-        "target": "src/tools/streams.ts",
-        "expect": "wave_get_stream_health"
+        "target": "src/tools/transport.ts",
+        "expect": "wave_engine_capabilities"
+      }
+    },
+    {
+      "id": "claim-tool-create-srt-input",
+      "text": "wave_create_srt_input tool defined in src/tools/transport.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/transport.ts",
+        "expect": "wave_create_srt_input"
+      }
+    },
+    {
+      "id": "claim-tool-list-srt-inputs",
+      "text": "wave_list_srt_inputs tool defined in src/tools/transport.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/transport.ts",
+        "expect": "wave_list_srt_inputs"
+      }
+    },
+    {
+      "id": "claim-tool-delete-srt-input",
+      "text": "wave_delete_srt_input tool defined in src/tools/transport.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/transport.ts",
+        "expect": "wave_delete_srt_input"
+      }
+    },
+    {
+      "id": "claim-tool-whip-publish",
+      "text": "wave_whip_publish tool defined in src/tools/transport.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/transport.ts",
+        "expect": "wave_whip_publish"
+      }
+    },
+    {
+      "id": "claim-tool-whep-subscribe",
+      "text": "wave_whep_subscribe tool defined in src/tools/transport.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/transport.ts",
+        "expect": "wave_whep_subscribe"
+      }
+    },
+    {
+      "id": "claim-tool-listen-session",
+      "text": "wave_create_listen_session tool defined in src/tools/transport.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/transport.ts",
+        "expect": "wave_create_listen_session"
+      }
+    },
+    {
+      "id": "claim-tool-crest-session",
+      "text": "wave_create_crest_session tool defined in src/tools/transport.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/transport.ts",
+        "expect": "wave_create_crest_session"
+      }
+    },
+    {
+      "id": "claim-tool-dante-observe-state",
+      "text": "wave_get_dante_observe_state tool defined in src/tools/transport.ts",
+      "resolver": {
+        "type": "grep",
+        "target": "src/tools/transport.ts",
+        "expect": "wave_get_dante_observe_state"
       }
     },
     {
@@ -256,15 +358,6 @@
         "type": "grep",
         "target": "src/tools/analytics.ts",
         "expect": "wave_get_viewers"
-      }
-    },
-    {
-      "id": "claim-tool-stream-metrics",
-      "text": "wave_get_stream_metrics tool defined in src/tools/analytics.ts",
-      "resolver": {
-        "type": "grep",
-        "target": "src/tools/analytics.ts",
-        "expect": "wave_get_stream_metrics"
       }
     },
     {
@@ -337,15 +430,6 @@
         "type": "grep",
         "target": "src/tools/production.ts",
         "expect": "wave_start_captions"
-      }
-    },
-    {
-      "id": "claim-tool-mark-highlight",
-      "text": "wave_mark_highlight tool defined in src/tools/production.ts",
-      "resolver": {
-        "type": "grep",
-        "target": "src/tools/production.ts",
-        "expect": "wave_mark_highlight"
       }
     },
     {
@@ -435,31 +519,63 @@
     },
     {
       "kind": "table",
-      "heading": "Available tools \u2014 Streams",
+      "heading": "Available tools \u2014 Transport (media engine)",
       "columns": [
         "Tool",
         "Description"
       ],
       "rows": [
         [
-          "`wave_list_streams`",
-          "List all streams with pagination and status filtering"
+          "`wave_mint_moq_publish_token`",
+          "Mint a MoQ publish join-token for a namespace/track"
         ],
         [
-          "`wave_create_stream`",
-          "Create a new stream with protocol and privacy options"
+          "`wave_mint_moq_subscribe_token`",
+          "Mint a MoQ subscribe join-token for a namespace/track"
         ],
         [
-          "`wave_start_stream`",
-          "Start streaming on an existing stream"
+          "`wave_publish_braid_audio`",
+          "Publish a braided (interleaved multichannel) audio track"
         ],
         [
-          "`wave_stop_stream`",
-          "Stop an active stream"
+          "`wave_stop_braid_audio`",
+          "Stop a braided audio publish"
         ],
         [
-          "`wave_get_stream_health`",
-          "Get real-time health metrics for a stream"
+          "`wave_engine_capabilities`",
+          "The media-engine capability contract for this account"
+        ],
+        [
+          "`wave_create_srt_input`",
+          "Create an SRT input; returns an input id + SRT ingest URL"
+        ],
+        [
+          "`wave_list_srt_inputs`",
+          "List SRT inputs"
+        ],
+        [
+          "`wave_delete_srt_input`",
+          "Delete an SRT input by id"
+        ],
+        [
+          "`wave_whip_publish`",
+          "Publish media via WHIP (SDP offer in, SDP answer + Location out)"
+        ],
+        [
+          "`wave_whep_subscribe`",
+          "Subscribe to media via WHEP (SDP offer in, SDP answer out)"
+        ],
+        [
+          "`wave_create_listen_session`",
+          "Attach an agent as a live listener on a transport"
+        ],
+        [
+          "`wave_create_crest_session`",
+          "Open a realtime processing session bound to a source"
+        ],
+        [
+          "`wave_get_dante_observe_state`",
+          "Get the observed Dante devices/channels on the bound network segment"
         ]
       ]
     },
@@ -492,10 +608,6 @@
         [
           "`wave_get_viewers`",
           "Get current viewer count and breakdown"
-        ],
-        [
-          "`wave_get_stream_metrics`",
-          "Get detailed stream performance metrics"
         ]
       ]
     },

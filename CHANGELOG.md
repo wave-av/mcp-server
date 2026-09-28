@@ -6,14 +6,45 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-28
+
+Go-live lane ME-MCP-transport-tools: this package now serves the GA WAVE Media Engine
+transport surface — MoQ, braided audio, SRT, WHIP/WHEP, listen, crest, dante-observe, and
+the engine capability contract — and drops the `/v1/streams` (preview) tool set it
+previously exposed. 31 tools total (was 25).
+
+### Removed
+
+- `wave_list_streams`, `wave_create_stream`, `wave_start_stream`, `wave_stop_stream`,
+  `wave_get_stream_health`, `wave_get_stream_metrics`, `wave_mark_highlight`
+  (`src/tools/streams.ts`, deleted) — the `/v1/streams` surface is ruled **preview**, not
+  GA; a stream/phone tool is dropped outright rather than kept as a duplicate of the GA
+  transport scope. No phone-line tools (`wave_list_phone_lines`,
+  `wave_provision_phone_line`) ever existed in this package's registry — nothing to remove
+  there.
+
 ### Added
 
-- `wave_compose` (25th tool): the registered successor to `wave.ask`. When `WAVE_API_KEY` is
-  configured, calls the live gateway `POST /v1/compose` and returns its answer as-is
-  (`grounding: "gateway"`); when no key is configured, or the call fails, errors, or does not
-  answer within 3 seconds, falls back to the same deterministic composition `wave.ask` already
-  shipped (`grounding: "snapshot"`) — never a dead end. The `WAVE_API_KEY` is sent only to that
-  one gateway request and is never logged or echoed into the tool's output.
+- `src/tools/transport.ts` — 13 new tools covering the GA transport surface:
+  `wave_mint_moq_publish_token`, `wave_mint_moq_subscribe_token`,
+  `wave_publish_braid_audio`, `wave_stop_braid_audio`, `wave_engine_capabilities`,
+  `wave_create_srt_input`, `wave_list_srt_inputs`, `wave_delete_srt_input`,
+  `wave_whip_publish`, `wave_whep_subscribe`, `wave_create_listen_session`,
+  `wave_create_crest_session`, `wave_get_dante_observe_state`. Every handler surfaces a
+  non-2xx gateway response (most commonly the 402 x402 payment challenge an
+  unauthenticated/uncredited call actually gets) as a structured tool error
+  (`isError: true`, parsed JSON body) via the new `structuredErrorContent` helper in
+  `src/tools/shared.ts`, rather than the flat "Error N: <body>" text the rest of this
+  package's tools use.
+- `server.json` at the repo root: the `registry.modelcontextprotocol.io` publish manifest
+  (`io.github.wave-av/mcp-server`).
+- `wave_compose` (25th tool as of 0.3.0's Unreleased work): the registered successor to
+  `wave.ask`. When `WAVE_API_KEY` is configured, calls the live gateway `POST /v1/compose`
+  and returns its answer as-is (`grounding: "gateway"`); when no key is configured, or the
+  call fails, errors, or does not answer within 3 seconds, falls back to the same
+  deterministic composition `wave.ask` already shipped (`grounding: "snapshot"`) — never a
+  dead end. The `WAVE_API_KEY` is sent only to that one gateway request and is never
+  logged or echoed into the tool's output.
 - Bundled `knowledge/` snapshot refreshed to the 2026-09-06T03:52:45Z measurement: `products.json`
   53→59 (6 new preview products), `mcp-tools.json` 69→93 (24 new tools across new
   camera/production/stream/analytics/billing/usage/moderation coverage groups), `skills.json`

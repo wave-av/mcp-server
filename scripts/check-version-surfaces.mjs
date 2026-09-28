@@ -285,7 +285,7 @@ async function checkUserAgent() {
     try {
       await handshake(server);
       server.notify("notifications/initialized", {});
-      const call = await server.rpc("tools/call", { name: "wave_list_streams", arguments: {} });
+      const call = await server.rpc("tools/call", { name: "wave_engine_capabilities", arguments: {} });
       if (call.__exited) throw new Error(`server exited during tools/call (${call.__exited})`);
     } finally {
       server.close();

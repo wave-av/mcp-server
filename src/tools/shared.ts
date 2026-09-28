@@ -29,6 +29,29 @@ export function errorContent(status: number, body: string): ToolResult {
   return textContent(`Error ${status}: ${body}`);
 }
 
+/**
+ * Structured tool-error variant for the transport tools (SRT/WHIP/WHEP/listen/crest/
+ * dante-observe): a non-2xx gateway response — most commonly a 402 x402 payment
+ * challenge — is surfaced as `isError: true` with a JSON payload (`{ status, error }`)
+ * rather than a flat "Error N: <body>" string. The gateway's error bodies are already
+ * JSON (x402 challenge, `{ error: { code, message } }`, etc.); parsing them here lets a
+ * calling agent branch on `status`/`error.code` instead of regexing prose out of a text
+ * block. Falls back to the raw body string if it is not JSON, so a malformed or
+ * non-JSON upstream response still surfaces (never silently swallowed).
+ */
+export function structuredErrorContent(status: number, body: string): ToolResult {
+  let error: unknown;
+  try {
+    error = JSON.parse(body);
+  } catch {
+    error = body;
+  }
+  return {
+    content: [{ type: "text", text: JSON.stringify({ status, error }) }],
+    isError: true,
+  };
+}
+
 /** Authenticated fetch against the WAVE API, returning the raw text body. */
 export async function waveFetch(
   path: string,

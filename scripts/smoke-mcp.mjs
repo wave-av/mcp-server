@@ -205,25 +205,25 @@ try {
     const iso = new Date().toISOString();
 
     // 1. Read-only / list tools first.
-    await wrap("wave_list_streams", "GET /v1/streams", {});
     await wrap("wave_list_productions", "GET /v1/productions", {});
     await wrap("wave_get_subscription", "GET /v1/billing", {});
     await wrap("wave_get_usage", "GET /v1/billing/usage", {});
     await wrap("wave_get_viewers", "GET /v1/analytics/engagement", {});
+    await wrap("wave_engine_capabilities", "GET /v1/engine/capabilities", {});
+    await wrap("wave_list_srt_inputs", "GET /v1/srt/inputs", {});
+    await wrap("wave_get_dante_observe_state", "GET /v1/dante/observe", {});
 
-    // 2. Create a stream, then exercise its lifecycle.
-    const createStream = await callTool(rows, "wave_create_stream", "POST /v1/streams", {
-      title: `mcp-smoke-${iso}`,
+    // 2. Transport GA surface: SRT input + MoQ mint (nothing left running).
+    const createSrtInput = await callTool(rows, "wave_create_srt_input", "POST /v1/srt/inputs", {
+      name: `mcp-smoke-${iso}`,
     });
-    const streamId = extractId(createStream.body) ?? NIL_UUID;
+    const srtInputId = extractId(createSrtInput.body) ?? NIL_UUID;
+    await wrap("wave_delete_srt_input", "DELETE /v1/srt/inputs/{id}", { input_id: srtInputId });
+    await wrap("wave_mint_moq_publish_token", "POST /v1/moq/publish/{ns}/{track}", { ns: "mcp-smoke", track: "cam1" });
+    await wrap("wave_mint_moq_subscribe_token", "GET /v1/moq/subscribe/{ns}/{track}", { ns: "mcp-smoke", track: "cam1" });
 
-    await wrap("wave_start_stream", "POST /v1/streams/{id}/start", { stream_id: streamId });
-    await wrap("wave_get_stream_health", "GET /v1/streams/{id}/status", { stream_id: streamId });
-    await wrap("wave_get_stream_metrics", "GET /v1/streams/{id}/analytics", { stream_id: streamId });
-    await wrap("wave_mark_highlight", "POST /v1/streams/{id}/highlights", { stream_id: streamId, label: "smoke" });
-    await wrap("wave_stop_stream", "POST /v1/streams/{id}/stop", { stream_id: streamId });
     await wrap("wave_moderate_chat", "POST /v1/moderate", {
-      stream_id: streamId,
+      stream_id: NIL_UUID,
       message_id: "smoke-msg-1",
       action: "flag",
     });

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.wave-av/mcp-server",
+  "description": "WAVE media-engine MCP server: MoQ, braid, SRT, WHIP/WHEP, listen, crest, dante-observe tools.",
+  "version": "0.4.0",
+  "repository": {
+    "url": "https://github.com/wave-av/mcp-server",
+    "source": "github"
+  },
+  "websiteUrl": "https://docs.wave.online/mcp",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@wave-av/mcp-server",
+      "version": "0.4.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "WAVE_API_KEY",
+          "description": "WAVE API key. Generate one at https://console.wave.online/dashboard#keys.",
+          "format": "string",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "WAVE_BASE_URL",
+          "description": "API origin. Defaults to https://api.wave.online. Tool paths are /v1/*.",
+          "format": "string",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

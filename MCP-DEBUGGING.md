@@ -46,9 +46,9 @@ route requires (`<resource>:read` for GET, `<resource>:write` for mutating verbs
 
 ### Tools work but return empty results
 
-Check your WAVE account has data. Create a test stream first:
+Check your WAVE account has data. Create a test SRT input first:
 ```
-wave_create_stream({ title: "Test stream", protocol: "webrtc" })
+wave_create_srt_input({ name: "Test input" })
 ```
 
 ## Pointing at a different API origin
@@ -61,22 +61,38 @@ at startup instead of failing inside every tool call.
 WAVE_BASE_URL=https://api.wave.online npx @wave-av/mcp-server
 ```
 
-## Available tools (18)
+## Available tools (31)
 
-### Streams (5)
-`wave_list_streams` `wave_create_stream` `wave_start_stream` `wave_stop_stream` `wave_get_stream_health`
+### Transport — media engine (13)
+`wave_mint_moq_publish_token` `wave_mint_moq_subscribe_token` `wave_publish_braid_audio` `wave_stop_braid_audio`
+`wave_engine_capabilities` `wave_create_srt_input` `wave_list_srt_inputs` `wave_delete_srt_input`
+`wave_whip_publish` `wave_whep_subscribe` `wave_create_listen_session` `wave_create_crest_session`
+`wave_get_dante_observe_state`
+
+`wave_list_streams` / `wave_create_stream` / `wave_start_stream` / `wave_stop_stream` /
+`wave_get_stream_health` / `wave_get_stream_metrics` / `wave_mark_highlight` were removed — that
+`/v1/streams` surface is ruled preview, not GA. No phone-line tools ever existed in this registry.
 
 ### Studio (2)
 `wave_list_productions` `wave_create_production`
 
-### Analytics (2)
-`wave_get_viewers` `wave_get_stream_metrics`
+### Analytics (1)
+`wave_get_viewers`
 
 ### Billing (2)
 `wave_get_subscription` `wave_get_usage`
 
-### Production (7)
-`wave_switch_camera` `wave_create_clip` `wave_show_graphic` `wave_control_camera` `wave_moderate_chat` `wave_start_captions` `wave_mark_highlight`
+### Production (6)
+`wave_switch_camera` `wave_create_clip` `wave_show_graphic` `wave_control_camera` `wave_moderate_chat` `wave_start_captions`
+
+### Voice (1)
+`wave_voice_converse`
+
+### Design (4)
+`wave_design_extract` `wave_design_contract` `wave_design_measure` `wave_design_contract_check`
+
+### Compose (2)
+`wave.ask` `wave_compose`
 
 ### Resources
 - `wave://streams/{id}` — stream configuration and status

@@ -6,7 +6,6 @@
 // never drift out of parity — the failure mode that sank the previous
 // sdk-server.ts (a hand-maintained parallel list that fabricated tool names).
 import type { WaveToolDef } from "./shared.js";
-import { streamTools } from "./streams.js";
 import { studioTools } from "./studio.js";
 import { analyticsTools } from "./analytics.js";
 import { billingTools } from "./billing.js";
@@ -15,9 +14,16 @@ import { voiceTools } from "./voice.js";
 import { designTools } from "./design.js";
 import { waveAskTools } from "./wave-ask/wave-ask.js";
 import { waveComposeTools } from "./wave-ask/wave-compose.js";
+import { transportTools } from "./transport.js";
 
+// wave_list_streams / wave_create_stream / wave_start_stream / wave_stop_stream /
+// wave_get_stream_health / wave_get_stream_metrics / wave_mark_highlight (src/tools/streams.ts,
+// GA-scope duplicate of the /v1/streams surface, ruled "preview" — see the platform's go-live
+// kit) were REMOVED, not preview-flagged: the transport lane serves the real GA surface below
+// instead (MoQ, braid, SRT, WHIP/WHEP, listen, crest, dante-observe, engine capabilities). No
+// phone-line tools ever existed in this package's registry.
 export const allTools: readonly WaveToolDef[] = [
-  ...streamTools,
+  ...transportTools,
   ...studioTools,
   ...analyticsTools,
   ...billingTools,

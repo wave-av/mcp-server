@@ -47,17 +47,29 @@ wave auth login
 
 Add to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) — see the Quick start config above.
 
-## Available tools — Streams
+## Available tools — Transport (media engine)
+
+The GA transport surface: live ingest/egress, protocol bridges, and the media-engine
+capability contract. `wave_list_streams` / `wave_create_stream` / `wave_start_stream` /
+`wave_stop_stream` / `wave_get_stream_health` / `wave_get_stream_metrics` /
+`wave_mark_highlight` were removed (not preview-flagged) — that `/v1/streams` surface is
+ruled preview, not GA; use the transport tools below instead.
 
 | Tool | Description |
 | --- | --- |
-| `wave_list_streams` | List streams with pagination and status filtering (idle/live/ended) |
-| `wave_create_stream` | Create a new stream (protocol, recording, privacy) |
-| `wave_start_stream` | Start a stream |
-| `wave_stop_stream` | Stop an active stream |
-| `wave_get_stream_health` | Get a stream's current status document |
-| `wave_get_stream_metrics` | Get analytics for a single stream over a date range |
-| `wave_mark_highlight` | Mark a moment in a stream as a highlight for later clipping |
+| `wave_mint_moq_publish_token` | Mint a MoQ (Media over QUIC) publish join-token for a namespace/track |
+| `wave_mint_moq_subscribe_token` | Mint a MoQ subscribe join-token for a namespace/track |
+| `wave_publish_braid_audio` | Publish a braided (interleaved multichannel) audio track |
+| `wave_stop_braid_audio` | Stop a braided audio publish |
+| `wave_engine_capabilities` | The media-engine capability contract for this account |
+| `wave_create_srt_input` | Create an SRT input; returns an input id + SRT ingest URL |
+| `wave_list_srt_inputs` | List SRT inputs |
+| `wave_delete_srt_input` | Delete an SRT input by id |
+| `wave_whip_publish` | Publish media via WHIP (SDP offer in, SDP answer + resource Location out) |
+| `wave_whep_subscribe` | Subscribe to media via WHEP (SDP offer in, SDP answer out) |
+| `wave_create_listen_session` | Attach an agent as a live listener on a transport, get a session id |
+| `wave_create_crest_session` | Open a realtime processing session bound to a source |
+| `wave_get_dante_observe_state` | Get the observed Dante devices/channels on the bound network segment |
 
 ## Available tools — Studio
 
@@ -253,25 +265,31 @@ MIT
 
 | Capability | Status |
 | --- | --- |
+| Attach an agent as a live listener over a supported transport; returns a session id + receive descriptor. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Control a PTZ camera (pan, tilt, zoom, focus, preset recall/store). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Create a clip from a recorded stream, optionally exporting to social platforms. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Create a new multi-camera studio production. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Create a new stream (protocol, recording, region options). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Create an SRT input; returns an input id + SRT ingest URL to point an encoder at. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Delete an SRT input by id. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Drive a full headless conversation with the WAVE voice agent (WAV in, PCM reply out, no browser/WebRTC). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Get real-time stream health metrics (bitrate, frame rate, latency). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Get detailed stream performance metrics (bitrate, latency, quality, error rates). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Get current subscription plan, billing cycle, and feature entitlements. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Get current billing-period usage (streaming minutes, storage, bandwidth). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Get current viewer count and viewer demographics for a stream or account-wide. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Get the observed Dante devices/channels on the bound network segment. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | List all studio productions in the WAVE account. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| List all streams in the WAVE account with pagination and status filtering. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Mark a moment in a stream as a highlight for later clipping. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| List SRT inputs in the WAVE account. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Mint a MoQ publish join-token for a namespace/track. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Mint a MoQ subscribe join-token for a namespace/track. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Moderate a chat message in a live stream (block, flag, or allow). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Open a realtime processing session bound to a source; returns a session id + receive descriptor. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Publish a braided (interleaved multichannel) audio track under a namespace. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Publish media via WHIP: send an SDP offer, receive an SDP answer plus the resource Location for later teardown. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Show, hide, or update an HTML5 graphics overlay on a production. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Start real-time captions/transcription on a stream. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Start a stream by ID, transitioning it to the active state. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Stop an active stream by ID. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Stop a braided audio publish by namespace. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Subscribe to media via WHEP: send an SDP offer for playback, receive an SDP answer for the requested stream. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Switch the live program output to a different camera/source in a Cloud Switcher session. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| The media-engine capability contract: which transports, protocols and codecs this account's engine plane currently serves. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Run pen-extract's mechanical extraction pipeline on a .pen board. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Compose and validate a design-contract.json from an extract dir. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Measure a print image or rasterized plate SVG with loc-study. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
@@ -292,7 +310,7 @@ Every claim below is checked by `npm run verify` against the live repo or endpoi
 | Documentation surface is docs.wave.online/mcp | resolved by grepping `package.json` |
 | Published npm package name is @wave-av/mcp-server | resolved by grepping `package.json` |
 | wave_control_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
-| Exposes 25 MCP tools | resolved by grepping `capabilities.json` |
+| Exposes 31 MCP tools | resolved by grepping `capabilities.json` |
 | wave_voice_converse tool defined in src/tools/voice.ts | resolved by grepping `src/tools/voice.ts` |
 | wave_design_extract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
 | wave_design_contract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
@@ -300,19 +318,25 @@ Every claim below is checked by `npm run verify` against the live repo or endpoi
 | wave_design_contract_check tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
 | wave_create_clip tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
 | wave_create_production tool defined in src/tools/studio.ts | resolved by grepping `src/tools/studio.ts` |
-| wave_create_stream tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
 | wave_get_viewers tool defined in src/tools/analytics.ts | resolved by grepping `src/tools/analytics.ts` |
 | wave_list_productions tool defined in src/tools/studio.ts | resolved by grepping `src/tools/studio.ts` |
-| wave_list_streams tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
-| wave_mark_highlight tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
 | wave_moderate_chat tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
 | wave_show_graphic tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
 | wave_start_captions tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
-| wave_start_stream tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
-| wave_stop_stream tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
-| wave_get_stream_health tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
-| wave_get_stream_metrics tool defined in src/tools/streams.ts | resolved by grepping `src/tools/streams.ts` |
 | wave_get_subscription tool defined in src/tools/billing.ts | resolved by grepping `src/tools/billing.ts` |
+| wave_mint_moq_publish_token tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_mint_moq_subscribe_token tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_publish_braid_audio tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_stop_braid_audio tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_engine_capabilities tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_create_srt_input tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_list_srt_inputs tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_delete_srt_input tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_whip_publish tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_whep_subscribe tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_create_listen_session tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_create_crest_session tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
+| wave_get_dante_observe_state tool defined in src/tools/transport.ts | resolved by grepping `src/tools/transport.ts` |
 | wave_switch_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
 | wave_get_usage tool defined in src/tools/billing.ts | resolved by grepping `src/tools/billing.ts` |
 | Server connects via stdio transport (no network listener) | resolved by grepping `src/server.ts` |

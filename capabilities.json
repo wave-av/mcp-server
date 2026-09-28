@@ -12,15 +12,22 @@
   ],
   "exposes": {
     "mcpTools": [
-      { "name": "wave_list_streams" },
-      { "name": "wave_create_stream" },
-      { "name": "wave_start_stream" },
-      { "name": "wave_stop_stream" },
-      { "name": "wave_get_stream_health" },
+      { "name": "wave_mint_moq_publish_token" },
+      { "name": "wave_mint_moq_subscribe_token" },
+      { "name": "wave_publish_braid_audio" },
+      { "name": "wave_stop_braid_audio" },
+      { "name": "wave_engine_capabilities" },
+      { "name": "wave_create_srt_input" },
+      { "name": "wave_list_srt_inputs" },
+      { "name": "wave_delete_srt_input" },
+      { "name": "wave_whip_publish" },
+      { "name": "wave_whep_subscribe" },
+      { "name": "wave_create_listen_session" },
+      { "name": "wave_create_crest_session" },
+      { "name": "wave_get_dante_observe_state" },
       { "name": "wave_list_productions" },
       { "name": "wave_create_production" },
       { "name": "wave_get_viewers" },
-      { "name": "wave_get_stream_metrics" },
       { "name": "wave_get_subscription" },
       { "name": "wave_get_usage" },
       { "name": "wave_switch_camera" },
@@ -29,7 +36,6 @@
       { "name": "wave_control_camera" },
       { "name": "wave_moderate_chat" },
       { "name": "wave_start_captions" },
-      { "name": "wave_mark_highlight" },
       { "name": "wave_voice_converse" },
       { "name": "wave_design_extract" },
       { "name": "wave_design_contract" },
@@ -52,7 +58,7 @@
   "tags": [
     "mcp-server",
     "public",
-    "25-tools",
+    "31-tools",
     "agent-ops"
   ]
 }
