@@ -12,6 +12,16 @@
 > cannot be re-run from here. `front-door.copy.json` and `tools/front-door-parity.mjs` (mentioned
 > below) are likewise source-repo-only artifacts, not present in this checkout.
 >
+> **Refreshed 2026-09-28 (mcp-server 0.4.0)** with the same three `curl` commands the `.meta.json`
+> sidecars record (`fetchedAt: 2026-09-28T22:30:00Z`): `mcp-tools.json` 93→**96** (3 new tools:
+> `wave_create_compose_proposal`, `wave_get_compose_proposal`, `wave_run_compose_proposal`),
+> `products.json` 59→**60** (new: `composer`; 17 products moved preview→live, so live 9→26),
+> `skills.json` 179→**180** (new: `composer`; priced 40→53). Nothing removed from any of the three.
+> 38 of the 96 hosted tools name a route in a family wave-gateway lists as served by nothing
+> (`src/unserved-advertised-paths.ts`); `src/knowledge.ts` `UNSERVED_MCP_TOOL_NAMES` keeps the
+> composer from proposing them. Each sidecar's `sha256` is of the bundled file, re-serialized with
+> `json.dumps(indent=2, ensure_ascii=True)`; `rawResponseSha256` is of the bytes the GET returned.
+>
 > **Refreshed 2026-09-06 (mcp-server PR4-MCP)** to the source repo's next snapshot
 > (`fetchedAt: 2026-09-06T03:52:45Z`): `products.json` 53→**59** (6 new preview products: acuity,
 > badge, codec, email, gpu, interchange; live count unchanged at 9), `mcp-tools.json` 69→**93** (24

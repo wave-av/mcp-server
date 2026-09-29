@@ -16,7 +16,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 
 import { buildServer } from "./server.js";
 import { PKG_VERSION } from "./version.js";
-import { PRODUCT_IDS, MCP_TOOL_NAMES, METER_NAMES } from "./knowledge.js";
+import { HOSTED_MCP_URL, PRODUCT_IDS, MCP_TOOL_NAMES, METER_NAMES } from "./knowledge.js";
 
 const PriceRowSchema = z
   .object({
@@ -33,6 +33,7 @@ const AskProposalSchema = z
     stages: z.array(z.string()),
     productIds: z.array(z.string()),
     tools: z.array(z.string()),
+    toolsServer: z.literal(HOSTED_MCP_URL),
     meters: z.array(z.string()),
     priceRows: z.array(PriceRowSchema),
     executes: z.literal(false),

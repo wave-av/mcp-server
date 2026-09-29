@@ -58,10 +58,11 @@ A proposal object:
     { "productId": "transcribe", "meter": "wave_transcription_minutes", "priceShape": "x402 · USDC · base", "quote": "quote at call time" },
     { "productId": "captions", "meter": "wave_caption_minutes", "priceShape": "x402 · USDC · base", "quote": "quote at call time" }
   ],
+  "toolsServer": "https://api.wave.online/mcp",
   "executes": false,
   "next": [
     "adjacent capability: translated captions in a second language",
-    "agent path via MCP: call perception_subscribe directly once you're ready to execute this yourself",
+    "agent path via MCP: call perception_subscribe on the hosted WAVE MCP server (https://api.wave.online/mcp) once you're ready to execute this yourself — tools[] are that server's tool names, not this stdio package's",
     "saved-flow signup: keep this composition for next time (post-GA)"
   ],
   "grounding": "snapshot"
@@ -72,9 +73,15 @@ A proposal object:
 `"gateway"` plus whatever other fields the live `POST /v1/compose` route answers with, verbatim,
 when a `WAVE_API_KEY` is configured and that call succeeds within 3 seconds.)
 
-- `productIds` ⊆ `knowledge/products.json` `products[].id` (59 measured products).
-- `tools` ⊆ the live `/mcp` tool listing bundled at `knowledge/mcp-tools.json` (93 measured tools).
-- `meters` ⊆ non-null `pricing.meter` values in `knowledge/skills.json` (179 measured skills).
+- `productIds` ⊆ `knowledge/products.json` `products[].id` (60 measured products, 2026-09-28).
+- `tools` ⊆ the hosted `/mcp` tool listing bundled at `knowledge/mcp-tools.json` (96 measured tools,
+  2026-09-28), minus the 38 whose route the gateway lists as unserved (`/v1/streams`,
+  `/v1/productions`, `/v1/cameras`, `/v1/editor/projects`, `/v1/phone/*`, `/v1/collab/rooms`,
+  `/v1/podcast/shows`, `/v1/studio-ai` — see `UNSERVED_ROUTE_PREFIXES` in `src/knowledge.ts`).
+- `toolsServer` names the server those `tools` live on: the hosted WAVE MCP server, not this stdio
+  package. Call them there. Most are not registered here, and `wave_create_clip` / `wave_get_usage`
+  exist here under the same name with different arguments or a different route.
+- `meters` ⊆ non-null `pricing.meter` values in `knowledge/skills.json` (180 measured skills).
 - There is **no `model` field** — no sourced Dispatch model catalog exists yet (see
   `designs/front-door/FRONT-DOOR-SYSTEM.md` §3b knowledge-set table in `wave-pen-register-wt`).
 - `priceRows[].quote` is always `"quote at call time"` in the snapshot path — this path never
