@@ -6,6 +6,65 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-29
+
+A default install now lists only tools that can succeed. Measured live on 2026-09-28 against
+`https://api.wave.online` with a real `wave_live_*` key: 12 of 0.3.0's 18 HTTP tools, and both
+`wave://` resources, could never succeed for anyone. Their routes answer `404 ROUTE_NOT_FOUND`
+("No WAVE capability is served at this path") with and without a key, while the served control
+routes `GET /v1/network/surface` and `GET /v1/x402/facilitator/supported` answered 200 in the
+same run. wave-gateway's own ledger lists those families as advertised with no destination
+(`src/unserved-advertised-paths.ts`, GA-CONTRACT-001).
+
+### Fixed
+
+- **A non-2xx WAVE API answer is now a failed tool call.** `errorContent()` returned
+  `Error <status>: <body>` as an ordinary result, so an agent read `Error 404: ROUTE_NOT_FOUND` as
+  valid output. It now sets `isError: true`, on both the stdio server and the in-process Agent SDK
+  server. `wave_voice_converse` failures and design-tool results with `ok: false` set it too.
+- **`wave://streams/{id}` and `wave://productions/{id}` are real resource templates.** They were
+  registered with a plain string, which the MCP SDK treats as one fixed resource whose URI
+  literally contains `{id}`: `resources/templates/list` came back empty and `resources/read` of
+  any real id failed with `-32602 Resource ... not found`. They now use `ResourceTemplate`, read
+  the `{id}` variable, and turn a non-2xx upstream answer into a JSON-RPC error instead of an
+  `Error 404: ...` resource body.
+- `wave.ask` / `wave_compose` no longer propose hosted tools whose route the gateway lists as
+  unserved (38 of the 96 hosted tools), and every proposal now carries `toolsServer` (the hosted
+  WAVE MCP server, `https://api.wave.online/mcp`) so an agent calls `tools[]` where they exist
+  rather than on this stdio package, where most are not registered.
+
+### Changed
+
+- **Tools are registered by the condition they can work under** (`TOOL_GROUPS` in
+  `src/tools/index.ts`; both transports register the same `registeredTools()` selection). With
+  only `WAVE_API_KEY` set, `tools/list` returns 7 tools: `wave_get_viewers`,
+  `wave_get_subscription`, `wave_get_usage`, `wave_create_clip`, `wave_start_captions`,
+  `wave_compose` and `wave.ask`. The startup log line names the opt-in groups that are live
+  (group ids and counts only, never a value).
+- `capabilities.json` lists the 7 default tools in `exposes.mcpTools` and the 18 opt-in tools in
+  `exposes.optInMcpTools` with their group and registration condition (its `version` was stuck at
+  0.1.5). `scripts/check-capabilities-drift.ts` checks both lists against the registry.
+- `scripts/smoke-mcp.mjs` fails a run when a non-2xx result lacks `isError: true` (or a 2xx has
+  it), when an unserved tool appears in a default `tools/list`, or on `ROUTE_NOT_FOUND`. `--all`
+  now drives the 5 default gateway-backed tools; `--read-only` limits it to the 3 unbilled GETs.
+- Bundled `knowledge/` snapshot refreshed to the 2026-09-28 measurement: `mcp-tools.json` 93→96,
+  `products.json` 59→60, `skills.json` 179→180 (see `knowledge/SOURCES.md`).
+
+### Breaking
+
+- These tools are no longer registered by default. Set `WAVE_MCP_EXPERIMENTAL=1` to register them,
+  with a note at the start of each description that `api.wave.online` does not serve the route:
+  `wave_list_streams`, `wave_create_stream`, `wave_start_stream`, `wave_stop_stream`,
+  `wave_get_stream_health`, `wave_get_stream_metrics`, `wave_mark_highlight`,
+  `wave_list_productions`, `wave_create_production`, `wave_switch_camera`, `wave_show_graphic`,
+  `wave_control_camera` and `wave_moderate_chat`. The same flag registers the two `wave://`
+  resource templates; without it the server does not advertise the resources capability.
+- `wave_voice_converse` is registered only when `WAVE_INTERNAL_SECRET` is set. It authenticates
+  with the edge-internal secret, not a customer key, so it failed on every customer machine.
+- The four `wave_design_*` tools are registered only when their unpublished library resolves on
+  disk (`WAVE_PEN_EXTRACT_ROOT` / `WAVE_LOC_STUDY_ROOT`, or the `$HOME/wave-av/...` default).
+  On a customer machine they failed with `@wave-av/pen-extract not found`.
+
 ### Added
 
 - `wave_compose` (25th tool): the registered successor to `wave.ask`. When `WAVE_API_KEY` is

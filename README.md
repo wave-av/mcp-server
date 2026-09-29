@@ -47,106 +47,135 @@ wave auth login
 
 Add to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) — see the Quick start config above.
 
-## Available tools — Streams
+## Tools
+
+With `WAVE_API_KEY` set and nothing else, `tools/list` returns **7 tools**. Each one calls a route
+`https://api.wave.online` serves, or proposes without calling anything. Other tools are registered
+only when their condition holds. See [Opt-in tools](#opt-in-tools) below.
+
+A tool call that the WAVE API answers with a non-2xx status comes back with `isError: true` and the
+text `Error <status>: <body>`. Treat it as a failed call, not as output. (Through 0.3.0 these came back
+as ordinary results.)
+
+### Analytics and billing
+
+| Tool | Route | Description |
+| --- | --- | --- |
+| `wave_get_viewers` | `GET /v1/analytics/engagement` | Account-wide viewer engagement analytics over a date range |
+| `wave_get_subscription` | `GET /v1/billing` | The current billing account (plan, subscription state) |
+| `wave_get_usage` | `GET /v1/billing/usage` | Billed usage for a date range |
+
+### Media
+
+| Tool | Route | Description |
+| --- | --- | --- |
+| `wave_create_clip` | `POST /v1/clips` | Create a clip from a recording. Priced: expect a 402 (x402 challenge or spend cap) until the account can pay. |
+| `wave_start_captions` | `POST /v1/live/pipeline` | Transcribe one audio clip (multipart) and optionally run a fast-LLM step over the transcript. Priced. |
+
+### Compose (front door composer)
+
+`wave_compose` is the agent rendering of the WAVE conversational front door
+composer (`designs/front-door/PR4-BRIEF.md` in `wave-pen-register-wt`): given
+a goal in plain language, it **proposes** a composition of WAVE
+products/tools/meters. It never executes anything itself.
 
 | Tool | Description |
 | --- | --- |
-| `wave_list_streams` | List streams with pagination and status filtering (idle/live/ended) |
-| `wave_create_stream` | Create a new stream (protocol, recording, privacy) |
-| `wave_start_stream` | Start a stream |
-| `wave_stop_stream` | Stop an active stream |
-| `wave_get_stream_health` | Get a stream's current status document |
-| `wave_get_stream_metrics` | Get analytics for a single stream over a date range |
-| `wave_mark_highlight` | Mark a moment in a stream as a highlight for later clipping |
+| `wave_compose` | Propose a WAVE media pipeline (captions/clips/dub/realtime/identity/...) for a goal stated in plain language. Calls the live gateway `POST /v1/compose` when `WAVE_API_KEY` is configured (`grounding: "gateway"`); falls back to a bundled snapshot composition when no key is set or the live call fails, errors, or times out after 3s (`grounding: "snapshot"`), so it never dead-ends. Propose-only: calls no other tool itself. |
+| `wave.ask` | **Deprecated**: use `wave_compose` instead. Kept as an offline-only alias for one release (calls no other tool, makes no network request; identical composition logic to `wave_compose`'s snapshot fallback, without the `grounding` field). |
 
-## Available tools — Studio
+- **Input**: `{ intent: string, budgetUsd?: number }` (`wave_compose`) / `{ question: string, budgetUsd?: number }` (`wave.ask`, deprecated).
+- **Output**: `{ intent, stages[], productIds[], tools[], toolsServer, meters[], priceRows[], executes: false, next[], grounding }` (`wave_compose`; `grounding` is `"gateway"` or `"snapshot"`) or the gateway's own object verbatim plus `grounding: "gateway"` when a live call succeeds. `wave.ask`'s output omits `grounding` but is otherwise identical. Always `executes: false`, never a `model` field (no sourced Dispatch model catalog exists yet).
+- **`tools[]` are the hosted server's tools, not this package's.** `toolsServer` says where they live: the hosted WAVE MCP server, `https://api.wave.online/mcp`. Most of them are not registered here. `wave_create_clip` and `wave_get_usage` exist in both places under the same name but take different arguments or call a different route, so call a proposed tool on `toolsServer`.
+- **Grounded, not generated, in the snapshot path**: every `productIds[]`/`tools[]`/`meters[]` entry is checked against a bundled, measured snapshot of the live platform (`knowledge/products.json`: 60 products, `knowledge/skills.json`: 180 skills with pricing, `knowledge/mcp-tools.json`: 96 hosted MCP tools, all fetched 2026-09-28; see `knowledge/SOURCES.md` for fetch provenance). A hosted tool whose route wave-gateway lists as served by nothing (38 of the 96: the streams, productions, cameras, editor projects, phone, collab rooms, podcast shows and studio-ai families) is never proposed. A goal the composer doesn't recognize, or one that mentions a name outside that snapshot, always falls back to a real, grounded composition. It never fabricates one and never dead-ends.
+- **Pricing is never invented** in the snapshot path: each `priceRows[]` entry carries the skill's real `meter` (or `null` for flat-rate skills) and a `priceShape` read straight off the skill's pricing block; the `quote` field is always `"quote at call time"`.
+- **The `WAVE_API_KEY` never goes anywhere but the gateway**: `wave_compose`'s live call sends it only as the `Authorization` header on `POST {WAVE_BASE_URL}/v1/compose`; it is never logged and never echoed into the tool's returned content, including on a failed call (which falls back to the snapshot path instead of surfacing an error).
+- See `skills/wave-ask/SKILL.md` for the full agent-facing how-to-call contract.
+
+## Opt-in tools
+
+18 more tools ship in the package but are registered only when their condition holds. The server
+logs which opt-in groups are live on startup (group names and counts only, never a value), e.g.
+`[wave-mcp-server] Connected via stdio transport — 7 tools (opt-in groups: none)`.
+`capabilities.json` lists every one under `exposes.optInMcpTools`.
+
+### Unserved routes: `WAVE_MCP_EXPERIMENTAL=1`
+
+These tools call routes that `https://api.wave.online` does **not** serve today. Measured on
+2026-09-28, every one answers an anonymous call with `404 ROUTE_NOT_FOUND` ("No WAVE capability is
+served at this path"), while the served control routes `GET /v1/network/surface` and
+`GET /v1/x402/facilitator/supported` answered 200 in the same run. The streams routes 404 even for a
+key holding `streams:read`/`streams:write`; a key without a family's scope gets
+`403 SCOPE_INSUFFICIENT` before routing. wave-gateway lists the `/v1/streams`, `/v1/productions` and
+`/v1/cameras` families as advertised with no destination (`src/unserved-advertised-paths.ts`), and it
+has no product spoke, gateway-native group or handler for `POST /v1/moderate`. They
+stay in the package so a gateway that does serve them (`WAVE_BASE_URL=http://localhost:…`) can
+still drive them, and so re-enabling a family is a one-line change once it has a backend. With the
+flag set, each description starts with a note saying the default origin cannot answer.
+
+| Tool | Route |
+| --- | --- |
+| `wave_list_streams` | `GET /v1/streams` |
+| `wave_create_stream` | `POST /v1/streams` |
+| `wave_start_stream` | `POST /v1/streams/{id}/start` |
+| `wave_stop_stream` | `POST /v1/streams/{id}/stop` |
+| `wave_get_stream_health` | `GET /v1/streams/{id}/status` |
+| `wave_get_stream_metrics` | `GET /v1/streams/{id}/analytics` |
+| `wave_mark_highlight` | `POST /v1/streams/{id}/highlights` |
+| `wave_list_productions` | `GET /v1/productions` |
+| `wave_create_production` | `POST /v1/productions` |
+| `wave_switch_camera` | `POST /v1/productions/{id}/camera` |
+| `wave_show_graphic` | `POST /v1/productions/{id}/overlay` |
+| `wave_control_camera` | `POST /v1/cameras/{id}/control` |
+| `wave_moderate_chat` | `POST /v1/moderate` |
+
+The same flag registers the two resource templates, which read the same unserved families:
+
+- `wave://streams/{id}`: `GET /v1/streams/{id}`
+- `wave://productions/{id}`: `GET /v1/productions/{id}`
+
+Without the flag the server registers no resources and does not advertise the resources capability.
+
+### Voice: `WAVE_INTERNAL_SECRET` is set
 
 | Tool | Description |
 | --- | --- |
-| `wave_list_productions` | List multi-camera productions |
-| `wave_create_production` | Create a new multi-camera production |
-| `wave_switch_camera` | Switch the program/preview bus to a camera index in a production |
-| `wave_show_graphic` | Show or hide a graphics overlay in a production |
-| `wave_control_camera` | Send a control command (iris/focus/zoom/white balance/gain/shutter/recording/audio level/presets) to a managed camera |
-| `wave_moderate_chat` | Moderate a chat message in a live stream (block/flag/allow) |
-| `wave_start_captions` | Transcribe an audio clip and optionally run a fast-LLM step over the transcript |
-| `wave_create_clip` | Create a clip from a recording |
+| `wave_voice_converse` | Drive a full headless voice-agent turn: bind an agent to a room, send a WAV of the caller's speech, and receive the agent's spoken reply as raw PCM. No browser, no WebRTC. Authenticates with the edge-internal secret, not a customer API key, so it is registered only where that secret is present. |
 
-## Available tools — Analytics
-
-| Tool | Description |
-| --- | --- |
-| `wave_get_viewers` | Get account-wide viewer engagement analytics over a date range |
-
-## Available tools — Billing
-
-| Tool | Description |
-| --- | --- |
-| `wave_get_subscription` | Get the current billing account (plan, subscription state) |
-| `wave_get_usage` | Get billed usage for a date range |
-
-## Design tools
+### Design: the unpublished library resolves on disk
 
 Thin wrappers over the design-to-engineer pipeline's two standalone libraries
-(`@wave-av/pen-extract`, `@wave-av/loc-study`) — stage E2 of
+(`@wave-av/pen-extract`, `@wave-av/loc-study`), stage E2 of
 `wave-pen-register`'s `designs/DESIGN-TO-ENGINEER-SYSTEM.md`. Neither library
 is published to npm yet, so each tool resolves its library from a sibling
-checkout, `$HOME`-first, with an env override:
+checkout, `$HOME`-first, with an env override, and is registered only when that
+directory exists:
 
-| Tool | Description |
-| --- | --- |
-| `wave_design_extract` | Run pen-extract's `all` pipeline on a `.pen` board; returns the manifest (files, sha256s, owed) |
-| `wave_design_contract` | Compose + validate a `design-contract.json` from an extract dir; returns the validator line and key counts |
-| `wave_design_measure` | Run loc-study's `measure` on an image (masked by geometry) or a rasterized plate SVG |
-| `wave_design_contract_check` | Validate an existing `design-contract.json`, no compose |
+| Tool | Registered when | Description |
+| --- | --- | --- |
+| `wave_design_extract` | pen-extract resolves | Run pen-extract's `all` pipeline on a `.pen` board; returns the manifest (files, sha256s, owed) |
+| `wave_design_contract` | pen-extract resolves | Compose + validate a `design-contract.json` from an extract dir; returns the validator line and key counts |
+| `wave_design_contract_check` | pen-extract resolves | Validate an existing `design-contract.json`, no compose |
+| `wave_design_measure` | loc-study resolves | Run loc-study's `measure` on an image (masked by geometry) or a rasterized plate SVG |
 
 Every path argument (pen board, extract dir, image, contract file, etc.) is
-confined to `$HOME/wave-av` or the OS temp dir — a call outside those roots
-is rejected before anything runs.
+confined to `$HOME/wave-av` or the OS temp dir. A call outside those roots
+is rejected before anything runs. A result with `ok: false` comes back with `isError: true`.
 
 | Env var | Default | Purpose |
 | --- | --- | --- |
 | `WAVE_PEN_EXTRACT_ROOT` | `$HOME/wave-av/wave-pen-register-wt/packages/pen-extract` | Root of the `@wave-av/pen-extract` checkout |
 | `WAVE_LOC_STUDY_ROOT` | `$HOME/wave-av/wave-design-study-wt/tools/loc-study` | Root of the `@wave-av/loc-study` checkout |
 
-## Available tools — Compose (front door composer)
-
-`wave_compose` is the agent rendering of the WAVE conversational front door
-composer (`designs/front-door/PR4-BRIEF.md` in `wave-pen-register-wt`): given
-a goal in plain language, it **proposes** a composition of WAVE
-products/tools/meters — it never executes anything itself.
-
-| Tool | Description |
-| --- | --- |
-| `wave_compose` | Propose a WAVE media pipeline (captions/clips/dub/realtime/identity/...) for a goal stated in plain language. Calls the live gateway `POST /v1/compose` when `WAVE_API_KEY` is configured (`grounding: "gateway"`); falls back to a bundled snapshot composition when no key is set or the live call fails, errors, or times out after 3s (`grounding: "snapshot"`) — never a dead end. Propose-only: calls no other tool itself. |
-| `wave.ask` | **Deprecated** — use `wave_compose` instead. Kept as an offline-only alias for one release (calls no other tool, makes no network request; identical composition logic to `wave_compose`'s snapshot fallback, without the `grounding` field). |
-
-- **Input**: `{ intent: string, budgetUsd?: number }` (`wave_compose`) / `{ question: string, budgetUsd?: number }` (`wave.ask`, deprecated).
-- **Output**: `{ intent, stages[], productIds[], tools[], meters[], priceRows[], executes: false, next[], grounding }` (`wave_compose`; `grounding` is `"gateway"` or `"snapshot"`) or the gateway's own object verbatim plus `grounding: "gateway"` when a live call succeeds. `wave.ask`'s output omits `grounding` but is otherwise identical. Always `executes: false`, never a `model` field (no sourced Dispatch model catalog exists yet).
-- **Grounded, not generated, in the snapshot path**: every `productIds[]`/`tools[]`/`meters[]` entry is checked against a bundled, measured snapshot of the live platform (`knowledge/products.json` — 59 products, `knowledge/skills.json` — 179 skills with pricing, `knowledge/mcp-tools.json` — 93 live gateway tools; see `knowledge/SOURCES.md` for fetch provenance). A goal the composer doesn't recognize, or one that mentions a name outside that snapshot, always falls back to a real, grounded composition — never a fabricated one and never a dead end.
-- **Pricing is never invented** in the snapshot path: each `priceRows[]` entry carries the skill's real `meter` (or `null` for flat-rate skills) and a `priceShape` read straight off the skill's pricing block; the `quote` field is always `"quote at call time"`.
-- **The `WAVE_API_KEY` never goes anywhere but the gateway**: `wave_compose`'s live call sends it only as the `Authorization` header on `POST {WAVE_BASE_URL}/v1/compose`; it is never logged and never echoed into the tool's returned content, including on a failed call (which falls back to the snapshot path instead of surfacing an error).
-- See `skills/wave-ask/SKILL.md` for the full agent-facing how-to-call contract.
-
-## Available tools — Voice
-
-| Tool | Description |
-| --- | --- |
-| `wave_voice_converse` | Drive a full headless voice-agent turn: bind an agent to a room, send a WAV of the caller's speech, and receive the agent's spoken reply as raw PCM. No browser, no WebRTC. Requires `WAVE_INTERNAL_SECRET` (edge-internal auth, not the customer API key). |
-
-## Resources
-
-Access WAVE entities directly via the `wave://` URI scheme:
-
-- `wave://streams/{id}` - Stream configuration and status
-- `wave://productions/{id}` - Studio production details
-
 ## Environment variables
 
 | Variable | Required | Default | Description |
 | --- | --- | --- | --- |
-| `WAVE_API_KEY` | Yes | - | Your WAVE API key |
+| `WAVE_API_KEY` | Yes | - | Your WAVE API key (`wave_live_...`) |
 | `WAVE_BASE_URL` | No | `https://api.wave.online` | API origin. Tool paths are `/v1/*` on the WAVE gateway. |
+| `WAVE_MCP_EXPERIMENTAL` | No | unset | `1` or `true` registers the unserved-route tools and the `wave://` resources (see above) |
+| `WAVE_INTERNAL_SECRET` | No | unset | Registers `wave_voice_converse` (WAVE-internal) |
+| `WAVE_PEN_EXTRACT_ROOT` / `WAVE_LOC_STUDY_ROOT` | No | see above | Register the design tools (WAVE-internal) |
 
 ## In-process (Claude Agent SDK) mode
 
@@ -168,7 +197,7 @@ import { createWaveSdkMcpServer } from "@wave-av/mcp-server/sdk-server";
 
 const wave = await createWaveSdkMcpServer();
 for await (const message of query({
-  prompt: "List my active streams",
+  prompt: "How much have I been billed this month?",
   options: { mcpServers: { wave }, env: { WAVE_API_KEY: process.env.WAVE_API_KEY } },
 })) {
   // handle messages
@@ -253,29 +282,20 @@ MIT
 
 | Capability | Status |
 | --- | --- |
-| Control a PTZ camera (pan, tilt, zoom, focus, preset recall/store). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Create a clip from a recorded stream, optionally exporting to social platforms. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Create a new multi-camera studio production. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Create a new stream (protocol, recording, region options). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Drive a full headless conversation with the WAVE voice agent (WAV in, PCM reply out, no browser/WebRTC). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Get real-time stream health metrics (bitrate, frame rate, latency). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Get detailed stream performance metrics (bitrate, latency, quality, error rates). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Get current subscription plan, billing cycle, and feature entitlements. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Get current billing-period usage (streaming minutes, storage, bandwidth). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Get current viewer count and viewer demographics for a stream or account-wide. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| List all studio productions in the WAVE account. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| List all streams in the WAVE account with pagination and status filtering. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Mark a moment in a stream as a highlight for later clipping. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Moderate a chat message in a live stream (block, flag, or allow). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Show, hide, or update an HTML5 graphics overlay on a production. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Start real-time captions/transcription on a stream. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Start a stream by ID, transitioning it to the active state. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Stop an active stream by ID. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Switch the live program output to a different camera/source in a Cloud Switcher session. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Run pen-extract's mechanical extraction pipeline on a .pen board. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Compose and validate a design-contract.json from an extract dir. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Measure a print image or rasterized plate SVG with loc-study. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
-| Validate an existing design-contract.json against the schema. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Get account-wide viewer engagement analytics over a date range (GET /v1/analytics/engagement). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Get the current billing account: plan and subscription state (GET /v1/billing). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Get billed usage for a date range (GET /v1/billing/usage). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Create a clip from a recording (POST /v1/clips, priced). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Transcribe one audio clip through the live pipeline and optionally run a fast-LLM step over the transcript (POST /v1/live/pipeline, priced). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| Opt-in (WAVE_MCP_EXPERIMENTAL=1): list, create, start and stop streams, read a stream's status and analytics, mark a highlight. api.wave.online does not serve /v1/streams today. | ![scaffolded](https://img.shields.io/badge/scaffolded-orange?style=flat-square) |
+| Opt-in (WAVE_MCP_EXPERIMENTAL=1): list and create productions, switch a camera, show a graphic. api.wave.online does not serve /v1/productions today. | ![scaffolded](https://img.shields.io/badge/scaffolded-orange?style=flat-square) |
+| Opt-in (WAVE_MCP_EXPERIMENTAL=1): send a control command to a managed camera. api.wave.online does not serve /v1/cameras today. | ![scaffolded](https://img.shields.io/badge/scaffolded-orange?style=flat-square) |
+| Opt-in (WAVE_MCP_EXPERIMENTAL=1): moderate a chat message. wave-gateway has no handler for POST /v1/moderate today. | ![scaffolded](https://img.shields.io/badge/scaffolded-orange?style=flat-square) |
+| WAVE-internal, registered only when WAVE_INTERNAL_SECRET is set: drive a full headless conversation with the WAVE voice agent (WAV in, PCM reply out, no browser/WebRTC). | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| WAVE-internal, registered only when the design library resolves on disk: run pen-extract's mechanical extraction pipeline on a .pen board. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| WAVE-internal, registered only when the design library resolves on disk: compose and validate a design-contract.json from an extract dir. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| WAVE-internal, registered only when the design library resolves on disk: measure a print image or rasterized plate SVG with loc-study. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
+| WAVE-internal, registered only when the design library resolves on disk: validate an existing design-contract.json against the schema. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Deprecated (use wave_compose): propose a WAVE media pipeline (captions/clips/dub/realtime/...) for a goal in plain language; never executes. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 | Propose a WAVE media pipeline for a goal in plain language. Calls the live gateway when a key is configured; falls back to a bundled snapshot otherwise. Never executes. | ![preview](https://img.shields.io/badge/preview-blue?style=flat-square) |
 
@@ -292,7 +312,7 @@ Every claim below is checked by `npm run verify` against the live repo or endpoi
 | Documentation surface is docs.wave.online/mcp | resolved by grepping `package.json` |
 | Published npm package name is @wave-av/mcp-server | resolved by grepping `package.json` |
 | wave_control_camera tool defined in src/tools/production.ts | resolved by grepping `src/tools/production.ts` |
-| Exposes 25 MCP tools | resolved by grepping `capabilities.json` |
+| Exposes 7 MCP tools by default (18 more are opt-in, listed in capabilities.json optInMcpTools) | resolved by grepping `capabilities.json` |
 | wave_voice_converse tool defined in src/tools/voice.ts | resolved by grepping `src/tools/voice.ts` |
 | wave_design_extract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
 | wave_design_contract tool defined in src/tools/design.ts | resolved by grepping `src/tools/design.ts` |
