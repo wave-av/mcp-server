@@ -1,43 +1,17 @@
 // cspell:ignore modelcontextprotocol
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getAuthHeaders, getBaseUrl } from "../auth.js";
+import { registerEntityResource } from "./entity.js";
 
+/**
+ * `wave://productions/{id}` → GET /v1/productions/{id}. The /v1/productions family is unserved on
+ * api.wave.online (see ../tools/index.ts), so ../server.ts registers this only when
+ * WAVE_MCP_EXPERIMENTAL=1.
+ */
 export function registerProductionResources(server: McpServer): void {
-  server.resource(
-    "production",
-    "wave://productions/{id}",
-    { description: "A WAVE studio production session", mimeType: "application/json" },
-    async (uri) => {
-      const id = uri.pathname.split("/").pop();
-      if (!id) {
-        return {
-          contents: [
-            { uri: uri.href, text: "Error: Missing production ID", mimeType: "text/plain" },
-          ],
-        };
-      }
-
-      const res = await fetch(`${getBaseUrl()}/v1/productions/${encodeURIComponent(id)}`, {
-        headers: getAuthHeaders(),
-      });
-      if (!res.ok) {
-        return {
-          contents: [
-            {
-              uri: uri.href,
-              text: `Error ${res.status}: ${await res.text()}`,
-              mimeType: "text/plain",
-            },
-          ],
-        };
-      }
-
-      const data = await res.json();
-      return {
-        contents: [
-          { uri: uri.href, text: JSON.stringify(data, null, 2), mimeType: "application/json" },
-        ],
-      };
-    },
-  );
+  registerEntityResource(server, {
+    name: "production",
+    uriTemplate: "wave://productions/{id}",
+    apiPath: "/v1/productions",
+    description: "A WAVE studio production session (GET /v1/productions/{id})",
+  });
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "repo": "wave-av/mcp-server",
-  "version": "0.1.5",
+  "version": "0.4.0",
   "lifecycle": "beta",
   "planeLayer": null,
   "foundationPin": "v1",
@@ -12,31 +12,33 @@
   ],
   "exposes": {
     "mcpTools": [
-      { "name": "wave_list_streams" },
-      { "name": "wave_create_stream" },
-      { "name": "wave_start_stream" },
-      { "name": "wave_stop_stream" },
-      { "name": "wave_get_stream_health" },
-      { "name": "wave_list_productions" },
-      { "name": "wave_create_production" },
       { "name": "wave_get_viewers" },
-      { "name": "wave_get_stream_metrics" },
       { "name": "wave_get_subscription" },
       { "name": "wave_get_usage" },
-      { "name": "wave_switch_camera" },
       { "name": "wave_create_clip" },
-      { "name": "wave_show_graphic" },
-      { "name": "wave_control_camera" },
-      { "name": "wave_moderate_chat" },
       { "name": "wave_start_captions" },
-      { "name": "wave_mark_highlight" },
-      { "name": "wave_voice_converse" },
-      { "name": "wave_design_extract" },
-      { "name": "wave_design_contract" },
-      { "name": "wave_design_measure" },
-      { "name": "wave_design_contract_check" },
       { "name": "wave.ask" },
       { "name": "wave_compose" }
+    ],
+    "optInMcpTools": [
+      { "name": "wave_list_streams", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_create_stream", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_start_stream", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_stop_stream", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_get_stream_health", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_get_stream_metrics", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_mark_highlight", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_list_productions", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_create_production", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_switch_camera", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_show_graphic", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_control_camera", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_moderate_chat", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
+      { "name": "wave_voice_converse", "group": "internal-voice", "enabledWhen": "WAVE_INTERNAL_SECRET is set" },
+      { "name": "wave_design_extract", "group": "internal-design-pen-extract", "enabledWhen": "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) exists" },
+      { "name": "wave_design_contract", "group": "internal-design-pen-extract", "enabledWhen": "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) exists" },
+      { "name": "wave_design_contract_check", "group": "internal-design-pen-extract", "enabledWhen": "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) exists" },
+      { "name": "wave_design_measure", "group": "internal-design-loc-study", "enabledWhen": "WAVE_LOC_STUDY_ROOT (or $HOME/wave-av/wave-design-study-wt/tools/loc-study) exists" }
     ]
   },
   "consumes": {
@@ -52,7 +54,7 @@
   "tags": [
     "mcp-server",
     "public",
-    "25-tools",
+    "7-tools",
     "agent-ops"
   ]
 }

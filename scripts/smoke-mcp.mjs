@@ -2,12 +2,20 @@
 // Fresh-install smoke driver for the stdio MCP server.
 //
 //   node scripts/smoke-mcp.mjs <path-to-installed-bin> [capabilities|expectedToolCount] [toolName] [jsonArgs]
-//   node scripts/smoke-mcp.mjs <path-to-installed-bin> [capabilities|expectedToolCount] --all
+//   node scripts/smoke-mcp.mjs <path-to-installed-bin> [capabilities|expectedToolCount] --all [--read-only]
 //
 // Spawns the bin (argument array, no shell), performs the MCP handshake over
 // newline-delimited JSON-RPC, lists tools, and either calls one named tool or
-// (with --all) calls every registered tool with safe arguments. Environment is
-// passed through untouched and never printed.
+// (with --all) calls every default-registered gateway-backed tool with safe
+// arguments. --read-only limits --all to the GET tools, so nothing is billed.
+// Environment is passed through untouched and never printed.
+//
+// Since 0.4.0 every tools/call is also checked against the two 0.4.0 contracts:
+//   - a non-2xx upstream answer comes back with `isError: true` (0.3.0 returned
+//     "Error 404: ..." as a SUCCESSFUL tool result), and a 2xx never does;
+//   - none of the tools 0.4.0 took out of the default registry (the
+//     streams/productions/cameras/moderation routes api.wave.online does not
+//     serve) is in tools/list, unless WAVE_MCP_EXPERIMENTAL=1 is set.
 //
 // The `capabilities` sentinel (preferred over a numeric literal) tells this
 // script to derive the expected tool set from THIS repo's capabilities.json
@@ -42,7 +50,8 @@ if (!bin) {
   process.exit(2);
 }
 const allMode = rawArgs.includes("--all");
-const rest = rawArgs.slice(1).filter((a) => a !== "--all");
+const readOnly = rawArgs.includes("--read-only");
+const rest = rawArgs.slice(1).filter((a) => a !== "--all" && a !== "--read-only");
 const expectedArg = rest[0];
 let expectedNames; // string[] | undefined — derived from capabilities.json
 let expected; // number | undefined — a plain count, only when no name set is available
@@ -116,39 +125,57 @@ function finish(code) {
 }
 
 /**
- * Extract a resource id from a tool's passthrough JSON body, trying the
- * shapes real WAVE responses commonly use. Returns undefined if none found.
- */
-function extractId(bodyText) {
-  try {
-    const parsed = JSON.parse(bodyText);
-    return parsed?.id ?? parsed?.stream?.id ?? parsed?.production?.id ?? parsed?.data?.id ?? undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-/**
  * Classify a tools/call result into a smoke-table row.
  * Tool handlers return either the raw passthrough JSON (success) or the
- * "Error <status>: <body>" text errorContent() produces (non-2xx).
+ * "Error <status>: <body>" text errorContent() produces (non-2xx), which
+ * since 0.4.0 MUST carry `isError: true`. A mismatch either way is a hard
+ * failure: it is exactly the 0.3.0 defect (an error handed back as output).
  */
 function classify(call) {
   if (call.error) {
     return { status: "ERR", marker: "jsonrpc-error", pass: false, hardFail: true, body: JSON.stringify(call.error) };
   }
   const text = call.result?.content?.[0]?.text ?? "";
+  const isError = call.result?.isError === true;
   const m = /^Error (\d+): ([\s\S]*)$/.exec(text);
   const status = m ? m[1] : "2xx";
   const body = m ? m[2] : text;
   const isHtml = /<!DOCTYPE|<html/i.test(body);
   const routeNotMapped = /ROUTE_NOT_MAPPED/i.test(body);
+  const routeNotFound = /ROUTE_NOT_FOUND/i.test(body);
+  const errorFlagWrong = m ? !isError : isError;
   const numStatus = m ? Number(m[1]) : 200;
-  const hardFail = isHtml || routeNotMapped || numStatus === 404 || numStatus >= 500;
+  const hardFail = isHtml || routeNotMapped || routeNotFound || errorFlagWrong || numStatus === 404 || numStatus >= 500;
   const pass = !hardFail && (status === "2xx" || numStatus === 402);
-  const marker = isHtml ? "HTML" : routeNotMapped ? "ROUTE_NOT_MAPPED" : body.slice(0, 80).replace(/\s+/g, " ");
-  return { status, marker, pass, hardFail, body };
+  const marker = errorFlagWrong
+    ? `isError=${isError} on a ${status} result`
+    : isHtml
+      ? "HTML"
+      : routeNotMapped
+        ? "ROUTE_NOT_MAPPED"
+        : body.slice(0, 80).replace(/\s+/g, " ");
+  return { status, marker, pass, hardFail, body, isError };
 }
+
+// The tools 0.4.0 moved out of the default registry because api.wave.online
+// serves none of their routes (src/tools/index.ts, group "unserved-backend").
+const UNSERVED_BY_DEFAULT = [
+  "wave_list_streams",
+  "wave_create_stream",
+  "wave_start_stream",
+  "wave_stop_stream",
+  "wave_get_stream_health",
+  "wave_get_stream_metrics",
+  "wave_mark_highlight",
+  "wave_list_productions",
+  "wave_create_production",
+  "wave_switch_camera",
+  "wave_show_graphic",
+  "wave_control_camera",
+  "wave_moderate_chat",
+];
+const experimentalFlag = (process.env["WAVE_MCP_EXPERIMENTAL"] ?? "").trim().toLowerCase();
+const experimental = experimentalFlag === "1" || experimentalFlag === "true";
 
 async function callTool(rows, name, route, args) {
   const call = await rpc("tools/call", { name, arguments: args });
@@ -194,75 +221,50 @@ try {
     finish(1);
   }
 
+  if (!experimental) {
+    const leaked = UNSERVED_BY_DEFAULT.filter((n) => actualNames.includes(n));
+    if (leaked.length > 0) {
+      console.error(`FAIL tools/list registers tools whose routes are unserved, without opt-in: ${leaked.join(", ")}`);
+      finish(1);
+    }
+  }
+
   if (allMode) {
     const rows = [];
     let hardFail = false;
     const wrap = async (name, route, args) => {
+      if (!actualNames.includes(name)) {
+        console.error(`FAIL --all expected ${name} in tools/list`);
+        hardFail = true;
+        return;
+      }
       const c = await callTool(rows, name, route, args);
       if (c.hardFail) hardFail = true;
     };
 
-    const iso = new Date().toISOString();
-
-    // 1. Read-only / list tools first.
-    await wrap("wave_list_streams", "GET /v1/streams", {});
-    await wrap("wave_list_productions", "GET /v1/productions", {});
+    // 1. Read-only tools (GET). Never billed.
     await wrap("wave_get_subscription", "GET /v1/billing", {});
     await wrap("wave_get_usage", "GET /v1/billing/usage", {});
     await wrap("wave_get_viewers", "GET /v1/analytics/engagement", {});
 
-    // 2. Create a stream, then exercise its lifecycle.
-    const createStream = await callTool(rows, "wave_create_stream", "POST /v1/streams", {
-      title: `mcp-smoke-${iso}`,
-    });
-    const streamId = extractId(createStream.body) ?? NIL_UUID;
+    // 2. Priced tools (POST). A 402 is a pass (the route is served and priced).
+    //    Skipped with --read-only, so a local run bills nothing.
+    if (!readOnly) {
+      await wrap("wave_create_clip", "POST /v1/clips", { source: NIL_UUID, in: "0s", duration: "1s" });
+      await wrap("wave_start_captions", "POST /v1/live/pipeline", {
+        audio_base64: SILENT_WAV_B64,
+        llm_model: "llama-3.1-8b-instant",
+      });
+    }
 
-    await wrap("wave_start_stream", "POST /v1/streams/{id}/start", { stream_id: streamId });
-    await wrap("wave_get_stream_health", "GET /v1/streams/{id}/status", { stream_id: streamId });
-    await wrap("wave_get_stream_metrics", "GET /v1/streams/{id}/analytics", { stream_id: streamId });
-    await wrap("wave_mark_highlight", "POST /v1/streams/{id}/highlights", { stream_id: streamId, label: "smoke" });
-    await wrap("wave_stop_stream", "POST /v1/streams/{id}/stop", { stream_id: streamId });
-    await wrap("wave_moderate_chat", "POST /v1/moderate", {
-      stream_id: streamId,
-      message_id: "smoke-msg-1",
-      action: "flag",
-    });
-
-    // 3. Create a production, then exercise its controls.
-    const createProduction = await callTool(rows, "wave_create_production", "POST /v1/productions", {
-      title: `mcp-smoke-${iso}`,
-    });
-    const productionId = extractId(createProduction.body) ?? NIL_UUID;
-
-    await wrap("wave_switch_camera", "POST /v1/productions/{id}/camera", {
-      production_id: productionId,
-      camera_index: 0,
-      bus: "program",
-    });
-    await wrap("wave_show_graphic", "POST /v1/productions/{id}/overlay", {
-      production_id: productionId,
-      overlay_id: "smoke",
-      visible: true,
-    });
-
-    // 4. Nil-uuid / independent operations — nothing destructive beyond this point.
-    await wrap("wave_control_camera", "POST /v1/cameras/{id}/control", {
-      camera_id: NIL_UUID,
-      command: "autofocus_trigger",
-    });
-    await wrap("wave_create_clip", "POST /v1/clips", { source: NIL_UUID, in: "0s", duration: "1s" });
-    await wrap("wave_start_captions", "POST /v1/live/pipeline", {
-      audio_base64: SILENT_WAV_B64,
-      llm_model: "llama-3.1-8b-instant",
-    });
-
+    const expectedRows = readOnly ? 3 : 5;
     console.log("");
     console.log("=== smoke table ===");
     for (const r of rows) {
       console.log(`${r.tool} | ${r.route} | ${r.status} | ${r.pass ? "PASS" : "FAIL"}`);
     }
-    if (rows.length !== 18) {
-      console.error(`FAIL --all called ${rows.length} tools, expected 18`);
+    if (rows.length !== expectedRows) {
+      console.error(`FAIL --all called ${rows.length} tools, expected ${expectedRows}`);
       finish(1);
     }
     finish(hardFail ? 1 : 0);
@@ -285,7 +287,22 @@ try {
       console.error("FAIL tools/call received an HTML page, not a gateway response");
       finish(1);
     }
-    const reached = /SCOPE_INSUFFICIENT|PAYMENT_REQUIRED|ROUTE_NOT_MAPPED|errors\/unauthorized|\\"status\\":\s*(2\d\d|401|402|403)|\\"data\\"|\\"streams\\"/i.test(body);
+    const c = classify(call);
+    if (c.hardFail) {
+      console.error(`FAIL tools/call ${toolName}: ${c.marker}`);
+      finish(1);
+    }
+    // A 2xx must be a JSON document the gateway produced; a non-2xx must be one
+    // of its JSON error contracts (401/402/403 with a code or problem type).
+    let jsonBody = false;
+    try {
+      jsonBody = typeof JSON.parse(c.body) === "object";
+    } catch {
+      jsonBody = false;
+    }
+    const reached =
+      (c.status === "2xx" && jsonBody) ||
+      /SCOPE_INSUFFICIENT|PAYMENT_REQUIRED|SPEND_CAP|AUTH_REQUIRED|errors\/unauthorized|x402Version/i.test(c.body);
     if (!reached) {
       console.error("FAIL tools/call result does not show a gateway response");
       finish(1);

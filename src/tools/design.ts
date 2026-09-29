@@ -15,7 +15,7 @@
 import { mkdirSync, readFileSync } from "node:fs";
 import { basename, dirname, extname, join } from "node:path";
 import { z } from "zod";
-import { defineTool, textContent, type WaveToolDef } from "./shared.js";
+import { defineTool, failureContent, textContent, type ToolResult, type WaveToolDef } from "./shared.js";
 import {
   assertAllowedPath,
   countPlaceholderSlices,
@@ -255,6 +255,16 @@ export async function measureImpl(input: MeasureInput, runner: Runner = runNode)
 // Tool registration
 // ---------------------------------------------------------------------------
 
+/**
+ * Render a design result. The JSON body is unchanged; a result carrying `ok: false` is additionally
+ * flagged `isError: true`, so an agent sees the call FAILED rather than reading an error object as
+ * valid output.
+ */
+function designResult(result: { ok: boolean }): ToolResult {
+  const text = JSON.stringify(result, null, 2);
+  return result.ok ? textContent(text) : failureContent(text);
+}
+
 export const designTools: WaveToolDef[] = [
   defineTool({
     name: "wave_design_extract",
@@ -272,7 +282,7 @@ export const designTools: WaveToolDef[] = [
     },
     handler: async ({ pen, out, delta }) => {
       const result = await extractImpl({ pen, out, delta });
-      return textContent(JSON.stringify(result, null, 2));
+      return designResult(result);
     },
   }),
 
@@ -287,7 +297,7 @@ export const designTools: WaveToolDef[] = [
     },
     handler: async ({ extract, out }) => {
       const result = await contractImpl({ extract, out });
-      return textContent(JSON.stringify(result, null, 2));
+      return designResult(result);
     },
   }),
 
@@ -308,7 +318,7 @@ export const designTools: WaveToolDef[] = [
     },
     handler: async ({ image, geometry, plate, region }) => {
       const result = await measureImpl({ image, geometry, plate, region });
-      return textContent(JSON.stringify(result, null, 2));
+      return designResult(result);
     },
   }),
 
@@ -320,7 +330,7 @@ export const designTools: WaveToolDef[] = [
     },
     handler: async ({ contract }) => {
       const result = await contractCheckImpl({ contract });
-      return textContent(JSON.stringify(result, null, 2));
+      return designResult(result);
     },
   }),
 ];

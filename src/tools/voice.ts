@@ -9,7 +9,7 @@
 // returned.
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
-import { textContent, type WaveToolDef } from "./shared.js";
+import { failureContent, textContent, type WaveToolDef } from "./shared.js";
 
 const EDGE = (process.env.WAVE_REALTIME_EDGE ?? "https://rt.wave.online").replace(/\/+$/, "");
 const SEAL = process.env.WAVE_INTERNAL_SECRET ?? "";
@@ -107,6 +107,17 @@ async function converse(room: string, audioPath: string, outPath: string): Promi
   return `TTS received: ${total.length} bytes (${Math.round(total.length / bytesPerMs)} ms) → ${outPath}`;
 }
 
+/**
+ * True when this process holds the edge's internal seal. The registry (./index.ts) registers
+ * wave_voice_converse only then: the tool authenticates with the edge-internal secret, not a
+ * customer WAVE_API_KEY, so on a customer machine it could never succeed. Presence check only; the
+ * value is never logged or returned.
+ */
+export function voiceAvailable(env: NodeJS.ProcessEnv = process.env): boolean {
+  const seal = env["WAVE_INTERNAL_SECRET"];
+  return typeof seal === "string" && seal.length > 0;
+}
+
 export const voiceTools: WaveToolDef[] = [
   {
     name: "wave_voice_converse",
@@ -124,7 +135,7 @@ export const voiceTools: WaveToolDef[] = [
         const summary = await converse(String(room), String(audioPath), String(outPath));
         return textContent(summary);
       } catch (e) {
-        return textContent(`voice_converse failed: ${(e as Error).message}`);
+        return failureContent(`voice_converse failed: ${(e as Error).message}`);
       }
     },
   },

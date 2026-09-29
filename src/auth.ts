@@ -11,11 +11,15 @@ import { PKG_VERSION } from "./version.js";
  * `https://wave.online` is the marketing/app origin — it 404s on the API surface, so every one of
  * this package's tools failed with the previous default. `https://api.wave.online` is the public
  * API origin, and its public path space is `/v1/*` — NOT `/api/v1/*`, which is an internal path
- * shape that is not routable by a client on any host. Measured 2026-08-07:
- *   POST https://api.wave.online/v1/streams      → 402 (route exists, priced)
- *   POST https://api.wave.online/api/v1/streams  → 404 (not a routable API path)
- *   POST https://wave.online/api/v1/streams      → 404 (wrong origin entirely)
- * A 402 is the CORRECT unauthenticated answer here — it proves the route exists and is priced.
+ * shape that is not routable by a client on any host. Re-measured 2026-09-28, unauthenticated, on a
+ * route this package's default tools call:
+ *   GET https://api.wave.online/v1/billing      → 401 AUTH_REQUIRED   (route served, needs a key)
+ *   GET https://api.wave.online/api/v1/billing  → 404 ROUTE_NOT_FOUND (not a routable API path)
+ *   GET https://wave.online/api/v1/billing      → 404 ROUTE_NOT_FOUND (wrong origin entirely)
+ * A 401 (or a 402 on a priced route such as POST /v1/clips) is the CORRECT anonymous answer: it
+ * proves the route is served. The 2026-08-07 version of this note used POST /v1/streams → 402 as
+ * its proof; that family has since lost its backend and now 404s ROUTE_NOT_FOUND for every caller,
+ * which is why src/tools/index.ts no longer registers the streams tools by default.
  */
 
 const DEFAULT_BASE_URL = "https://api.wave.online";

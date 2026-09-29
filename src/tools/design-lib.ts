@@ -19,9 +19,42 @@ function homeRoot(): string {
   return process.env["HOME"] && process.env["HOME"]!.length > 0 ? process.env["HOME"]! : homedir();
 }
 
+const PEN_EXTRACT = {
+  envVar: "WAVE_PEN_EXTRACT_ROOT",
+  relPath: "wave-av/wave-pen-register-wt/packages/pen-extract",
+  label: "@wave-av/pen-extract",
+} as const;
+
+const LOC_STUDY = {
+  envVar: "WAVE_LOC_STUDY_ROOT",
+  relPath: "wave-av/wave-design-study-wt/tools/loc-study",
+  label: "@wave-av/loc-study",
+} as const;
+
+/** Where a library root WOULD be for `env` — the override if set, else the $HOME-first default. */
+function libraryRootPath(envVar: string, relPath: string, env: NodeJS.ProcessEnv): string {
+  const override = env[envVar];
+  if (override && override.length > 0) return resolvePath(override);
+  const home = env["HOME"] && env["HOME"].length > 0 ? env["HOME"] : homedir();
+  return resolvePath(home, relPath);
+}
+
+/**
+ * True when `@wave-av/pen-extract` resolves on this machine. The registry (./index.ts) registers
+ * wave_design_extract / wave_design_contract / wave_design_contract_check only when it does:
+ * the library is unpublished, so on a customer machine those tools could never succeed.
+ */
+export function penExtractAvailable(env: NodeJS.ProcessEnv = process.env): boolean {
+  return existsSync(libraryRootPath(PEN_EXTRACT.envVar, PEN_EXTRACT.relPath, env));
+}
+
+/** True when `@wave-av/loc-study` resolves on this machine (gates wave_design_measure). */
+export function locStudyAvailable(env: NodeJS.ProcessEnv = process.env): boolean {
+  return existsSync(libraryRootPath(LOC_STUDY.envVar, LOC_STUDY.relPath, env));
+}
+
 function resolveLibraryRoot(envVar: string, relPath: string, label: string): string {
-  const override = process.env[envVar];
-  const root = override && override.length > 0 ? resolvePath(override) : resolvePath(homeRoot(), relPath);
+  const root = libraryRootPath(envVar, relPath, process.env);
   if (!existsSync(root)) {
     throw new Error(
       `${label} not found at ${root} — it is not published to npm, so this MCP server reads it from a ` +
@@ -33,20 +66,12 @@ function resolveLibraryRoot(envVar: string, relPath: string, label: string): str
 
 /** Root of `@wave-av/pen-extract` (packages/pen-extract inside wave-pen-register-wt). */
 export function penExtractRoot(): string {
-  return resolveLibraryRoot(
-    "WAVE_PEN_EXTRACT_ROOT",
-    "wave-av/wave-pen-register-wt/packages/pen-extract",
-    "@wave-av/pen-extract",
-  );
+  return resolveLibraryRoot(PEN_EXTRACT.envVar, PEN_EXTRACT.relPath, PEN_EXTRACT.label);
 }
 
 /** Root of `@wave-av/loc-study` (tools/loc-study inside wave-design-study-wt). */
 export function locStudyRoot(): string {
-  return resolveLibraryRoot(
-    "WAVE_LOC_STUDY_ROOT",
-    "wave-av/wave-design-study-wt/tools/loc-study",
-    "@wave-av/loc-study",
-  );
+  return resolveLibraryRoot(LOC_STUDY.envVar, LOC_STUDY.relPath, LOC_STUDY.label);
 }
 
 /** `packages/pen-extract`'s own repo root (two dirs up) — where designs/contract/ lives. */
