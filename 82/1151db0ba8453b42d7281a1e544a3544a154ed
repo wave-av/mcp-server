@@ -1,0 +1,26 @@
+.github/workflows/release.yml
+  s_13ccc7d9001218::t_431f7b88299851 394,397
+.github/workflows/smoke-install.yml
+  s_13ccc7d9001218::t_77f1acd3983768 17-21
+  s_13ccc7d9001218::t_b9b44d0b621853 84,87
+scripts/check-capabilities-drift.ts
+  s_13ccc7d9001218::t_a81f4f00f2287f 55-58,60-65,77-84
+scripts/smoke-mcp.mjs
+  s_13ccc7d9001218::t_a36a2dec323643 13-18,24-28,42-44,56,62,69-77,83,99-106,126,155-169,171-184,188-189,194,197-207,209,211-216,220-222,233-252,273,275,279,290-294,299,303,306,325,335-338,343-350,355,359,363-366
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "821151db0ba8453b42d7281a1e544a3544a154ed",
+  "prompts": {},
+  "sessions": {
+    "s_13ccc7d9001218": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "11229abc-f617-4541-b5d7-d693c6ae4d9d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
