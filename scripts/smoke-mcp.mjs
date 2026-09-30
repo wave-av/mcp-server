@@ -180,8 +180,10 @@ function errorCodeOf(json) {
  *                    flag is right, and the status is 2xx, 402 (served and
  *                    priced), or a 4xx validation answer from a served route
  *                    (e.g. a 404 about the NIL_UUID resource). 401/403 mean this
- *                    key cannot use the tool; ROUTE_NOT_FOUND/ROUTE_NOT_MAPPED
- *                    mean nothing serves the route; 5xx is an outage. All fail.
+ *                    key cannot use the tool; 429 means it cannot use it right
+ *                    now (rate-limited, after the client's own retries);
+ *                    ROUTE_NOT_FOUND/ROUTE_NOT_MAPPED mean nothing serves the
+ *                    route; 5xx is an outage. All fail.
  */
 function classify(call) {
   if (call.error) {
@@ -210,8 +212,11 @@ function classify(call) {
   const errorFlagWrong = m ? !isError : isError;
 
   const reachedGateway = !isHtml && (m ? isJson && code !== undefined : isJson);
+  // A 4xx from a served route is a validation answer, except the ones that say this key cannot use
+  // the tool: 401/403 (not allowed) and 429 (rate-limited — a green run must not hide that).
+  const keyCannotUse = numStatus === 401 || numStatus === 403 || numStatus === 429;
   const servedAnswer =
-    !m || numStatus === 402 || (numStatus >= 400 && numStatus < 500 && numStatus !== 401 && numStatus !== 403 && !unservedRoute);
+    !m || numStatus === 402 || (numStatus >= 400 && numStatus < 500 && !keyCannotUse && !unservedRoute);
   const pass = reachedGateway && !errorFlagWrong && servedAnswer;
 
   const marker = errorFlagWrong
