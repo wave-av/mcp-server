@@ -1,0 +1,19 @@
+scripts/smoke-mcp.mjs
+  s_f9861e02ba654f::t_2f44dd409171c6 183-186,215-217,219
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "db0068a93ed3b8f204047ba7adee09c98e52c239",
+  "prompts": {},
+  "sessions": {
+    "s_f9861e02ba654f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-adca7f1e3f5f5bb9a",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
