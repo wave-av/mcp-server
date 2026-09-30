@@ -1,0 +1,75 @@
+src/sdk-server.ts
+  s_13ccc7d9001218::t_f26b8d39acafb1 20-21
+  s_13ccc7d9001218::t_234cf107a457bc 14
+  s_13ccc7d9001218::t_5274d4bb4ba5cc 48-49
+src/resources/streams.ts
+  s_13ccc7d9001218::t_0a663afbafc5c2 3,5-9,11-16
+src/server.ts
+  s_13ccc7d9001218::t_bf39d6293ae0cf 6,11-15,22,26-32,47-54
+src/transports.test.ts
+  s_13ccc7d9001218::t_c4d34e5727aa6c 1-241
+scripts/check-capabilities-drift.ts
+  s_13ccc7d9001218::t_a6d7de4329f8be 2-7,9-22,26-27,31,36-41,43,47,55-65,67-91,94,96,100,106-108,113-116
+scripts/check-version-surfaces.mjs
+  s_13ccc7d9001218::t_c9a151bb126cab 288-290
+src/resources/productions.ts
+  s_13ccc7d9001218::t_a4e820d83500e3 3,5-9,11-16
+src/auth.ts
+  s_13ccc7d9001218::t_5339ebfce23af6 14-22
+.wave/repo.json
+  s_13ccc7d9001218::t_7be0c9ddc06cce 437-439,443,446,451-453,456-458,461-463,469,472,477-479,482-484,489-491
+  s_13ccc7d9001218::t_03042b8b9938f5 543,550-567
+  s_13ccc7d9001218::t_6230b9998f1e6d 155,159
+  s_13ccc7d9001218::t_f06a99ed921e3d 344,347
+  s_13ccc7d9001218::t_74db88b6e83e16 28-29,33-34,38-39,43-44,48-49,53-54,58-59,63,68-69
+  s_13ccc7d9001218::t_7c5fc5cd5a1efa 526-527
+  s_13ccc7d9001218::t_35623e673cbe0a 263,266
+  s_13ccc7d9001218::t_c2e2714ecdf337 574
+  s_13ccc7d9001218::t_2de52cf5481230 73,78,83-84,88,93-94,98-99,103-104,108,113-114,118,123,128,133,138
+  s_13ccc7d9001218::t_2c84c14098491d 495-496
+src/tools/voice.ts
+  s_13ccc7d9001218::t_4fbb0e8b1a92d5 138
+  s_13ccc7d9001218::t_943741e40243a4 12
+  s_13ccc7d9001218::t_b766966b739fc8 110-120
+src/index.ts
+  s_13ccc7d9001218::t_a21c5ec50d8029 21-22
+src/resources/entity.ts
+  s_13ccc7d9001218::t_ad60b997eadd26 1-49
+src/tools/index.ts
+  s_13ccc7d9001218::t_2eeac1e0fc1cfa 3-25,31-32,34,38-108,111-131,139-143
+src/tools/design-lib.ts
+  s_13ccc7d9001218::t_2a4913cdf46b2c 69,74
+  s_13ccc7d9001218::t_ee85f210e0979b 22-55,57
+src/tools/shared.ts
+  s_13ccc7d9001218::t_1e0db1cc07708e 19-24,34-46,48
+.github/workflows/release.yml
+  s_13ccc7d9001218::t_bbd9f23ab73378 401-404
+.github/workflows/smoke-install.yml
+  s_13ccc7d9001218::t_baf2d2eafa90aa 10-16,78
+capabilities.json
+  s_13ccc7d9001218::t_39c6330aec4d96 4,22-41,57,60
+scripts/smoke-mcp.mjs
+  s_13ccc7d9001218::t_17dca46cbaac11 5,9-18,53-54,130-132,139,145-146,148,150-157,160-179,224-231,236-240,245,250-258,260,266-267,290-305
+src/tools/design.ts
+  s_13ccc7d9001218::t_66580cb83a6ef2 18,258-267,285,300,321,333
+src/tools/production.ts
+  s_13ccc7d9001218::t_40f2457f8fbca9 5,81-177
+src/tools/registry.test.ts
+  s_13ccc7d9001218::t_bfbecee7a1d205 1-152
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "9c3be03e5967d99a4bc98bdbac505379f10ead66",
+  "prompts": {},
+  "sessions": {
+    "s_13ccc7d9001218": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "11229abc-f617-4541-b5d7-d693c6ae4d9d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
