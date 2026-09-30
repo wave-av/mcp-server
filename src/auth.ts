@@ -44,6 +44,31 @@ function isLoopback(hostname: string): boolean {
   return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]" || hostname === "::1";
 }
 
+/** Why a configured origin was refused by {@link parseSecureOrigin}. */
+export type OriginRejection = "invalid-url" | "not-http" | "cleartext-remote" | "not-origin-only";
+
+/**
+ * Validate a configured origin that a credential will be sent to: an absolute http(s) URL, `https:`
+ * unless the host is loopback, and nothing beyond scheme+host+port. Returns the normalized origin
+ * or the reason it was refused; the caller words the error, so a value that must not be echoed
+ * (it could carry userinfo) never has to be. Shared by {@link getBaseUrl} (the bearer key) and
+ * the voice tool's WAVE_REALTIME_EDGE (the edge-internal seal).
+ */
+export function parseSecureOrigin(
+  raw: string,
+): { ok: true; origin: string } | { ok: false; reason: OriginRejection } {
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    return { ok: false, reason: "invalid-url" };
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return { ok: false, reason: "not-http" };
+  if (parsed.protocol === "http:" && !isLoopback(parsed.hostname)) return { ok: false, reason: "cleartext-remote" };
+  if (parsed.pathname !== "/" || parsed.search !== "" || parsed.hash !== "") return { ok: false, reason: "not-origin-only" };
+  return { ok: true, origin: parsed.origin };
+}
+
 /**
  * Resolve the API origin. An explicitly-set WAVE_BASE_URL is validated rather than trusted: a malformed
  * value would otherwise surface far downstream as an opaque fetch failure inside every tool call.
@@ -65,29 +90,25 @@ export function getBaseUrl(): string {
   const raw = configured.trim();
 
   const expected = `Expected a bare origin like ${DEFAULT_BASE_URL} (no path, query or fragment). Unset it to use the default.`;
-  let parsed: URL;
-  try {
-    parsed = new URL(raw);
-  } catch {
-    throw new Error(`WAVE_BASE_URL is not a valid absolute URL: ${JSON.stringify(configured)}. ${expected}`);
+  const result = parseSecureOrigin(raw);
+  if (result.ok) return result.origin;
+  switch (result.reason) {
+    case "invalid-url":
+      throw new Error(`WAVE_BASE_URL is not a valid absolute URL: ${JSON.stringify(configured)}. ${expected}`);
+    case "not-http":
+      throw new Error(`WAVE_BASE_URL must be an http(s) URL, got ${JSON.stringify(configured)}. ${expected}`);
+    case "cleartext-remote":
+      throw new Error(
+        `WAVE_BASE_URL must use https for a remote host, got ${JSON.stringify(configured)}. ` +
+          "Every request sends your WAVE_API_KEY as a bearer token, which http would transmit in cleartext. " +
+          "Use https://, or a loopback host (localhost / 127.0.0.1) for local development.",
+      );
+    case "not-origin-only":
+      throw new Error(
+        `WAVE_BASE_URL must be an origin only — got ${JSON.stringify(configured)}, which carries a ` +
+          `path/query/fragment. Tool paths (\`/v1/...\`) are appended to this value. ${expected}`,
+      );
   }
-  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
-    throw new Error(`WAVE_BASE_URL must be an http(s) URL, got ${JSON.stringify(configured)}. ${expected}`);
-  }
-  if (parsed.protocol === "http:" && !isLoopback(parsed.hostname)) {
-    throw new Error(
-      `WAVE_BASE_URL must use https for a remote host, got ${JSON.stringify(configured)}. ` +
-        "Every request sends your WAVE_API_KEY as a bearer token, which http would transmit in cleartext. " +
-        "Use https://, or a loopback host (localhost / 127.0.0.1) for local development.",
-    );
-  }
-  if (parsed.pathname !== "/" || parsed.search !== "" || parsed.hash !== "") {
-    throw new Error(
-      `WAVE_BASE_URL must be an origin only — got ${JSON.stringify(configured)}, which carries a ` +
-        `path/query/fragment. Tool paths (\`/v1/...\`) are appended to this value. ${expected}`,
-    );
-  }
-  return parsed.origin;
 }
 
 /**

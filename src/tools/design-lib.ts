@@ -39,10 +39,10 @@ function libraryRootPath(envVar: string, relPath: string, env: NodeJS.ProcessEnv
   return resolvePath(home, relPath);
 }
 
-// The files each design tool actually executes or reads, relative to its library root. The
-// registry's availability checks below require every one of them, so a root that exists but
-// cannot run (an empty directory, a regular file, a partial checkout) keeps its tools out of
-// tools/list instead of advertising tools whose every call fails.
+// The files each design tool actually executes or reads, relative to its library root. Each
+// availability check below requires exactly the files ITS tool runs: a root that exists but cannot
+// run that tool (an empty directory, a regular file, a checkout missing the file) keeps the tool
+// out of tools/list, and a file only a different tool needs never hides it.
 
 /** `node <root>/src/cli.mjs` — wave_design_extract and wave_design_contract. */
 export const PEN_EXTRACT_CLI = join("src", "cli.mjs");
@@ -79,18 +79,32 @@ function libraryRunnable(root: string, files: readonly string[]): boolean {
   return isDirectory(root) && files.every((file) => isFile(resolvePath(root, file)));
 }
 
-/**
- * True when `@wave-av/pen-extract` can run on this machine: its root is a directory holding
- * `src/cli.mjs`, and its repo holds the contract validator, schema and acceptance-tests catalogue.
- * The registry (./index.ts) registers wave_design_extract / wave_design_contract /
- * wave_design_contract_check only then: the library is unpublished, so on a customer machine those
- * tools could never succeed.
- */
+function penExtractRootPath(env: NodeJS.ProcessEnv): string {
+  return libraryRootPath(PEN_EXTRACT.envVar, PEN_EXTRACT.relPath, env);
+}
+
+// The three pen-extract checks below gate the registry (./index.ts). The library is unpublished,
+// so on a customer machine none of them holds and none of these tools is advertised.
+
+/** wave_design_extract can run: the pen-extract root is a directory holding `src/cli.mjs`. */
 export function penExtractAvailable(env: NodeJS.ProcessEnv = process.env): boolean {
-  return libraryRunnable(libraryRootPath(PEN_EXTRACT.envVar, PEN_EXTRACT.relPath, env), [
-    PEN_EXTRACT_CLI,
-    ...PEN_CONTRACT_FILES,
-  ]);
+  return libraryRunnable(penExtractRootPath(env), [PEN_EXTRACT_CLI]);
+}
+
+/**
+ * wave_design_contract can run: it composes with `src/cli.mjs`, then validates with the contract
+ * validator, schema and acceptance-tests catalogue in pen-extract's repo.
+ */
+export function penContractAvailable(env: NodeJS.ProcessEnv = process.env): boolean {
+  return libraryRunnable(penExtractRootPath(env), [PEN_EXTRACT_CLI, ...PEN_CONTRACT_FILES]);
+}
+
+/**
+ * wave_design_contract_check can run: it only validates, so it needs the contract validator,
+ * schema and catalogue, and the root directory they are found from — not `src/cli.mjs`.
+ */
+export function penContractCheckAvailable(env: NodeJS.ProcessEnv = process.env): boolean {
+  return libraryRunnable(penExtractRootPath(env), PEN_CONTRACT_FILES);
 }
 
 /** True when `@wave-av/loc-study` can run on this machine: a directory holding `bin/loc-study.mjs`. */

@@ -9,17 +9,43 @@
 // returned.
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
+import { parseSecureOrigin } from "../auth.js";
 import { failureContent, textContent, type WaveToolDef } from "./shared.js";
+
+const DEFAULT_REALTIME_EDGE = "https://rt.wave.online";
+
+/**
+ * The only message a refused WAVE_REALTIME_EDGE produces. Fixed text, never the configured value:
+ * this string reaches the calling agent's transcript, and a URL can carry userinfo.
+ */
+export const EDGE_REFUSED_MESSAGE =
+  "WAVE_REALTIME_EDGE must be a bare https:// origin (http:// only for a loopback host), with no " +
+  "path, query or fragment. The bind sends the edge-internal secret to it. Unset it to use " +
+  DEFAULT_REALTIME_EDGE;
+
+/**
+ * The edge origin the bind may be sent to. WAVE_REALTIME_EDGE is validated like WAVE_BASE_URL
+ * (../auth.ts parseSecureOrigin), because the bind carries the `x-wave-internal` seal: a cleartext
+ * remote edge would put the seal on the wire, and a path or query would be silently folded into
+ * the request URL. Unset or blank means the default edge.
+ */
+export function resolveRealtimeEdge(configured: string | undefined): string {
+  if (configured === undefined || configured.trim() === "") return DEFAULT_REALTIME_EDGE;
+  const result = parseSecureOrigin(configured.trim());
+  if (!result.ok) throw new Error(EDGE_REFUSED_MESSAGE);
+  return result.origin;
+}
 
 /**
  * The edge config, read from process.env at CALL time — the same process.env the registry's
  * {@link voiceAvailable} check reads. Captured at import instead, a secret set after this module
  * loaded (an Agent SDK host that sets it before building the server) would register the tool and
- * then fail every call with "not set".
+ * then fail every call with "not set". The edge is validated on every call, so no configuration,
+ * however it changed after startup, sends the seal anywhere {@link resolveRealtimeEdge} refuses.
  */
 function edgeConfig(): { edge: string; seal: string; org: string } {
   return {
-    edge: (process.env["WAVE_REALTIME_EDGE"] ?? "https://rt.wave.online").replace(/\/+$/, ""),
+    edge: resolveRealtimeEdge(process.env["WAVE_REALTIME_EDGE"]),
     seal: process.env["WAVE_INTERNAL_SECRET"] ?? "",
     org: process.env["WAVE_VOICE_ORG"] ?? "mcp",
   };

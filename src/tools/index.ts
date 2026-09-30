@@ -23,12 +23,18 @@
 //                       re-enabling a family is a one-line move once it gets a real spoke.
 //   internal-voice    — registered only when WAVE_INTERNAL_SECRET is set (edge-internal auth).
 //   internal-design-* — registered only when the unpublished sibling library is on disk with every
-//                       file its tools execute (./design-lib.ts penExtractAvailable/locStudyAvailable).
+//                       file that group's tool executes, and no file it does not (./design-lib.ts
+//                       penExtractAvailable, penContractAvailable, penContractCheckAvailable,
+//                       locStudyAvailable).
 //
 // Every predicate takes an env for testability, but a server reads ONE selection: ../server.ts and
-// ../sdk-server.ts call enabledGroups() on process.env once, and the handlers read the same
-// process.env at call time, so a tool is never advertised under one configuration and run under
-// another.
+// ../sdk-server.ts call enabledGroups() on process.env once, at startup, and log and register that
+// same selection. Registration is that startup snapshot; a tool list does not change mid-session.
+// The handlers do not trust the snapshot: each re-reads process.env at call time (voice: the secret
+// and a re-validated edge; design: the library root) and returns isError: true when its condition
+// no longer holds. An env changed after startup can therefore make a registered tool fail cleanly,
+// but it can never register a tool the snapshot refused, and never sends the voice seal to an edge
+// the validator refuses.
 import type { WaveToolDef } from "./shared.js";
 import { streamTools } from "./streams.js";
 import { studioTools } from "./studio.js";
@@ -37,7 +43,12 @@ import { billingTools } from "./billing.js";
 import { productionTools, unservedProductionTools } from "./production.js";
 import { voiceAvailable, voiceTools } from "./voice.js";
 import { designTools } from "./design.js";
-import { locStudyAvailable, penExtractAvailable } from "./design-lib.js";
+import {
+  locStudyAvailable,
+  penContractAvailable,
+  penContractCheckAvailable,
+  penExtractAvailable,
+} from "./design-lib.js";
 import { waveAskTools } from "./wave-ask/wave-ask.js";
 import { waveComposeTools } from "./wave-ask/wave-compose.js";
 
@@ -68,6 +79,8 @@ export type ToolGroupId =
   | "unserved-backend"
   | "internal-voice"
   | "internal-design-pen-extract"
+  | "internal-design-pen-contract"
+  | "internal-design-pen-contract-check"
   | "internal-design-loc-study";
 
 export interface ToolGroup {
@@ -78,8 +91,17 @@ export interface ToolGroup {
   readonly tools: readonly WaveToolDef[];
 }
 
-const PEN_EXTRACT_TOOLS = new Set(["wave_design_extract", "wave_design_contract", "wave_design_contract_check"]);
-const LOC_STUDY_TOOLS = new Set(["wave_design_measure"]);
+/** The design tool named `name`. Throws at import if it is missing, so a rename cannot drop it silently. */
+function designTool(name: string): WaveToolDef {
+  const tool = designTools.find((t) => t.name === name);
+  if (!tool) throw new Error(`Design tool ${name} is not defined in ./design.ts`);
+  return tool;
+}
+
+const PEN_EXTRACT_ROOT_TEXT =
+  "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) is a directory";
+const PEN_CONTRACT_FILES_TEXT =
+  "../../designs/contract/ holds validate.mjs, design-contract.schema.json and acceptance-tests.json";
 
 export const TOOL_GROUPS: readonly ToolGroup[] = [
   {
@@ -100,14 +122,25 @@ export const TOOL_GROUPS: readonly ToolGroup[] = [
     isEnabled: voiceAvailable,
     tools: voiceTools,
   },
+  // One group per pen-extract tool, because each runs a different set of files: extract needs only
+  // the CLI, contract_check only the contract validator and its inputs, contract both.
   {
     id: "internal-design-pen-extract",
-    enabledWhen:
-      "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) is a directory " +
-      "holding src/cli.mjs, and ../../designs/contract/ holds validate.mjs, design-contract.schema.json " +
-      "and acceptance-tests.json",
+    enabledWhen: `${PEN_EXTRACT_ROOT_TEXT} holding src/cli.mjs`,
     isEnabled: penExtractAvailable,
-    tools: designTools.filter((t) => PEN_EXTRACT_TOOLS.has(t.name)),
+    tools: [designTool("wave_design_extract")],
+  },
+  {
+    id: "internal-design-pen-contract",
+    enabledWhen: `${PEN_EXTRACT_ROOT_TEXT} holding src/cli.mjs, and ${PEN_CONTRACT_FILES_TEXT}`,
+    isEnabled: penContractAvailable,
+    tools: [designTool("wave_design_contract")],
+  },
+  {
+    id: "internal-design-pen-contract-check",
+    enabledWhen: `${PEN_EXTRACT_ROOT_TEXT}, and ${PEN_CONTRACT_FILES_TEXT}`,
+    isEnabled: penContractCheckAvailable,
+    tools: [designTool("wave_design_contract_check")],
   },
   {
     id: "internal-design-loc-study",
@@ -115,7 +148,7 @@ export const TOOL_GROUPS: readonly ToolGroup[] = [
       "WAVE_LOC_STUDY_ROOT (or $HOME/wave-av/wave-design-study-wt/tools/loc-study) is a directory holding " +
       "bin/loc-study.mjs",
     isEnabled: locStudyAvailable,
-    tools: designTools.filter((t) => LOC_STUDY_TOOLS.has(t.name)),
+    tools: [designTool("wave_design_measure")],
   },
 ];
 
@@ -149,7 +182,7 @@ for (const tool of allTools) {
 }
 for (const tool of designTools) {
   if (!seen.has(tool.name)) {
-    throw new Error(`Design tool ${tool.name} is in no registry group — add it to PEN_EXTRACT_TOOLS or LOC_STUDY_TOOLS`);
+    throw new Error(`Design tool ${tool.name} is in no registry group — give it an internal-design-* group in TOOL_GROUPS`);
   }
 }
 

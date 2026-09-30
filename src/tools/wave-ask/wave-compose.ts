@@ -175,7 +175,10 @@ function redactApiKey(value: unknown, key: string, depth = 0): unknown {
  *     calls.
  */
 export function normalizeLiveProposal(value: GatewayComposeResult): GatewayComposeResult {
-  const tools = (value["tools"] as unknown[]).filter(
+  // callGatewayCompose() only passes answers whose `tools` is an array (isPlausibleProposal), but
+  // this is exported: anything else becomes an empty list, never a TypeError out of .filter.
+  const raw: unknown = value["tools"];
+  const tools = (Array.isArray(raw) ? raw : []).filter(
     (name): name is string => typeof name === "string" && !UNSERVED_MCP_TOOL_NAMES.has(name),
   );
   return { ...value, tools, toolsServer: HOSTED_MCP_URL };

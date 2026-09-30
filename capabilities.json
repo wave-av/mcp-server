@@ -35,9 +35,9 @@
       { "name": "wave_control_camera", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
       { "name": "wave_moderate_chat", "group": "unserved-backend", "enabledWhen": "WAVE_MCP_EXPERIMENTAL=1" },
       { "name": "wave_voice_converse", "group": "internal-voice", "enabledWhen": "WAVE_INTERNAL_SECRET is set" },
-      { "name": "wave_design_extract", "group": "internal-design-pen-extract", "enabledWhen": "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) is a directory holding src/cli.mjs, and ../../designs/contract/ holds validate.mjs, design-contract.schema.json and acceptance-tests.json" },
-      { "name": "wave_design_contract", "group": "internal-design-pen-extract", "enabledWhen": "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) is a directory holding src/cli.mjs, and ../../designs/contract/ holds validate.mjs, design-contract.schema.json and acceptance-tests.json" },
-      { "name": "wave_design_contract_check", "group": "internal-design-pen-extract", "enabledWhen": "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) is a directory holding src/cli.mjs, and ../../designs/contract/ holds validate.mjs, design-contract.schema.json and acceptance-tests.json" },
+      { "name": "wave_design_extract", "group": "internal-design-pen-extract", "enabledWhen": "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) is a directory holding src/cli.mjs" },
+      { "name": "wave_design_contract", "group": "internal-design-pen-contract", "enabledWhen": "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) is a directory holding src/cli.mjs, and ../../designs/contract/ holds validate.mjs, design-contract.schema.json and acceptance-tests.json" },
+      { "name": "wave_design_contract_check", "group": "internal-design-pen-contract-check", "enabledWhen": "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) is a directory, and ../../designs/contract/ holds validate.mjs, design-contract.schema.json and acceptance-tests.json" },
       { "name": "wave_design_measure", "group": "internal-design-loc-study", "enabledWhen": "WAVE_LOC_STUDY_ROOT (or $HOME/wave-av/wave-design-study-wt/tools/loc-study) is a directory holding bin/loc-study.mjs" }
     ]
   },

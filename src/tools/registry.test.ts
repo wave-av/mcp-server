@@ -21,7 +21,7 @@ import {
 } from "./index.js";
 import { isUnservedRoute } from "../knowledge.js";
 import { LOC_STUDY_BIN, PEN_CONTRACT_FILES, PEN_EXTRACT_CLI } from "./design-lib.js";
-import { voiceFailureMessage, voiceTools } from "./voice.js";
+import { EDGE_REFUSED_MESSAGE, resolveRealtimeEdge, voiceFailureMessage, voiceTools } from "./voice.js";
 
 const EMPTY_HOME = mkdtempSync(join(tmpdir(), "wave-mcp-registry-home-"));
 const names = (tools: readonly { name: string }[]): string[] => tools.map((t) => t.name).sort();
@@ -124,6 +124,53 @@ test("voice: the handler reads the secret at call time, and without it fails wit
   }
 });
 
+test("voice: WAVE_REALTIME_EDGE is held to a bare https origin (http only on loopback)", () => {
+  assert.equal(resolveRealtimeEdge(undefined), "https://rt.wave.online");
+  assert.equal(resolveRealtimeEdge("  "), "https://rt.wave.online");
+  assert.equal(resolveRealtimeEdge("https://edge.example/"), "https://edge.example");
+  assert.equal(resolveRealtimeEdge(" https://edge.example:8443 "), "https://edge.example:8443");
+  assert.equal(resolveRealtimeEdge("http://localhost:8787"), "http://localhost:8787");
+  assert.equal(resolveRealtimeEdge("http://127.0.0.1:8787/"), "http://127.0.0.1:8787");
+  for (const bad of [
+    "http://edge.example",
+    "ftp://edge.example",
+    "file:///etc/passwd",
+    "edge.example",
+    "https://edge.example/v1",
+    "https://edge.example/?x=1",
+    "https://edge.example/#f",
+    "https://user:pw@edge.example/some/path",
+  ]) {
+    assert.throws(() => resolveRealtimeEdge(bad), (e: Error) => e.message === EDGE_REFUSED_MESSAGE, bad);
+  }
+});
+
+test("voice: a refused edge fails with isError before any request, and never echoes the value or the secret", async () => {
+  const saved = { secret: process.env["WAVE_INTERNAL_SECRET"], edge: process.env["WAVE_REALTIME_EDGE"] };
+  const realFetch = globalThis.fetch;
+  let fetched = 0;
+  globalThis.fetch = (async () => {
+    fetched++;
+    return new Response("{}");
+  }) as typeof fetch;
+  process.env["WAVE_INTERNAL_SECRET"] = "test-seal-not-a-credential";
+  process.env["WAVE_REALTIME_EDGE"] = "http://user:pw@edge.example";
+  try {
+    const result = await voiceTools[0]!.handler({ room: "r1", audioPath: "/nonexistent.wav", outPath: "/nonexistent.pcm" });
+    assert.equal(result.isError, true);
+    assert.equal(result.content[0]!.text, `voice_converse failed: ${EDGE_REFUSED_MESSAGE}`);
+    assert.ok(!result.content[0]!.text.includes("edge.example"), "echoed the configured edge");
+    assert.ok(!result.content[0]!.text.includes("test-seal"), "echoed the secret");
+    assert.equal(fetched, 0, "the bind was sent to a refused edge");
+  } finally {
+    globalThis.fetch = realFetch;
+    for (const [name, value] of [["WAVE_INTERNAL_SECRET", saved.secret], ["WAVE_REALTIME_EDGE", saved.edge]] as const) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+  }
+});
+
 test("voice: a failure that is not converse()'s own message is reduced to its class name", () => {
   assert.equal(voiceFailureMessage(new Error("bind failed: HTTP 502")), "bind failed: HTTP 502");
   assert.equal(voiceFailureMessage(new TypeError("fetch failed: https://edge/?token=abc")), "TypeError");
@@ -165,14 +212,30 @@ test("registry: a library root that exists but cannot run registers nothing", ()
   assert.equal(registersDesign({ WAVE_PEN_EXTRACT_ROOT: fileRoot }), false);
   assert.equal(registersDesign({ WAVE_LOC_STUDY_ROOT: fileRoot }), false);
 
-  // A partial pen-extract checkout: the CLI without the contract files, or the reverse.
-  assert.equal(registersDesign({ WAVE_PEN_EXTRACT_ROOT: fakePenExtract([PEN_EXTRACT_CLI]) }), false);
-  assert.equal(registersDesign({ WAVE_PEN_EXTRACT_ROOT: fakePenExtract(PEN_CONTRACT_FILES) }), false);
-
   // An entrypoint that is a directory, not a file.
   const dirEntry = mkdtempSync(join(tmpdir(), "wave-mcp-loc-dir-entry-"));
   mkdirSync(join(dirEntry, LOC_STUDY_BIN), { recursive: true });
   assert.equal(registersDesign({ WAVE_LOC_STUDY_ROOT: dirEntry }), false);
+  const cliDir = mkdtempSync(join(tmpdir(), "wave-mcp-pen-dir-entry-"));
+  mkdirSync(join(cliDir, PEN_EXTRACT_CLI), { recursive: true });
+  assert.equal(registersDesign({ WAVE_PEN_EXTRACT_ROOT: cliDir }), false);
+});
+
+test("registry: each pen-extract tool is registered by exactly the files it runs (PR #145 review round 2)", () => {
+  const pen = ["wave_design_contract", "wave_design_contract_check", "wave_design_extract"];
+  const penTools = (root: string) =>
+    names(registeredTools({ HOME: EMPTY_HOME, WAVE_PEN_EXTRACT_ROOT: root })).filter((n) => pen.includes(n));
+
+  // The CLI alone runs wave_design_extract; the contract tools need files it does not have.
+  assert.deepEqual(penTools(fakePenExtract([PEN_EXTRACT_CLI])), ["wave_design_extract"]);
+  // The contract files alone run wave_design_contract_check; extract and contract need the CLI.
+  assert.deepEqual(penTools(fakePenExtract(PEN_CONTRACT_FILES)), ["wave_design_contract_check"]);
+  // wave_design_contract composes with the CLI and then validates, so it needs every file.
+  for (const missing of PEN_CONTRACT_FILES) {
+    const partial = fakePenExtract([PEN_EXTRACT_CLI, ...PEN_CONTRACT_FILES.filter((f) => f !== missing)]);
+    assert.deepEqual(penTools(partial), ["wave_design_extract"], `registered contract tools without ${missing}`);
+  }
+  assert.deepEqual(penTools(fakePenExtract()), pen);
 });
 
 test("registry: every opt-in group enabled at once registers the whole 25-tool catalogue", () => {

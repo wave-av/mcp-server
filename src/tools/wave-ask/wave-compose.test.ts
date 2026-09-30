@@ -20,6 +20,14 @@ test("normalizeLiveProposal: drops unserved and non-string tools, keeps served a
   assert.deepEqual(out["productIds"], ["captions"], "fields it does not own are untouched");
 });
 
+test("normalizeLiveProposal: a non-array tools value becomes an empty list, not a TypeError", () => {
+  for (const tools of [undefined, null, "wave_get_usage", { 0: "wave_get_usage" }, 7]) {
+    const out = normalizeLiveProposal({ productIds: [], tools } as unknown as Parameters<typeof normalizeLiveProposal>[0]);
+    assert.deepEqual(out["tools"], [], JSON.stringify(tools));
+    assert.equal(out["toolsServer"], HOSTED_MCP_URL);
+  }
+});
+
 test("normalizeLiveProposal: toolsServer is always the hosted MCP URL, even when the responder names another", () => {
   assert.equal(normalizeLiveProposal({ productIds: [], tools: [] })["toolsServer"], HOSTED_MCP_URL);
   const hostile = normalizeLiveProposal({ productIds: [], tools: [], toolsServer: "https://evil.example/mcp" });
