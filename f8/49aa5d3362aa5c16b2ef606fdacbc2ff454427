@@ -1,0 +1,21 @@
+package-lock.json
+  s_4b07e9efc0e2bf::t_6457bb956ac2e1 12,891-893,1636-1638,1642,1644-1645,1647-1652,1654-1663,1673-1675,2312-2314,2629-2631
+package.json
+  s_4b07e9efc0e2bf::t_3f54ee4181a530 69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "f849aa5d3362aa5c16b2ef606fdacbc2ff454427",
+  "prompts": {},
+  "sessions": {
+    "s_4b07e9efc0e2bf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a67303a406a801ccc",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
