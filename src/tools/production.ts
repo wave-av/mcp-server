@@ -87,7 +87,8 @@ export const productionTools: WaveToolDef[] = [
       filename: z.string().optional().describe('Filename hint for the audio (default: "audio.wav")'),
       stream_id: z
         .string()
-        .max(128)
+        // The charset the description promises, enforced here rather than left to the gateway.
+        .regex(/^[A-Za-z0-9._:-]{1,128}$/)
         .optional()
         .describe("Client correlation ID for this stream/session (letters, digits, . _ : -, 1-128 chars)"),
       language: z.string().optional().describe("ISO 639 language hint for transcription (transcribe task only)"),

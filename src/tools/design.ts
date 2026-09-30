@@ -20,7 +20,9 @@ import {
   assertAllowedPath,
   countPlaceholderSlices,
   firstLine,
+  LOC_STUDY_BIN,
   locStudyRoot,
+  PEN_EXTRACT_CLI,
   penExtractRoot,
   penRegisterRepoRoot,
   runNode,
@@ -60,7 +62,7 @@ export async function extractImpl(input: ExtractInput, runner: Runner = runNode)
   const delta = input.delta ? assertAllowedPath(input.delta, "delta") : undefined;
 
   const root = penExtractRoot();
-  const cli = join(root, "src", "cli.mjs");
+  const cli = join(root, PEN_EXTRACT_CLI);
   const args = [cli, "all", "--pen", pen, "--out", outDir];
   if (delta) args.push("--delta", delta);
 
@@ -122,7 +124,7 @@ export async function contractImpl(input: ContractInput, runner: Runner = runNod
 
   const root = penExtractRoot();
   const repoRoot = penRegisterRepoRoot();
-  const cli = join(root, "src", "cli.mjs");
+  const cli = join(root, PEN_EXTRACT_CLI);
   const schemaPath = join(repoRoot, "designs", "contract", "design-contract.schema.json");
   const catalogPath = join(repoRoot, "designs", "contract", "acceptance-tests.json");
 
@@ -228,7 +230,7 @@ export async function measureImpl(input: MeasureInput, runner: Runner = runNode)
   }
 
   const root = locStudyRoot();
-  const bin = join(root, "bin", "loc-study.mjs");
+  const bin = join(root, LOC_STUDY_BIN);
   const args = [bin, "measure"];
 
   if (input.plate) {

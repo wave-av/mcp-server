@@ -18,8 +18,8 @@ if (args.includes("--help") || args.includes("-h")) {
       "       wave-mcp-server --help     print this message and exit",
       "",
       "Environment: WAVE_API_KEY (required), WAVE_BASE_URL (optional)",
-      "             WAVE_MCP_EXPERIMENTAL=1 also registers the streams/productions/cameras/",
-      "             moderation tools, whose routes api.wave.online does not serve",
+      "             WAVE_MCP_EXPERIMENTAL=1 also registers the streams, productions, cameras",
+      "             and moderation tools, whose routes api.wave.online does not serve",
       "",
     ].join("\n"),
   );

@@ -6,9 +6,9 @@
 // $HOME/wave-av/... gets the same answer as a customer machine and CI.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 
 import {
   EXPERIMENTAL_ENV_VAR,
@@ -20,6 +20,8 @@ import {
   registeredTools,
 } from "./index.js";
 import { isUnservedRoute } from "../knowledge.js";
+import { LOC_STUDY_BIN, PEN_CONTRACT_FILES, PEN_EXTRACT_CLI } from "./design-lib.js";
+import { voiceFailureMessage, voiceTools } from "./voice.js";
 
 const EMPTY_HOME = mkdtempSync(join(tmpdir(), "wave-mcp-registry-home-"));
 const names = (tools: readonly { name: string }[]): string[] => tools.map((t) => t.name).sort();
@@ -86,9 +88,51 @@ test("registry: wave_voice_converse is registered only when WAVE_INTERNAL_SECRET
   assert.ok(names(registeredTools({ HOME: EMPTY_HOME, WAVE_INTERNAL_SECRET: "test-seal" })).includes("wave_voice_converse"));
 });
 
-test("registry: the design tools are registered only when their unpublished library resolves on disk", () => {
-  const pen = mkdtempSync(join(tmpdir(), "wave-mcp-pen-extract-"));
-  const loc = mkdtempSync(join(tmpdir(), "wave-mcp-loc-study-"));
+/** Write `files` (relative paths) under `root` as tiny regular files. */
+function touch(root: string, files: readonly string[]): void {
+  for (const file of files) {
+    const full = resolve(root, file);
+    mkdirSync(dirname(full), { recursive: true });
+    writeFileSync(full, "// fixture\n");
+  }
+}
+
+/** A complete fake pen-extract checkout: <repo>/packages/pen-extract + <repo>/designs/contract. */
+function fakePenExtract(files: readonly string[] = [PEN_EXTRACT_CLI, ...PEN_CONTRACT_FILES]): string {
+  const root = join(mkdtempSync(join(tmpdir(), "wave-mcp-pen-register-")), "packages", "pen-extract");
+  mkdirSync(root, { recursive: true });
+  touch(root, files);
+  return root;
+}
+
+/** A complete fake loc-study checkout: <root>/bin/loc-study.mjs. */
+function fakeLocStudy(): string {
+  const root = mkdtempSync(join(tmpdir(), "wave-mcp-loc-study-"));
+  touch(root, [LOC_STUDY_BIN]);
+  return root;
+}
+
+test("voice: the handler reads the secret at call time, and without it fails with isError naming the variable", async () => {
+  const saved = process.env["WAVE_INTERNAL_SECRET"];
+  delete process.env["WAVE_INTERNAL_SECRET"];
+  try {
+    const result = await voiceTools[0]!.handler({ room: "r1", audioPath: "/nonexistent.wav", outPath: "/nonexistent.pcm" });
+    assert.equal(result.isError, true);
+    assert.equal(result.content[0]!.text, "voice_converse failed: WAVE_INTERNAL_SECRET is not set on this MCP server");
+  } finally {
+    if (saved !== undefined) process.env["WAVE_INTERNAL_SECRET"] = saved;
+  }
+});
+
+test("voice: a failure that is not converse()'s own message is reduced to its class name", () => {
+  assert.equal(voiceFailureMessage(new Error("bind failed: HTTP 502")), "bind failed: HTTP 502");
+  assert.equal(voiceFailureMessage(new TypeError("fetch failed: https://edge/?token=abc")), "TypeError");
+  assert.equal(voiceFailureMessage("a thrown string"), "unknown error");
+});
+
+test("registry: the design tools are registered only when their unpublished library is on disk and runnable", () => {
+  const pen = fakePenExtract();
+  const loc = fakeLocStudy();
   const design = ["wave_design_contract", "wave_design_contract_check", "wave_design_extract", "wave_design_measure"];
 
   const none = names(registeredTools({ HOME: EMPTY_HOME }));
@@ -107,13 +151,37 @@ test("registry: the design tools are registered only when their unpublished libr
   assert.deepEqual(design.filter((n) => withLoc.includes(n)), ["wave_design_measure"]);
 });
 
+test("registry: a library root that exists but cannot run registers nothing", () => {
+  const design = new Set(["wave_design_contract", "wave_design_contract_check", "wave_design_extract", "wave_design_measure"]);
+  const registersDesign = (env: NodeJS.ProcessEnv) => registeredTools({ HOME: EMPTY_HOME, ...env }).some((t) => design.has(t.name));
+
+  // An empty directory.
+  assert.equal(registersDesign({ WAVE_PEN_EXTRACT_ROOT: mkdtempSync(join(tmpdir(), "wave-mcp-pen-empty-")) }), false);
+  assert.equal(registersDesign({ WAVE_LOC_STUDY_ROOT: mkdtempSync(join(tmpdir(), "wave-mcp-loc-empty-")) }), false);
+
+  // A regular file where the root directory should be.
+  const fileRoot = join(mkdtempSync(join(tmpdir(), "wave-mcp-file-root-")), "not-a-dir");
+  writeFileSync(fileRoot, "x");
+  assert.equal(registersDesign({ WAVE_PEN_EXTRACT_ROOT: fileRoot }), false);
+  assert.equal(registersDesign({ WAVE_LOC_STUDY_ROOT: fileRoot }), false);
+
+  // A partial pen-extract checkout: the CLI without the contract files, or the reverse.
+  assert.equal(registersDesign({ WAVE_PEN_EXTRACT_ROOT: fakePenExtract([PEN_EXTRACT_CLI]) }), false);
+  assert.equal(registersDesign({ WAVE_PEN_EXTRACT_ROOT: fakePenExtract(PEN_CONTRACT_FILES) }), false);
+
+  // An entrypoint that is a directory, not a file.
+  const dirEntry = mkdtempSync(join(tmpdir(), "wave-mcp-loc-dir-entry-"));
+  mkdirSync(join(dirEntry, LOC_STUDY_BIN), { recursive: true });
+  assert.equal(registersDesign({ WAVE_LOC_STUDY_ROOT: dirEntry }), false);
+});
+
 test("registry: every opt-in group enabled at once registers the whole 25-tool catalogue", () => {
   const all = registeredTools({
     HOME: EMPTY_HOME,
     [EXPERIMENTAL_ENV_VAR]: "1",
     WAVE_INTERNAL_SECRET: "test-seal",
-    WAVE_PEN_EXTRACT_ROOT: mkdtempSync(join(tmpdir(), "wave-mcp-pen-")),
-    WAVE_LOC_STUDY_ROOT: mkdtempSync(join(tmpdir(), "wave-mcp-loc-")),
+    WAVE_PEN_EXTRACT_ROOT: fakePenExtract(),
+    WAVE_LOC_STUDY_ROOT: fakeLocStudy(),
   });
   assert.equal(all.length, 25);
   assert.deepEqual(names(all), names(allTools));
@@ -148,5 +216,23 @@ test("registry: every unserved-backend tool calls an unserved family, or POST /v
       isUnservedRoute(route!) || route === "/v1/moderate",
       `${tool.name} calls ${route}, which is not an unserved family — it may belong in the public group`,
     );
+  }
+});
+
+test("wave_start_captions: stream_id accepts only the charset its description promises", async () => {
+  const { z } = await import("zod");
+  const captions = publicTools.find((t) => t.name === "wave_start_captions");
+  assert.ok(captions);
+  const schema = z.object(captions!.inputSchema);
+  const base = {
+    audio_base64: "UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=",
+    llm_model: "llama-3.1-8b-instant",
+  };
+  for (const ok of ["s1", "room.42:mic-A_b", "x".repeat(128)]) {
+    assert.equal(schema.safeParse({ ...base, stream_id: ok }).success, true, ok);
+  }
+  assert.equal(schema.safeParse(base).success, true, "stream_id stays optional");
+  for (const bad of ["", "x".repeat(129), "a b", "a/b", "a\nb", "https://evil.example/", "é"]) {
+    assert.equal(schema.safeParse({ ...base, stream_id: bad }).success, false, JSON.stringify(bad));
   }
 });

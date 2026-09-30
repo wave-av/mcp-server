@@ -22,7 +22,13 @@
 //                       serve them (WAVE_BASE_URL=http://localhost:…) can still drive them, and so
 //                       re-enabling a family is a one-line move once it gets a real spoke.
 //   internal-voice    — registered only when WAVE_INTERNAL_SECRET is set (edge-internal auth).
-//   internal-design-* — registered only when the unpublished sibling library resolves on disk.
+//   internal-design-* — registered only when the unpublished sibling library is on disk with every
+//                       file its tools execute (./design-lib.ts penExtractAvailable/locStudyAvailable).
+//
+// Every predicate takes an env for testability, but a server reads ONE selection: ../server.ts and
+// ../sdk-server.ts call enabledGroups() on process.env once, and the handlers read the same
+// process.env at call time, so a tool is never advertised under one configuration and run under
+// another.
 import type { WaveToolDef } from "./shared.js";
 import { streamTools } from "./streams.js";
 import { studioTools } from "./studio.js";
@@ -96,13 +102,18 @@ export const TOOL_GROUPS: readonly ToolGroup[] = [
   },
   {
     id: "internal-design-pen-extract",
-    enabledWhen: "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) exists",
+    enabledWhen:
+      "WAVE_PEN_EXTRACT_ROOT (or $HOME/wave-av/wave-pen-register-wt/packages/pen-extract) is a directory " +
+      "holding src/cli.mjs, and ../../designs/contract/ holds validate.mjs, design-contract.schema.json " +
+      "and acceptance-tests.json",
     isEnabled: penExtractAvailable,
     tools: designTools.filter((t) => PEN_EXTRACT_TOOLS.has(t.name)),
   },
   {
     id: "internal-design-loc-study",
-    enabledWhen: "WAVE_LOC_STUDY_ROOT (or $HOME/wave-av/wave-design-study-wt/tools/loc-study) exists",
+    enabledWhen:
+      "WAVE_LOC_STUDY_ROOT (or $HOME/wave-av/wave-design-study-wt/tools/loc-study) is a directory holding " +
+      "bin/loc-study.mjs",
     isEnabled: locStudyAvailable,
     tools: designTools.filter((t) => LOC_STUDY_TOOLS.has(t.name)),
   },

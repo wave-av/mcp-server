@@ -4,11 +4,13 @@
 // Contract (mcp-server PR4-MCP, per the front-door design brief §3d — an
 // internal design doc, NOT part of this checkout; cited for provenance
 // only): when `WAVE_API_KEY` is configured, this tool calls
-// the live `POST /v1/compose` gateway route and returns its answer as-is
-// (with `grounding: "gateway"` set on the returned object) once it passes a
+// the live `POST /v1/compose` gateway route and returns its answer (with
+// `grounding: "gateway"` set on the returned object) once it passes a
 // minimum shape check — `productIds[]` and `tools[]` present as arrays and
 // `executes` never truthy — so an answer that could not be a composition
-// falls back rather than reaching the agent. When no key is configured, or
+// falls back rather than reaching the agent. A live answer is held to the
+// snapshot's contract (`normalizeLiveProposal`): no tool on an unserved route,
+// and `toolsServer` always set. When no key is configured, or
 // the gateway call fails, errors, answers with a body past the size ceiling,
 // or does not answer within 3 seconds, this tool falls back to the same
 // deterministic, offline `compose()` this package already ships for
@@ -41,6 +43,7 @@ import { z } from "zod";
 import { compose } from "./compose.js";
 import { defineTool, textContent, type WaveToolDef } from "../shared.js";
 import { getAuthHeaders, getBaseUrl } from "../../auth.js";
+import { HOSTED_MCP_URL, UNSERVED_MCP_TOOL_NAMES } from "../../knowledge.js";
 
 /** Gateway `POST /v1/compose` must answer within this window or the offline snapshot wins. */
 const COMPOSE_TIMEOUT_MS = 3000;
@@ -52,7 +55,10 @@ const COMPOSE_TIMEOUT_MS = 3000;
  */
 const MAX_COMPOSE_BODY_BYTES = 256 * 1024;
 
-/** The gateway's response, opaque here — this tool returns it as-is (plus `grounding`). */
+/**
+ * The gateway's response, opaque here apart from the fields {@link normalizeLiveProposal} holds to
+ * the snapshot contract (`tools`, `toolsServer`); returned otherwise unchanged, plus `grounding`.
+ */
 type GatewayComposeResult = Record<string, unknown>;
 
 /**
@@ -158,6 +164,23 @@ function redactApiKey(value: unknown, key: string, depth = 0): unknown {
   return value;
 }
 
+/**
+ * Hold a live proposal to the same contract as a snapshot one (./compose.ts `compose()`), so the
+ * `grounding` value never changes what an agent may rely on:
+ *   - `tools[]` keeps only string names, minus every hosted tool whose route the gateway lists as
+ *     unserved (knowledge.ts UNSERVED_MCP_TOOL_NAMES). A name newer than the bundled snapshot is
+ *     kept: the gateway knows its own catalogue better than this package's snapshot does.
+ *   - `toolsServer` is always {@link HOSTED_MCP_URL}, the snapshot's allowlist-checked endpoint.
+ *     A responder-supplied value is overwritten, never trusted: it tells an agent where to send
+ *     calls.
+ */
+export function normalizeLiveProposal(value: GatewayComposeResult): GatewayComposeResult {
+  const tools = (value["tools"] as unknown[]).filter(
+    (name): name is string => typeof name === "string" && !UNSERVED_MCP_TOOL_NAMES.has(name),
+  );
+  return { ...value, tools, toolsServer: HOSTED_MCP_URL };
+}
+
 /** `redactApiKey`, but `undefined` instead of a throw when the body is nested past the ceiling. */
 function redactSafely(value: GatewayComposeResult, key: string): GatewayComposeResult | undefined {
   try {
@@ -231,8 +254,10 @@ export const waveComposeTools: WaveToolDef[] = [
     description:
       "Propose a WAVE flow (product + MCP tool + price shape) for a media-processing goal stated in " +
       "plain language (captions/clips/dub/realtime/identity/x402/...). When a WAVE_API_KEY is " +
-      "configured, calls the live `POST /v1/compose` gateway route and returns its answer as-is " +
-      "(`grounding: \"gateway\"`). When no key is configured, or the gateway call fails, errors, or " +
+      "configured, calls the live `POST /v1/compose` gateway route and returns its answer " +
+      "(`grounding: \"gateway\"`). Either way `tools[]` are tool names on the hosted WAVE MCP server " +
+      "named in `toolsServer`, never on a route the gateway lists as unserved. When no key is " +
+      "configured, or the gateway call fails, errors, or " +
       "does not answer within 3 seconds, falls back to a bundled, measured snapshot composition " +
       "(`grounding: \"snapshot\"`) so you never get a dead end. Never executes: calls no other tool, " +
       "signs no payment, and makes no other side-effecting request. This is the registered successor " +
@@ -270,7 +295,7 @@ export const waveComposeTools: WaveToolDef[] = [
         if (outcome.ok) {
           const answer = redactSafely(outcome.value, apiKey);
           if (answer !== undefined) {
-            return textContent(JSON.stringify({ ...answer, grounding: "gateway" }));
+            return textContent(JSON.stringify({ ...normalizeLiveProposal(answer), grounding: "gateway" }));
           }
           // Nested past anything a proposal could be — treat it as the unusable shape it is.
           fallbackReason = "gateway-unexpected-shape";

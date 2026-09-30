@@ -195,8 +195,8 @@ const GOAL_SIGNATURES: readonly GoalSignature[] = [
   {
     id: "identity",
     triggers: ["resolve identity", "verify identity", "identity resolution", "verify a wallet", "who is this caller"],
-    // No dedicated "identity" product exists in knowledge/products.json today (verified against
-    // the 53-entry snapshot) — grounded via the real identity_resolve MCP tool only, never a
+    // No dedicated "identity" product exists in knowledge/products.json today (re-verified against
+    // the 60-entry 2026-09-28 snapshot) — grounded via the real identity_resolve MCP tool only, never a
     // fabricated product id. See skills/wave-ask/SKILL.md's note on this.
     productIds: [],
     tools: ["identity_resolve"],

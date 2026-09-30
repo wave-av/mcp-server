@@ -11,9 +11,19 @@ import { z } from "zod";
 import { randomUUID } from "node:crypto";
 import { failureContent, textContent, type WaveToolDef } from "./shared.js";
 
-const EDGE = (process.env.WAVE_REALTIME_EDGE ?? "https://rt.wave.online").replace(/\/+$/, "");
-const SEAL = process.env.WAVE_INTERNAL_SECRET ?? "";
-const ORG = process.env.WAVE_VOICE_ORG ?? "mcp";
+/**
+ * The edge config, read from process.env at CALL time — the same process.env the registry's
+ * {@link voiceAvailable} check reads. Captured at import instead, a secret set after this module
+ * loaded (an Agent SDK host that sets it before building the server) would register the tool and
+ * then fail every call with "not set".
+ */
+function edgeConfig(): { edge: string; seal: string; org: string } {
+  return {
+    edge: (process.env["WAVE_REALTIME_EDGE"] ?? "https://rt.wave.online").replace(/\/+$/, ""),
+    seal: process.env["WAVE_INTERNAL_SECRET"] ?? "",
+    org: process.env["WAVE_VOICE_ORG"] ?? "mcp",
+  };
+}
 
 function varint(v: number): number[] {
   const o: number[] = [];
@@ -60,18 +70,22 @@ function connect(url: string): Promise<WebSocket> {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function converse(room: string, audioPath: string, outPath: string): Promise<string> {
-  if (!SEAL) throw new Error("WAVE_INTERNAL_SECRET is not set on this MCP server");
+  const { edge, seal, org } = edgeConfig();
+  if (!seal) throw new Error("WAVE_INTERNAL_SECRET is not set on this MCP server");
   const { readFileSync, writeFileSync } = await import("node:fs");
   const participantSessionId = `mcp_${randomUUID()}`;
 
-  const res = await fetch(`${EDGE}/v1/realtime/agents/bind`, {
+  const res = await fetch(`${edge}/v1/realtime/agents/bind`, {
     method: "POST",
-    headers: { "content-type": "application/json", "x-wave-internal": SEAL, "x-wave-org": ORG },
+    headers: { "content-type": "application/json", "x-wave-internal": seal, "x-wave-org": org },
     body: JSON.stringify({ config: { roomId: room, agentId: "voice-agent", participantSessionId, participantTrackName: "mic", headless: true } }),
+    // The bind carries the edge-internal seal: one POST to the configured edge, never a redirect.
+    redirect: "error",
   });
   const json = (await res.json().catch(() => ({}))) as { ok?: boolean; audioInEndpoint?: string; ttsEndpoint?: string };
   if (res.status !== 200 || !json.ok || !json.audioInEndpoint || !json.ttsEndpoint) {
-    throw new Error(`bind failed: ${res.status} ${JSON.stringify(json).slice(0, 200)}`);
+    // Status only. The bind body can carry session endpoints and ids; none of it goes to the caller.
+    throw new Error(`bind failed: HTTP ${res.status}`);
   }
 
   const pcm = decodeWav(readFileSync(audioPath)).pcm;
@@ -108,6 +122,18 @@ async function converse(room: string, audioPath: string, outPath: string): Promi
 }
 
 /**
+ * What a failed converse() may say to the caller. A plain `Error` is either one converse() threw
+ * itself (a fixed string or the status line above) or a Node filesystem error on the caller's own
+ * audioPath/outPath (ENOENT and the like), which the caller needs verbatim. Anything else — a
+ * fetch TypeError, a WebSocket failure, whose message or cause could echo request details — is
+ * reduced to its class name.
+ */
+export function voiceFailureMessage(e: unknown): string {
+  if (!(e instanceof Error)) return "unknown error";
+  return e.constructor === Error ? e.message : e.name;
+}
+
+/**
  * True when this process holds the edge's internal seal. The registry (./index.ts) registers
  * wave_voice_converse only then: the tool authenticates with the edge-internal secret, not a
  * customer WAVE_API_KEY, so on a customer machine it could never succeed. Presence check only; the
@@ -135,7 +161,9 @@ export const voiceTools: WaveToolDef[] = [
         const summary = await converse(String(room), String(audioPath), String(outPath));
         return textContent(summary);
       } catch (e) {
-        return failureContent(`voice_converse failed: ${(e as Error).message}`);
+        // Every message converse() throws is a fixed string or a status line built above; a
+        // fetch/WebSocket/fs failure is reported by its class, not by whatever it echoed.
+        return failureContent(`voice_converse failed: ${voiceFailureMessage(e)}`);
       }
     },
   },

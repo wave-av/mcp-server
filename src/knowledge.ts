@@ -82,9 +82,39 @@ export const KNOWLEDGE_SKILLS: readonly SkillEntry[] = skillsFile;
  */
 export const KNOWLEDGE_MCP_TOOLS: readonly McpToolEntry[] = mcpToolsFile.tools;
 
+/** The only hosts a proposal's `toolsServer` may name: WAVE's own hosted MCP endpoints. */
+export const HOSTED_MCP_HOSTS: ReadonlySet<string> = new Set(["api.wave.online", "mcp.wave.online"]);
+
+/**
+ * True when `url` is a WAVE hosted MCP endpoint: `https:`, a host in {@link HOSTED_MCP_HOSTS} on
+ * the default port, path exactly `/mcp`, and no userinfo, query or fragment. Every proposal tells an
+ * agent to call `tools[]` at this address, so a snapshot refresh that named any other endpoint
+ * (a typo, a staging host, a hostile edit) must stop the package from loading, not steer agents.
+ */
+export function isTrustedHostedMcpUrl(url: string): boolean {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return false;
+  }
+  return (
+    parsed.protocol === "https:" &&
+    HOSTED_MCP_HOSTS.has(parsed.hostname) &&
+    parsed.port === "" &&
+    parsed.username === "" &&
+    parsed.password === "" &&
+    parsed.pathname === "/mcp" &&
+    parsed.search === "" &&
+    parsed.hash === "" &&
+    parsed.href === `https://${parsed.hostname}/mcp`
+  );
+}
+
 /**
  * Where the tools in {@link KNOWLEDGE_MCP_TOOLS} are served, read from the same snapshot
- * (`mcpServers.wave.url`) rather than hardcoded, so it moves with the snapshot it describes.
+ * (`mcpServers.wave.url`) rather than hardcoded, so it moves with the snapshot it describes — and
+ * checked against {@link isTrustedHostedMcpUrl} below before anything can use it.
  */
 export const HOSTED_MCP_URL: string = mcpToolsFile.mcpServers?.wave?.url ?? "";
 
@@ -95,10 +125,10 @@ if (KNOWLEDGE_PRODUCTS.length === 0) {
 if (KNOWLEDGE_SKILLS.length === 0) {
   throw new Error("knowledge/skills.json loaded with zero skills — bundled snapshot is broken");
 }
-if (!/^https:\/\/[^/]+\/mcp$/.test(HOSTED_MCP_URL)) {
+if (!isTrustedHostedMcpUrl(HOSTED_MCP_URL)) {
   throw new Error(
-    `knowledge/mcp-tools.json mcpServers.wave.url is ${JSON.stringify(HOSTED_MCP_URL)}, not an https …/mcp URL — ` +
-      "bundled snapshot is broken",
+    `knowledge/mcp-tools.json mcpServers.wave.url is ${JSON.stringify(HOSTED_MCP_URL)}, not ` +
+      `https://<${[...HOSTED_MCP_HOSTS].join("|")}>/mcp — bundled snapshot is broken`,
   );
 }
 if (KNOWLEDGE_MCP_TOOLS.length !== mcpToolsFile.toolCount) {

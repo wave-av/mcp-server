@@ -10,7 +10,7 @@
 //      (0.3.0 registered a fixed resource whose URI literally contained "{id}"), and absent otherwise.
 import { test, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -32,10 +32,11 @@ interface Recorded {
   url: string;
   method: string;
   authorization: string | null;
+  redirect: RequestInit["redirect"];
 }
 
 let calls: Recorded[] = [];
-let nextResponse: { status: number; body: string } = { status: 200, body: "{}" };
+let nextResponse: { status: number; body: string; contentType?: string } = { status: 200, body: "{}" };
 const realFetch = globalThis.fetch;
 const savedEnv = { ...process.env };
 
@@ -46,15 +47,16 @@ beforeEach(() => {
   delete process.env["WAVE_BASE_URL"];
   delete process.env["WAVE_MCP_EXPERIMENTAL"];
   delete process.env["WAVE_INTERNAL_SECRET"];
+  delete process.env["WAVE_REALTIME_EDGE"];
   delete process.env["WAVE_PEN_EXTRACT_ROOT"];
   delete process.env["WAVE_LOC_STUDY_ROOT"];
   globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
     const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
     const headers = new Headers(init?.headers);
-    calls.push({ url, method: init?.method ?? "GET", authorization: headers.get("authorization") });
+    calls.push({ url, method: init?.method ?? "GET", authorization: headers.get("authorization"), redirect: init?.redirect });
     return new Response(nextResponse.body, {
       status: nextResponse.status,
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": nextResponse.contentType ?? "application/json" },
     });
   }) as typeof fetch;
 });
@@ -80,7 +82,8 @@ async function connect(server: Connectable): Promise<{ client: Client; close: ()
   };
 }
 
-const stdio = () => connect(buildServer({ ...process.env }) as unknown as Connectable);
+// buildServer() reads its selection from process.env, exactly as src/server.ts startServer() does.
+const stdio = () => connect(buildServer() as unknown as Connectable);
 const sdk = async () => connect((await createWaveSdkMcpServer()).instance as unknown as Connectable);
 
 function text(result: Awaited<ReturnType<Client["callTool"]>>): string {
@@ -234,8 +237,136 @@ test("stdio: a non-2xx on resources/read is a JSON-RPC error, never an 'Error 40
   nextResponse = { status: 404, body: ROUTE_NOT_FOUND };
   const { client, close } = await stdio();
   try {
-    await assert.rejects(client.readResource({ uri: "wave://streams/abc-123" }), /WAVE API 404/);
+    await assert.rejects(client.readResource({ uri: "wave://streams/abc-123" }), /WAVE API 404 ROUTE_NOT_FOUND/);
   } finally {
     await close();
   }
 });
+
+test("stdio: a resources/read error names the status and gateway code, never the upstream body", async () => {
+  process.env["WAVE_MCP_EXPERIMENTAL"] = "1";
+  nextResponse = {
+    status: 403,
+    body: JSON.stringify({
+      error: { code: "SCOPE_INSUFFICIENT", request_id: "req_123", message: "org 00000000-dead-beef lacks productions:read" },
+    }),
+  };
+  const { client, close } = await stdio();
+  try {
+    await assert.rejects(client.readResource({ uri: "wave://productions/p-1" }), (err: Error) => {
+      assert.match(err.message, /WAVE API 403 SCOPE_INSUFFICIENT \(request_id req_123\)/);
+      assert.doesNotMatch(err.message, /dead-beef|lacks productions/);
+      return true;
+    });
+  } finally {
+    await close();
+  }
+});
+
+test("stdio: a 2xx resources/read that is not JSON is an error, not an application/json resource", async () => {
+  process.env["WAVE_MCP_EXPERIMENTAL"] = "1";
+  nextResponse = { status: 200, body: "<!DOCTYPE html><title>holding page</title>", contentType: "text/html" };
+  const { client, close } = await stdio();
+  try {
+    await assert.rejects(client.readResource({ uri: "wave://streams/abc-123" }), /not JSON/);
+  } finally {
+    await close();
+  }
+});
+
+test("stdio: resources/read refuses redirects (the request carries the bearer key)", async () => {
+  process.env["WAVE_MCP_EXPERIMENTAL"] = "1";
+  nextResponse = { status: 200, body: JSON.stringify({ id: "abc-123" }) };
+  const { client, close } = await stdio();
+  try {
+    await client.readResource({ uri: "wave://streams/abc-123" });
+    assert.equal(calls[0]!.redirect, "error");
+  } finally {
+    await close();
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Opt-in groups whose handlers read process.env at CALL time (PR #145 review): registration and
+// the handler must see the same configuration, on both transports.
+// ---------------------------------------------------------------------------
+
+for (const [transport, open] of [
+  ["stdio", stdio],
+  ["sdk-server", sdk],
+] as const) {
+  test(`${transport}: wave_voice_converse uses the secret and edge set AFTER import, and a failed bind is isError with the status only`, async () => {
+    // This module (and voice.ts) were imported long before these assignments: an import-time
+    // capture would register the tool and then report "not set", or call the default edge.
+    process.env["WAVE_INTERNAL_SECRET"] = "test-seal-not-a-credential";
+    process.env["WAVE_REALTIME_EDGE"] = "https://edge.test.invalid";
+    nextResponse = { status: 500, body: JSON.stringify({ ok: false, session: "sess_secret_fragment", ttsEndpoint: "wss://x" }) };
+    const { client, close } = await open();
+    try {
+      const { tools } = await client.listTools();
+      assert.ok(tools.some((t) => t.name === "wave_voice_converse"), "voice not registered with the secret set");
+      const result = await client.callTool({
+        name: "wave_voice_converse",
+        arguments: { room: "r1", audioPath: "/nonexistent.wav", outPath: "/nonexistent.pcm" },
+      });
+      assert.equal(result.isError, true);
+      assert.equal(text(result), "voice_converse failed: bind failed: HTTP 500");
+      assert.equal(calls[0]!.url, "https://edge.test.invalid/v1/realtime/agents/bind");
+      assert.equal(calls[0]!.redirect, "error");
+    } finally {
+      await close();
+    }
+  });
+
+  test(`${transport}: a design result with ok:false is a failed tool call carrying the result JSON`, async () => {
+    const root = fakePenRegister();
+    process.env["WAVE_LOC_STUDY_ROOT"] = root.locStudy;
+    const { client, close } = await open();
+    try {
+      // Neither `image` nor `plate`: measureImpl answers ok:false before running anything.
+      const result = await client.callTool({ name: "wave_design_measure", arguments: {} });
+      assert.equal(result.isError, true);
+      assert.deepEqual(JSON.parse(text(result)), { ok: false, error: "wave_design_measure: one of `image` or `plate` is required" });
+    } finally {
+      await close();
+    }
+  });
+
+  test(`${transport}: a design result with ok:true is a successful tool call`, async () => {
+    const root = fakePenRegister();
+    process.env["WAVE_PEN_EXTRACT_ROOT"] = root.penExtract;
+    const contract = join(mkdtempSync(join(tmpdir(), "wave-mcp-contract-")), "design-contract.json");
+    writeFileSync(contract, "{}");
+    const { client, close } = await open();
+    try {
+      // Runs the fixture's real designs/contract/validate.mjs in a subprocess (exit 0, prints "valid").
+      const result = await client.callTool({ name: "wave_design_contract_check", arguments: { contract } });
+      assert.notEqual(result.isError, true);
+      const parsed = JSON.parse(text(result)) as { ok: boolean; valid: boolean; validatorLine: string };
+      assert.equal(parsed.ok, true);
+      assert.equal(parsed.valid, true);
+      assert.equal(parsed.validatorLine, "valid");
+    } finally {
+      await close();
+    }
+  });
+}
+
+/**
+ * A runnable fake of the two unpublished design libraries: pen-extract (src/cli.mjs plus its repo's
+ * designs/contract/ validator, schema and catalogue) and loc-study (bin/loc-study.mjs). Each
+ * script is a real one-liner node can execute.
+ */
+function fakePenRegister(): { penExtract: string; locStudy: string } {
+  const base = mkdtempSync(join(tmpdir(), "wave-mcp-design-libs-"));
+  const penExtract = join(base, "pen-register", "packages", "pen-extract");
+  const contractDir = join(base, "pen-register", "designs", "contract");
+  const locStudy = join(base, "loc-study");
+  for (const dir of [join(penExtract, "src"), contractDir, join(locStudy, "bin")]) mkdirSync(dir, { recursive: true });
+  writeFileSync(join(penExtract, "src", "cli.mjs"), "process.exit(0);\n");
+  writeFileSync(join(contractDir, "validate.mjs"), 'console.log("valid");\n');
+  writeFileSync(join(contractDir, "design-contract.schema.json"), "{}");
+  writeFileSync(join(contractDir, "acceptance-tests.json"), "[]");
+  writeFileSync(join(locStudy, "bin", "loc-study.mjs"), "process.exit(0);\n");
+  return { penExtract, locStudy };
+}
