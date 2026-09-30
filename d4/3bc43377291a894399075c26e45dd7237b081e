@@ -1,0 +1,60 @@
+.wave/repo.json
+  s_49793c5a9de056::t_91b6f8559e0375 344-345,348-384
+  s_49793c5a9de056::t_8352d0680a0efe 115-116,340-341,492-493,495-500,503-506,508-536
+  s_49793c5a9de056::t_5d108be57278c3 119-139,145,149
+  s_49793c5a9de056::t_4f7e348ea961d0 117-118
+  s_49793c5a9de056::t_6b5942913c562b 342-343
+  s_49793c5a9de056::t_76cad58a17b61f 346-347
+  s_49793c5a9de056::t_2fb1c8fbd80cdb 494
+  s_49793c5a9de056::t_c378153eb738e2 501-502
+  s_49793c5a9de056::t_cb51b4f3c24831 507
+  s_268e9fe50504b0::t_724e7406738222 406,410,440,458,476,569,584
+README.md
+  s_49793c5a9de056::t_0b1080b3976b81 274-275
+  s_3fe541eb6c4362::t_c23c4802944fe5 112-117,241
+capabilities.json
+  s_49793c5a9de056::t_2c56a048217914 53
+  s_49793c5a9de056::t_d77bb1202ccefc 33
+.github/workflows/lint.yml
+  s_20ae6d45b1fd6a::t_948223b7420e96 27-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "d43bc43377291a894399075c26e45dd7237b081e",
+  "prompts": {},
+  "sessions": {
+    "s_20ae6d45b1fd6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a453678149a3761d8",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    },
+    "s_268e9fe50504b0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a22830000b93a6f37",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    },
+    "s_3fe541eb6c4362": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a36ad5babc974a07a",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    },
+    "s_49793c5a9de056": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d315ea56-91aa-4d81-9939-eac4eba83179",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

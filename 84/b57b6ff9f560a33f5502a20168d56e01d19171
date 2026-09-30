@@ -1,0 +1,42 @@
+scripts/smoke/consumer-types/package.json
+  s_be40541f6fd98b::t_3a56fee65c781c 1-6
+scripts/smoke/consumer-types/tsconfig.sdk-server.json
+  s_be40541f6fd98b::t_2a4629f0c31cc2 1-4
+scripts/smoke/consumer-types/sdk-server.ts
+  s_be40541f6fd98b::t_352954e78486c5 1-11
+.github/workflows/release.yml
+  s_be40541f6fd98b::t_637c0fda5d8e17 215-243,245-247,270,274-277,279-286,288-290
+  s_be40541f6fd98b::t_7f940a68a21d4f 244,248-265,267
+  s_be40541f6fd98b::t_90fa91097aa429 14-18
+  s_be40541f6fd98b::t_4298d5dc717f8a 266,268-269,271-273,278,287
+scripts/smoke/consumer-types/tsconfig.base.json
+  s_be40541f6fd98b::t_3d55cb15c3e18b 1-6,13-23
+  s_be40541f6fd98b::t_6c9b0da01e8dc1 7-12
+scripts/smoke/consumer-types/run-arm.sh
+  s_be40541f6fd98b::t_93502f6d69958d 1-66
+.gitignore
+  s_be40541f6fd98b::t_76875acb9552d1 4-13
+scripts/smoke/consumer-types/tsconfig.root.json
+  s_be40541f6fd98b::t_ce225b331ff436 1-4
+scripts/smoke/consumer-types/root.ts
+  s_be40541f6fd98b::t_de8504e58c12d0 11-17
+  s_be40541f6fd98b::t_d079bbedf12a4c 1-10,18
+CHANGELOG.md
+  s_be40541f6fd98b::t_08f3d4016effdf 19-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "84b57b6ff9f560a33f5502a20168d56e01d19171",
+  "prompts": {},
+  "sessions": {
+    "s_be40541f6fd98b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d7c9787b-b0d7-48b3-9805-b7c27c79d626",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

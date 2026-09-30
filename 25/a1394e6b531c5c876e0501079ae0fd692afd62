@@ -1,0 +1,32 @@
+package.json
+  s_3c7b3ef700013e::t_609f83be09c523 25
+.guardignore
+  s_3c7b3ef700013e::t_63b9dc4fdbf637 7-14
+  s_3c7b3ef700013e::t_e4d5e9b205ff7e 1-6,15
+README.md
+  s_3c7b3ef700013e::t_cc6a62d9a954ba 128
+src/tools/wave-ask/wave-ask.ts
+  s_3c7b3ef700013e::t_7e1de69418e581 7-20,29-31,41-45,53-54
+  s_3c7b3ef700013e::t_97eeefbd0f67cb 32-35
+src/tools/wave-ask/compose.ts
+  s_3c7b3ef700013e::t_a9bafc495ddb66 26-30,35,37,39,41,43,45,47,49
+src/wave-ask.e2e.test.ts
+  s_3c7b3ef700013e::t_918935606bac5e 18
+  s_3c7b3ef700013e::t_af240cc1ce2f2b 46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "25a1394e6b531c5c876e0501079ae0fd692afd62",
+  "prompts": {},
+  "sessions": {
+    "s_3c7b3ef700013e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "996fb707-e2e4-45af-8ec6-8dd33f300698",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

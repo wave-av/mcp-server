@@ -1,0 +1,19 @@
+.contracts-absent.json
+  s_27735d4472bd5c::t_29524f9ba702d2 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "40327aa2b2018f1b771c12c477890550c532330d",
+  "prompts": {},
+  "sessions": {
+    "s_27735d4472bd5c": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_faf632e5fffeDkyyopx4rVwfmg",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

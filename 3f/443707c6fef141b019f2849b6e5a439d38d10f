@@ -1,0 +1,41 @@
+src/tools/production.ts
+  s_4657dee555390b::t_fd5aa5751ea017 2,9,11-13,15,19-23,25,34-35,37-56,58-71,73-95,108-109,112-113,115-119,127-128,131-156,158-165,167-168,170,181,189-192,194,203-204,206-210,212-216,218-225,227-254,256-257,259-261
+src/resources/streams.ts
+  s_4657dee555390b::t_51b47c58d0fad2 21
+src/tools/studio.ts
+  s_4657dee555390b::t_972105a8a25a09 7,15,23,29-31,33-34,43,67
+src/tools/analytics.ts
+  s_4657dee555390b::t_e21b6da796430e 7,9-10,12,14-15,18
+scripts/smoke-mcp.mjs
+  s_4657dee555390b::t_04d763ba33f795 5,8-10,13-14,17,20-24,27-32,81-123,147-219
+  s_4657dee555390b::t_e258f4232aeed6 220
+src/tools/billing.ts
+  s_4657dee555390b::t_d319bccab94d0f 4-5,9,12,21,23-24,26,28-29
+.github/workflows/smoke-install.yml
+  s_4657dee555390b::t_1641010cc16e39 7-10
+  s_4657dee555390b::t_01037a9779ea67 72,81
+src/resources/productions.ts
+  s_4657dee555390b::t_31f7fe318ab8d6 20
+package-lock.json
+  s_4657dee555390b::t_a639c7fa866b82 3,9
+package.json
+  s_4657dee555390b::t_0bf7738ec2cec1 3
+src/tools/streams.ts
+  s_4657dee555390b::t_fb430de580360f 7,15,23,29,31,44,46-47,49,51-53,55-57,59,63-65,79,84,95,100,111,116-137,143-180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "3f443707c6fef141b019f2849b6e5a439d38d10f",
+  "prompts": {},
+  "sessions": {
+    "s_4657dee555390b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c714314b-1edf-4e54-a112-2a97f2377df1",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

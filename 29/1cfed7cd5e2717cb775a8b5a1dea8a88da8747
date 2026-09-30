@@ -1,0 +1,22 @@
+scripts/smoke/consumer-types/test-classifier.sh
+  s_be40541f6fd98b::t_516c6af87d6c33 1-79
+scripts/smoke/consumer-types/run-arm.sh
+  s_be40541f6fd98b::t_63939ca2659a34 47-57
+  s_be40541f6fd98b::t_e865d422173d4b 10-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "291cfed7cd5e2717cb775a8b5a1dea8a88da8747",
+  "prompts": {},
+  "sessions": {
+    "s_be40541f6fd98b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d7c9787b-b0d7-48b3-9805-b7c27c79d626",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
