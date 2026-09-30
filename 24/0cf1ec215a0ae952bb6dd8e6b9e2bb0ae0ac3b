@@ -1,0 +1,35 @@
+src/tools/index.ts
+  s_13ccc7d9001218::t_1c773ae6b16f3a 36-37
+  s_13ccc7d9001218::t_c98ff9ffaf2d17 31-35
+  s_13ccc7d9001218::t_718145c75b2cf3 26-28,46-51,82-83,94-104,125-126,129,131-143,151,185
+capabilities.json
+  s_13ccc7d9001218::t_89e2a80383e0e1 38-40
+src/auth.ts
+  s_13ccc7d9001218::t_bcd0f9b4ab021e 47-71,93-110
+src/tools/design-lib.ts
+  s_13ccc7d9001218::t_ce5b8e1178870f 42-45,82-93,95-96,98-107
+src/tools/registry.test.ts
+  s_13ccc7d9001218::t_c922598994d075 24,127-173,219-238
+src/tools/voice.ts
+  s_13ccc7d9001218::t_956487d098728d 12,15-38,43-44,48
+src/tools/wave-ask/wave-compose.test.ts
+  s_13ccc7d9001218::t_47efb8335b4adf 23-30
+src/tools/wave-ask/wave-compose.ts
+  s_13ccc7d9001218::t_4c3db69949eea0 178-181
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "240cf1ec215a0ae952bb6dd8e6b9e2bb0ae0ac3b",
+  "prompts": {},
+  "sessions": {
+    "s_13ccc7d9001218": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "11229abc-f617-4541-b5d7-d693c6ae4d9d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
