@@ -18,7 +18,8 @@
 > `products.json` 59→**60** (new: `composer`; 17 products moved preview→live, so live 9→26),
 > `skills.json` 179→**180** (new: `composer`; priced 40→53). Nothing removed from any of the three.
 > 38 of the 96 hosted tools name a route in a family wave-gateway lists as served by nothing
-> (`src/unserved-advertised-paths.ts`); `src/knowledge.ts` `UNSERVED_MCP_TOOL_NAMES` keeps the
+> (wave-gateway `src/unserved-advertised-paths.ts`, not a file in this repo); this repo's
+> `src/knowledge.ts` `UNSERVED_MCP_TOOL_NAMES` keeps the
 > composer from proposing them. Each sidecar's `sha256` is of the bundled file, re-serialized with
 > `json.dumps(indent=2, ensure_ascii=True)`; `rawResponseSha256` is of the bytes the GET returned.
 >

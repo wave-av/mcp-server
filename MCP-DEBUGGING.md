@@ -32,17 +32,24 @@ Your `.mcp.json` is missing the `env` block. Add `WAVE_API_KEY` as shown above.
 
 ### A tool I expected is not in `tools/list`
 
-Since 0.4.0 a default `tools/list` has 7 tools, each on a route `api.wave.online` serves. The
-streams, productions, cameras and moderation tools are registered only with
-`WAVE_MCP_EXPERIMENTAL=1`, because `api.wave.online` answers their routes with
-`404 ROUTE_NOT_FOUND` today. `wave_voice_converse` needs `WAVE_INTERNAL_SECRET`, and the design tools
-need their unpublished library on disk. The startup log line names the opt-in groups that are live.
-See the README's "Opt-in tools" section.
+Since 0.4.0 a default `tools/list` has 7 tools. Five of them call a route `api.wave.online` serves:
+`wave_get_viewers`, `wave_get_subscription`, `wave_get_usage`, `wave_create_clip` and
+`wave_start_captions`. The other two propose compositions: `wave.ask` makes no API request at all,
+and `wave_compose` calls `POST /v1/compose` when `WAVE_API_KEY` is set and falls back to the bundled
+snapshot otherwise. The streams, productions, cameras and moderation tools are registered only with
+`WAVE_MCP_EXPERIMENTAL=1`, because `api.wave.online` serves none of their routes (an anonymous call
+answers `404 ROUTE_NOT_FOUND`). `wave_voice_converse` needs `WAVE_INTERNAL_SECRET`, and the design
+tools need their unpublished library on disk with the files they run. The startup log line names the
+opt-in groups that are live. See the README's "Opt-in tools" section.
 
 ### Tool results and `isError`
 
 Any non-2xx answer from the WAVE API comes back as a failed tool call: `isError: true`, with the text
 `Error <status>: <body>`. Through 0.3.0 the same text came back as a successful result.
+
+A failed `resources/read` of `wave://streams/{id}` or `wave://productions/{id}` is a JSON-RPC error
+that names the status, the gateway's error code and its `request_id` (for example
+`WAVE API 404 ROUTE_NOT_FOUND (request_id ...)`), never the raw upstream body.
 
 ### "Error 401: Unauthorized"
 

@@ -9,12 +9,14 @@ All notable changes to this project are documented here. The format is based on
 ## [0.4.0] - 2026-09-29
 
 A default install now lists only tools that can succeed. Measured live on 2026-09-28 against
-`https://api.wave.online` with a real `wave_live_*` key: 12 of 0.3.0's 18 HTTP tools, and both
-`wave://` resources, could never succeed for anyone. Their routes answer `404 ROUTE_NOT_FOUND`
-("No WAVE capability is served at this path") with and without a key, while the served control
-routes `GET /v1/network/surface` and `GET /v1/x402/facilitator/supported` answered 200 in the
-same run. wave-gateway's own ledger lists those families as advertised with no destination
-(`src/unserved-advertised-paths.ts`, GA-CONTRACT-001).
+`https://api.wave.online` with a real `wave_live_*` key: 13 of 0.3.0's 18 HTTP tools, and both
+`wave://` resources, could never succeed for anyone. Twelve of them (the streams, productions and
+cameras families) call routes that answer `404 ROUTE_NOT_FOUND` ("No WAVE capability is served at
+this path") with and without a key, while the served control routes `GET /v1/network/surface` and
+`GET /v1/x402/facilitator/supported` answered 200 in the same run. wave-gateway's own ledger lists
+those families as advertised with no destination (wave-gateway `src/unserved-advertised-paths.ts`,
+GA-CONTRACT-001). The thirteenth, `wave_moderate_chat`, calls `POST /v1/moderate`, which answers an
+anonymous call with `404 ROUTE_NOT_FOUND` and has no product spoke or gateway-native handler.
 
 ### Fixed
 
@@ -31,7 +33,20 @@ same run. wave-gateway's own ledger lists those families as advertised with no d
 - `wave.ask` / `wave_compose` no longer propose hosted tools whose route the gateway lists as
   unserved (38 of the 96 hosted tools), and every proposal now carries `toolsServer` (the hosted
   WAVE MCP server, `https://api.wave.online/mcp`) so an agent calls `tools[]` where they exist
-  rather than on this stdio package, where most are not registered.
+  rather than on this stdio package, where most are not registered. A live `POST /v1/compose`
+  answer is held to the same contract as a snapshot one: unserved tools are dropped from `tools[]`
+  and `toolsServer` is always the bundled endpoint, never a value the responder supplied.
+- The bundled `toolsServer` must be `https://api.wave.online/mcp` or `https://mcp.wave.online/mcp`
+  exactly (https, no port, userinfo, query or fragment). A snapshot that names any other endpoint
+  stops the package from loading instead of steering agents elsewhere.
+- A failed `resources/read` names the status, the gateway's error code and its `request_id`, never
+  the raw upstream body. A 2xx that is not JSON is an error, not an `application/json` resource.
+  The read refuses redirects, because the request carries the bearer key.
+- `wave_voice_converse` reads `WAVE_INTERNAL_SECRET` and `WAVE_REALTIME_EDGE` when it is called,
+  not when the module loads, so a tool registered because the secret is set can use it. A failed
+  bind reports its HTTP status only, and the bind request refuses redirects.
+- `buildServer()` and the startup log line use one group selection, computed once, so the log never
+  describes a different tool set from the one registered.
 
 ### Changed
 
@@ -47,6 +62,9 @@ same run. wave-gateway's own ledger lists those families as advertised with no d
 - `scripts/smoke-mcp.mjs` fails a run when a non-2xx result lacks `isError: true` (or a 2xx has
   it), when an unserved tool appears in a default `tools/list`, or on `ROUTE_NOT_FOUND`. `--all`
   now drives the 5 default gateway-backed tools; `--read-only` limits it to the 3 unbilled GETs.
+  Every row that does not pass fails `--all`, a 401 or 403 included, while a 402 or a validation
+  answer from a served route passes. The opt-in set it checks is read from `capabilities.json`. Its
+  output carries the status, the gateway's error code and a byte count, never a response body.
 - Bundled `knowledge/` snapshot refreshed to the 2026-09-28 measurement: `mcp-tools.json` 93→96,
   `products.json` 59→60, `skills.json` 179→180 (see `knowledge/SOURCES.md`).
 
@@ -61,15 +79,16 @@ same run. wave-gateway's own ledger lists those families as advertised with no d
   resource templates; without it the server does not advertise the resources capability.
 - `wave_voice_converse` is registered only when `WAVE_INTERNAL_SECRET` is set. It authenticates
   with the edge-internal secret, not a customer key, so it failed on every customer machine.
-- The four `wave_design_*` tools are registered only when their unpublished library resolves on
-  disk (`WAVE_PEN_EXTRACT_ROOT` / `WAVE_LOC_STUDY_ROOT`, or the `$HOME/wave-av/...` default).
-  On a customer machine they failed with `@wave-av/pen-extract not found`.
+- The four `wave_design_*` tools are registered only when their unpublished library is on disk
+  with every file they run (`WAVE_PEN_EXTRACT_ROOT` / `WAVE_LOC_STUDY_ROOT`, or the
+  `$HOME/wave-av/...` default). An empty directory, a regular file or a partial checkout registers
+  nothing. On a customer machine they failed with `@wave-av/pen-extract not found`.
 
 ### Added
 
 - `wave_compose` (25th tool): the registered successor to `wave.ask`. When `WAVE_API_KEY` is
-  configured, calls the live gateway `POST /v1/compose` and returns its answer as-is
-  (`grounding: "gateway"`); when no key is configured, or the call fails, errors, or does not
+  configured, calls the live gateway `POST /v1/compose` and returns its answer
+  (`grounding: "gateway"`, with `tools[]` and `toolsServer` normalized as described under Fixed); when no key is configured, or the call fails, errors, or does not
   answer within 3 seconds, falls back to the same deterministic composition `wave.ask` already
   shipped (`grounding: "snapshot"`) — never a dead end. The `WAVE_API_KEY` is sent only to that
   one gateway request and is never logged or echoed into the tool's output.
@@ -284,7 +303,8 @@ tool call — those installs stay broken until `0.2.1` ships and consumers upgra
   the stdio transport (Model Context Protocol). `0.1.0` and `0.1.1` reached the
   registry on 2026-04-01 ahead of this tagged release and carry the same code line.
 
-[Unreleased]: https://github.com/wave-av/mcp-server/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/wave-av/mcp-server/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/wave-av/mcp-server/releases/tag/v0.4.0
 [0.3.0]: https://github.com/wave-av/mcp-server/releases/tag/v0.3.0
 [0.2.1]: https://github.com/wave-av/mcp-server/releases/tag/v0.2.1
 [0.2.0]: https://github.com/wave-av/mcp-server/releases/tag/v0.2.0
