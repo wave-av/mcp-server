@@ -26,6 +26,14 @@ All notable changes to this project are documented here. The format is based on
   otherwise unchanged and keeps working exactly as before (offline, deterministic, no network
   call) for the deprecation window.
 
+### Security
+
+- Updated `@modelcontextprotocol/sdk` to 1.31.0 and refreshed four transitive dependencies past
+  their `npm audit` advisories: `brace-expansion` 5.0.12 (high, GHSA-q2hr-2g5m-vwhr), `fast-uri` 3.1.8
+  (GHSA-hrr3-gc8f-f4qj), `ip-address` 10.7.2 (GHSA-j6r3-76f7-8jcv), and `body-parser` 2.3.0
+  (GHSA-v422-hmwv-36x6). The server still negotiates MCP protocol revision 2025-11-25; support for
+  the 2026-07-28 revision requires the v2 SDK and is tracked separately.
+
 ## [0.3.0] - 2026-09-03
 
 Every tool now calls a real `api.wave.online` route with that route's own request
