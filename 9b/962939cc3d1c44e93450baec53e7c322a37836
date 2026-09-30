@@ -1,0 +1,78 @@
+README.md
+  s_3c7b3ef700013e::t_b4102cff1f040f 112-129
+  s_3c7b3ef700013e::t_bf653963219b6d 278
+  s_3c7b3ef700013e::t_b2912c8dae21b8 293
+  s_3c7b3ef700013e::t_c0c18e5f5d1ea1 317
+src/tools/wave-ask/wave-ask.ts
+  s_3c7b3ef700013e::t_d7d841d011f00c 1-35,37,39-41
+  s_3c7b3ef700013e::t_75d289b11b3962 36,38
+.wave/repo.json
+  s_3c7b3ef700013e::t_482c7f1a968816 150,154
+  s_3c7b3ef700013e::t_4207334345e755 140-144
+  s_3c7b3ef700013e::t_e595c72783bf4d 390-398
+src/tools/wave-ask/compose.ts
+  s_3c7b3ef700013e::t_3f104cfdda5377 1-17,19-287
+  s_3c7b3ef700013e::t_e9b01a470b0796 18
+SKILL.md
+  s_3c7b3ef700013e::t_d52cef5a55b95f 1-76
+knowledge/SOURCES.md
+  s_3c7b3ef700013e::t_98734f402e4918 26-27
+  s_3c7b3ef700013e::t_f71015ebe8558b 23-25
+  s_3c7b3ef700013e::t_82536aa3329029 28-30
+  s_84c95902f381d5::t_c4a15e104588d7 1-22,31-134
+src/tools/wave-ask/wave-ask.test.ts
+  s_3c7b3ef700013e::t_22af43d22cb097 1-74
+.github/workflows/smoke-install.yml
+  s_3c7b3ef700013e::t_f5e001c43288cb 6,8-14
+  s_3c7b3ef700013e::t_c583501e739273 74
+  s_3c7b3ef700013e::t_2707b9290a30b8 85
+src/wave-ask.e2e.test.ts
+  s_3c7b3ef700013e::t_b7b7de9dcd7dcf 151,154-155
+  s_3c7b3ef700013e::t_182248c6c0bbbc 1-150,152-153,156-159
+src/tools/wave-ask/compose.test.ts
+  s_3c7b3ef700013e::t_029ade37791bc5 1-117,119-152
+  s_3c7b3ef700013e::t_0e905aa5e8502c 118
+src/knowledge.ts
+  s_3c7b3ef700013e::t_2476bf4e4387f3 1-106
+src/tools/index.ts
+  s_3c7b3ef700013e::t_47d28e47dfbc2b 16,26
+capabilities.json
+  s_3c7b3ef700013e::t_9265a36143d5c9 54
+  s_3c7b3ef700013e::t_ce6331f60fb61a 37-38
+knowledge/mcp-tools.json
+  s_3c7b3ef700013e::t_704a7deab1642a 1-2355
+knowledge/mcp-tools.meta.json
+  s_3c7b3ef700013e::t_1ce079a5bc31ee 1-11
+knowledge/products.json
+  s_3c7b3ef700013e::t_eb2369dd1294b7 1-651
+knowledge/products.meta.json
+  s_3c7b3ef700013e::t_d1463e0fcedadc 1-12
+knowledge/skills.json
+  s_3c7b3ef700013e::t_835528d8aab3f1 1-3646
+knowledge/skills.meta.json
+  s_3c7b3ef700013e::t_135bdcb98040a1 1-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "9b962939cc3d1c44e93450baec53e7c322a37836",
+  "prompts": {},
+  "sessions": {
+    "s_3c7b3ef700013e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "996fb707-e2e4-45af-8ec6-8dd33f300698",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    },
+    "s_84c95902f381d5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a4007f33d7ec19d9f",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

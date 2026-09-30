@@ -1,0 +1,35 @@
+knowledge/SOURCES.md
+  s_13ccc7d9001218::t_a76e6cb08766e4 21-22
+MCP-DEBUGGING.md
+  s_13ccc7d9001218::t_a740be80a4ef80 35-43,50-52
+  s_13ccc7d9001218::t_8de6516ad729f7 53
+README.md
+  s_13ccc7d9001218::t_3cddcd59e32bff 162-164
+  s_13ccc7d9001218::t_cd74c1cfa5ceba 152-153
+  s_13ccc7d9001218::t_09fee81e17ec51 88
+  s_13ccc7d9001218::t_bac32201fe745d 5
+  s_13ccc7d9001218::t_2515883c8160f6 165
+CHANGELOG.md
+  s_13ccc7d9001218::t_74d016759812fe 90-91
+  s_13ccc7d9001218::t_e2d286da246df9 12-19
+  s_13ccc7d9001218::t_782dd30e4ec545 82-85
+  s_13ccc7d9001218::t_90fda46dcbfcee 65-67
+  s_13ccc7d9001218::t_c9620ce8d62b28 306-307
+  s_13ccc7d9001218::t_8b4a117fb7fb4f 36-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "d710deaa1031a0cad39d9e75acb56ef4d254dd57",
+  "prompts": {},
+  "sessions": {
+    "s_13ccc7d9001218": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "11229abc-f617-4541-b5d7-d693c6ae4d9d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

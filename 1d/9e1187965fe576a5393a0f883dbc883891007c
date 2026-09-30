@@ -1,0 +1,23 @@
+.wave/repo.json
+  s_c96f4a8d75d909::t_2cb373eb0f5e98 5
+CHANGELOG.md
+  s_c96f4a8d75d909::t_bebdd9d425d67f 27-53,62-69,73-76,78,82-84,86-89
+README.md
+  s_c96f4a8d75d909::t_c26a7d87943bdc 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "1d9e1187965fe576a5393a0f883dbc883891007c",
+  "prompts": {},
+  "sessions": {
+    "s_c96f4a8d75d909": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a034e6824235b8de5",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+src/auth.ts
+  s_15127d80763110::t_0092803e6001b7 36-40,42-54,58-59,61,64,66-71,73-75,78,80-81,84-99
+src/server.ts
+  s_15127d80763110::t_011ca7b3a93ae0 5
+  s_15127d80763110::t_6066679fc07052 30-33
+CHANGELOG.md
+  s_15127d80763110::t_5339a76ddb2362 23-30
+  s_15127d80763110::t_a20cae0505412e 49-53
+.wave/repo.json
+  s_15127d80763110::t_ab3a5be9c81510 447
+  s_15127d80763110::t_4336a4349ac33d 446
+  s_1e671ee0d1da76::t_a24494a5cf6812 336
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "938ce20e6e01e779465c69954a27eb01e97bbfc0",
+  "prompts": {},
+  "sessions": {
+    "s_15127d80763110": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f70037af-ffae-40e0-adc5-d29d25d96fee",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    },
+    "s_1e671ee0d1da76": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a7af8158162004446",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

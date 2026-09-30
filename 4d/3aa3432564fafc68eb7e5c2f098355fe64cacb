@@ -1,0 +1,30 @@
+.github/workflows/public-repo-guard.yml
+  s_49793c5a9de056::t_0c2e2a9dd3cfef 76,161
+  s_49793c5a9de056::t_23c1e79eb6207a 158-160
+  s_49793c5a9de056::t_6906a154a620fa 162-164
+  s_b1e8945d3df172::t_b75e396d3365d5 16-17,21-22,31-32,34-46,51-52,56-59,64-73,106-114,120-157,165-217
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "4d3aa3432564fafc68eb7e5c2f098355fe64cacb",
+  "prompts": {},
+  "sessions": {
+    "s_49793c5a9de056": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d315ea56-91aa-4d81-9939-eac4eba83179",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    },
+    "s_b1e8945d3df172": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a6a5b1af73e82915c",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

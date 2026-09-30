@@ -1,0 +1,14 @@
+RELEASING.md
+  h_af5ac1a9798224 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "779572aff5fbc27d65eed32b0f03a39907b0c0d2",
+  "prompts": {},
+  "humans": {
+    "h_af5ac1a9798224": {
+      "author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+src/tools/wave-ask/wave-ask.test.ts
+  s_3c7b3ef700013e::t_ec35ba86b8125f 42-50
+src/tools/wave-ask/compose.ts
+  s_3c7b3ef700013e::t_363508a7af945e 163
+  s_3c7b3ef700013e::t_bee4ed0fa5b3a7 170-180
+  s_3c7b3ef700013e::t_53f905767ebe06 273-274,280-281,283-284
+  s_8678084153043f::t_d2390a2378216b 13-14,35-41,96,114
+src/tools/wave-ask/wave-ask.ts
+  s_3c7b3ef700013e::t_9077fc92f7651b 2-11
+  s_3c7b3ef700013e::t_b95f210290958b 44
+knowledge/SOURCES.md
+  s_3c7b3ef700013e::t_50d769e5fe9c01 3-14
+skills/wave-ask/SKILL.md
+  s_3c7b3ef700013e::t_dfe077041fee45 12-14
+src/tools/wave-ask/compose.test.ts
+  s_3c7b3ef700013e::t_b55bbd1b87707b 153-189
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "cc8dc3c997e40af249c7a659b66bab811f974cfb",
+  "prompts": {},
+  "sessions": {
+    "s_3c7b3ef700013e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "996fb707-e2e4-45af-8ec6-8dd33f300698",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    },
+    "s_8678084153043f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a88f20748c51108af",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

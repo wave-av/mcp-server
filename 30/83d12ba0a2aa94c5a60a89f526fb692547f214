@@ -1,0 +1,39 @@
+scripts/check-capabilities-drift.ts
+  s_4657dee555390b::t_83870134bb03e4 1-76
+capabilities.json
+  s_4657dee555390b::t_dcf2e705d0ac6c 32-33
+  s_4657dee555390b::t_8f4f5f1234d48f 49
+package.json
+  s_4657dee555390b::t_d1bf63e8d5346e 35
+  s_6540dad5ee67af::t_d17f00dd0cd1d0 83
+.github/workflows/lint.yml
+  s_4657dee555390b::t_755fe442a359b1 26-29
+README.md
+  s_4657dee555390b::t_6f48ebf01f0326 246-247
+  s_4657dee555390b::t_9451e77e3b6fc8 88-93
+  s_4657dee555390b::t_005511e24c708b 217
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "3083d12ba0a2aa94c5a60a89f526fb692547f214",
+  "prompts": {},
+  "sessions": {
+    "s_4657dee555390b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c714314b-1edf-4e54-a112-2a97f2377df1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    },
+    "s_6540dad5ee67af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a9e1c35bf3f876c86",
+        "model": "unknown"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

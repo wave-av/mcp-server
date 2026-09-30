@@ -1,0 +1,20 @@
+src/sdk-server.ts
+  s_15127d80763110::t_b086e1417ff8d2 13
+  s_15127d80763110::t_990e0009259e38 30-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "1ca894355eb1109b3eb1e62d2697804643b0d9bb",
+  "prompts": {},
+  "sessions": {
+    "s_15127d80763110": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f70037af-ffae-40e0-adc5-d29d25d96fee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+src/tools/design.ts
+  s_3c7b3ef700013e::t_a9b1b9ed01e29c 97-107
+  s_3c7b3ef700013e::t_21efeb84bc9cbe 193-194
+  s_3c7b3ef700013e::t_e807c050d1315b 1-3,6-14,17-18,29-46,58-96,108-119,125-155,163-164,169-177,179-191,195-295
+  s_3c7b3ef700013e::t_e28fa0f44a5f6e 4-5,15-16,19-28,48-54,120-124,156-162,165-168,178,192
+  s_3c7b3ef700013e::t_e1d2fcf4fc05c7 47,55-57
+src/tools/design.test.ts
+  s_3c7b3ef700013e::t_a08c69fa05bea5 10-11
+  s_3c7b3ef700013e::t_bb336bf2cc4d00 75,84,86,89
+  s_3c7b3ef700013e::t_262b6f58ca8304 1-5,7-9,12-74,76-83,85,87-88,90-236
+  s_3c7b3ef700013e::t_77ee7015c90d1e 6
+package.json
+  s_3c7b3ef700013e::t_d6289434ef076f 34-35
+README.md
+  s_3c7b3ef700013e::t_f1da1b3f0ca44b 88-111
+  s_3c7b3ef700013e::t_ae59bf789c9b7c 267-271
+  s_3c7b3ef700013e::t_5f0d3186dfac32 249-252
+src/tools/design-lib.ts
+  s_3c7b3ef700013e::t_56dabbadc0a2a7 1-142
+capabilities.json
+  s_3c7b3ef700013e::t_e87f3dad4744a7 32-36
+  s_3c7b3ef700013e::t_ecb2b142a535b3 52
+tsconfig.test.json
+  s_3c7b3ef700013e::t_58ef836878a652 5
+  s_3c7b3ef700013e::t_0c2e271b6f241b 13
+  s_3c7b3ef700013e::t_0dd26e0fd6649e 2-4
+  s_3c7b3ef700013e::t_b5daf0fe662c75 6-8,10-12
+  s_3c7b3ef700013e::t_f73e9abacf9f13 14
+  s_3c7b3ef700013e::t_8f140c12da5e22 1,9
+src/tools/index.ts
+  s_3c7b3ef700013e::t_67cd41e5ea6bdd 15,24
+.gitignore
+  s_3c7b3ef700013e::t_72feba81fb59b3 3
+.github/workflows/lint.yml
+  s_3c7b3ef700013e::t_a1034999c9c397 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "f79ce0c43a6d7e6fc7a4934b98cbe9cf382a1dc1",
+  "prompts": {},
+  "sessions": {
+    "s_3c7b3ef700013e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "996fb707-e2e4-45af-8ec6-8dd33f300698",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

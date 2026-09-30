@@ -1,0 +1,39 @@
+package.json
+  s_49793c5a9de056::t_ed1d3eaeb02447 35
+src/tools/design-lib.ts
+  s_49793c5a9de056::t_a9feced5c41219 14
+  s_49793c5a9de056::t_ca20ad24d13c43 63-77,79
+  s_49793c5a9de056::t_2e28dbf92e4027 90-93
+  s_49793c5a9de056::t_37e788fe463a56 16
+  s_49793c5a9de056::t_32809a11ab2109 113-122,134-147
+  s_49793c5a9de056::t_a034c84fe2eb3e 80-89,94,97,101
+src/tools/design.test.ts
+  s_49793c5a9de056::t_52d6433473b5ef 59-77
+  s_49793c5a9de056::t_5b035023e784c8 204-258
+  s_49793c5a9de056::t_94ebe78ee73820 265,267-268
+  s_49793c5a9de056::t_0b665a54f8ced4 275-278
+  s_49793c5a9de056::t_5f0c07c6e02995 6
+scripts/run-tests.mjs
+  s_49793c5a9de056::t_c866862297bf5a 1-13,16-17,20-54
+  s_49793c5a9de056::t_9f51542be24061 14-15,18-19
+src/tools/design.ts
+  s_49793c5a9de056::t_771dce63ab0389 134-136,141-150,154-160
+  s_49793c5a9de056::t_483eb492751fc6 185-187,200-206
+  s_49793c5a9de056::t_1dae8540df8994 69-75,79-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "389a4e80d0cafff6301c3f58362512ded7e57dae",
+  "prompts": {},
+  "sessions": {
+    "s_49793c5a9de056": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d315ea56-91aa-4d81-9939-eac4eba83179",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}

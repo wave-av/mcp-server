@@ -1,0 +1,28 @@
+.github/workflows/release.yml
+  h_af5ac1a9798224 284,286-303,309-386
+.wave/repo.json
+  h_af5ac1a9798224 336,446-447
+CHANGELOG.md
+  h_af5ac1a9798224 86-87,90-113,132-139,145-151,193-194,210
+MCP-DEBUGGING.md
+  h_af5ac1a9798224 35,39-45,54,56-58,61,64,85-89,91-93,98-99
+README.md
+  h_af5ac1a9798224 43,100
+src/auth.ts
+  h_af5ac1a9798224 9-18,23-25,32,38-57,59-101
+src/sdk-server.ts
+  h_af5ac1a9798224 13,31-35
+src/server.ts
+  h_af5ac1a9798224 5,31-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "f802c3cee03657bd07596ec096422bf1cee5c728",
+  "prompts": {},
+  "humans": {
+    "h_af5ac1a9798224": {
+      "author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
