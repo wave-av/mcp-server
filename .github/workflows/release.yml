@@ -391,10 +391,10 @@ jobs:
 
       - name: Live tools/call reaches api.wave.online, never wave.online
         env:
-          WAVE_API_KEY: ${{ secrets.WAVE_GATEWAY_API_KEY }}
+          WAVE_API_KEY: ${{ secrets.WAVE_SMOKE_API_KEY }}
         run: |
           if [ -z "$WAVE_API_KEY" ]; then
-            echo "skipped: WAVE_GATEWAY_API_KEY absent (fork or unset)"
+            echo "skipped: WAVE_SMOKE_API_KEY absent (fork or unset)"
             exit 0
           fi
           cd "$RUNNER_TEMP/verify"

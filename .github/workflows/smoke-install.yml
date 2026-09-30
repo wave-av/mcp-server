@@ -14,7 +14,11 @@ name: Smoke install
 #      repo secret and prints one row per tool. Every row must reach a served
 #      route (2xx, or 402 on a priced route), and every non-2xx must come back
 #      with isError: true.
-# Step 3 skips honestly when WAVE_GATEWAY_API_KEY is absent (forks, unset).
+# Step 3 authenticates the way a customer does: WAVE_SMOKE_API_KEY is a
+# customer-scoped wave_live_* key. It is never the gateway's internal key
+# (WAVE_GATEWAY_API_KEY), whose scopes a customer key does not have, so a
+# smoke run on it could pass where every customer fails.
+# Step 3 skips honestly when WAVE_SMOKE_API_KEY is absent (forks, unset).
 on:
   push:
     branches: [main]
@@ -77,10 +81,10 @@ jobs:
 
       - name: Live --all against api.wave.online (the 5 default gateway-backed tools)
         env:
-          WAVE_API_KEY: ${{ secrets.WAVE_GATEWAY_API_KEY }}
+          WAVE_API_KEY: ${{ secrets.WAVE_SMOKE_API_KEY }}
         run: |
           if [ -z "$WAVE_API_KEY" ]; then
-            echo "skipped: WAVE_GATEWAY_API_KEY absent (fork or unset)"
+            echo "skipped: WAVE_SMOKE_API_KEY absent (fork or unset)"
             exit 0
           fi
           cd "$RUNNER_TEMP/smoke"

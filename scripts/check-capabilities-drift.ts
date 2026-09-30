@@ -52,7 +52,17 @@ function fail(message: string): void {
   console.error(`FAIL: ${message}`);
 }
 
+function duplicates(names: string[]): string[] {
+  return [...new Set(names.filter((name, i) => names.indexOf(name) !== i))];
+}
+
 function compareSets(label: string, declared: string[], registered: string[]): void {
+  // Membership alone would pass ["wave.ask", "wave.ask"] against ["wave.ask"]: a manifest that
+  // lists a tool twice is not an exact list of what the registry registers.
+  const declaredTwice = duplicates(declared);
+  if (declaredTwice.length > 0) {
+    fail(`capabilities.json ${label} lists these tools more than once: ${declaredTwice.join(", ")}`);
+  }
   const declaredOnly = declared.filter((name) => !registered.includes(name));
   const registeredOnly = registered.filter((name) => !declared.includes(name));
   if (declaredOnly.length > 0 || registeredOnly.length > 0) {
@@ -62,6 +72,14 @@ function compareSets(label: string, declared: string[], registered: string[]): v
         `  in the registry but NOT declared: ${registeredOnly.length > 0 ? registeredOnly.join(", ") : "(none)"}`,
     );
   }
+}
+
+// 0. A tool is declared in exactly one of the two lists.
+const inBoth = (capabilities.exposes?.mcpTools ?? [])
+  .map((t) => t.name)
+  .filter((name) => (capabilities.exposes?.optInMcpTools ?? []).some((t) => t.name === name));
+if (inBoth.length > 0) {
+  fail(`capabilities.json declares these tools in both mcpTools and optInMcpTools: ${inBoth.join(", ")}`);
 }
 
 // 1. exposes.mcpTools === the public group.
