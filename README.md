@@ -148,20 +148,20 @@ Thin wrappers over the design-to-engineer pipeline's two standalone libraries
 (`@wave-av/pen-extract`, `@wave-av/loc-study`), stage E2 of
 `wave-pen-register`'s `designs/DESIGN-TO-ENGINEER-SYSTEM.md`. Neither library
 is published to npm yet, so each tool resolves its library from a sibling
-checkout, `$HOME`-first, with an env override, and is registered only when that
-root is a directory holding every file the tool runs. An empty directory, a regular file or a
-partial checkout registers nothing:
+checkout, `$HOME`-first, with an env override. Each tool is registered only when
+that root is a directory holding exactly the files that tool runs. An empty directory or a regular
+file registers nothing, and a partial checkout registers only the tools it can run:
 
 | Tool | Registered when | Description |
 | --- | --- | --- |
-| `wave_design_extract` | pen-extract resolves | Run pen-extract's `all` pipeline on a `.pen` board; returns the manifest (files, sha256s, owed) |
-| `wave_design_contract` | pen-extract resolves | Compose + validate a `design-contract.json` from an extract dir; returns the validator line and key counts |
-| `wave_design_contract_check` | pen-extract resolves | Validate an existing `design-contract.json`, no compose |
-| `wave_design_measure` | loc-study resolves | Run loc-study's `measure` on an image (masked by geometry) or a rasterized plate SVG |
+| `wave_design_extract` | CLI | Run pen-extract's `all` pipeline on a `.pen` board; returns the manifest (files, sha256s, owed) |
+| `wave_design_contract` | CLI + contract files | Compose + validate a `design-contract.json` from an extract dir; returns the validator line and key counts |
+| `wave_design_contract_check` | contract files | Validate an existing `design-contract.json`, no compose |
+| `wave_design_measure` | loc-study | Run loc-study's `measure` on an image (masked by geometry) or a rasterized plate SVG |
 
-"pen-extract resolves" means the root holds `src/cli.mjs` and `../../designs/contract/` holds
-`validate.mjs`, `design-contract.schema.json` and `acceptance-tests.json`. "loc-study resolves" means
-the root holds `bin/loc-study.mjs`.
+"CLI" means the pen-extract root holds `src/cli.mjs`. "Contract files" means the root's
+`../../designs/contract/` holds `validate.mjs`, `design-contract.schema.json` and
+`acceptance-tests.json`. "loc-study" means the loc-study root holds `bin/loc-study.mjs`.
 
 Every path argument (pen board, extract dir, image, contract file, etc.) is
 confined to `$HOME/wave-av` or the OS temp dir. A call outside those roots

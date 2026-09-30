@@ -45,6 +45,10 @@ anonymous call with `404 ROUTE_NOT_FOUND` and has no product spoke or gateway-na
 - `wave_voice_converse` reads `WAVE_INTERNAL_SECRET` and `WAVE_REALTIME_EDGE` when it is called,
   not when the module loads, so a tool registered because the secret is set can use it. A failed
   bind reports its HTTP status only, and the bind request refuses redirects.
+- `WAVE_REALTIME_EDGE` is validated like `WAVE_BASE_URL` (one shared check, `parseSecureOrigin` in
+  `src/auth.ts`): a bare `https://` origin, `http://` only for a loopback host, no path, query or
+  fragment. The bind carries the edge-internal secret, so a refused value fails the call with
+  `isError: true` before any request, and the error never echoes the configured value.
 - `buildServer()` and the startup log line use one group selection, computed once, so the log never
   describes a different tool set from the one registered.
 
@@ -62,8 +66,8 @@ anonymous call with `404 ROUTE_NOT_FOUND` and has no product spoke or gateway-na
 - `scripts/smoke-mcp.mjs` fails a run when a non-2xx result lacks `isError: true` (or a 2xx has
   it), when an unserved tool appears in a default `tools/list`, or on `ROUTE_NOT_FOUND`. `--all`
   now drives the 5 default gateway-backed tools; `--read-only` limits it to the 3 unbilled GETs.
-  Every row that does not pass fails `--all`, a 401 or 403 included, while a 402 or a validation
-  answer from a served route passes. The opt-in set it checks is read from `capabilities.json`. Its
+  Every row that does not pass fails `--all`, a 401, 403 or 429 included, while a 402 or a
+  validation answer from a served route passes. The opt-in set it checks is read from `capabilities.json`. Its
   output carries the status, the gateway's error code and a byte count, never a response body.
 - Bundled `knowledge/` snapshot refreshed to the 2026-09-28 measurement: `mcp-tools.json` 93→96,
   `products.json` 59→60, `skills.json` 179→180 (see `knowledge/SOURCES.md`).
@@ -80,9 +84,12 @@ anonymous call with `404 ROUTE_NOT_FOUND` and has no product spoke or gateway-na
 - `wave_voice_converse` is registered only when `WAVE_INTERNAL_SECRET` is set. It authenticates
   with the edge-internal secret, not a customer key, so it failed on every customer machine.
 - The four `wave_design_*` tools are registered only when their unpublished library is on disk
-  with every file they run (`WAVE_PEN_EXTRACT_ROOT` / `WAVE_LOC_STUDY_ROOT`, or the
-  `$HOME/wave-av/...` default). An empty directory, a regular file or a partial checkout registers
-  nothing. On a customer machine they failed with `@wave-av/pen-extract not found`.
+  (`WAVE_PEN_EXTRACT_ROOT` / `WAVE_LOC_STUDY_ROOT`, or the `$HOME/wave-av/...` default) with
+  exactly the files each one runs: `wave_design_extract` needs pen-extract's `src/cli.mjs`,
+  `wave_design_contract_check` the contract validator, schema and catalogue, and
+  `wave_design_contract` both. An empty directory or a regular file registers nothing; a partial
+  checkout registers only the tools it can run. On a customer machine they failed with
+  `@wave-av/pen-extract not found`.
 
 ### Added
 
