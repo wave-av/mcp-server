@@ -51,6 +51,8 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { classify } from "./smoke-classify.mjs";
+
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(SCRIPT_DIR, "..");
 const CAPABILITIES_PATH = join(REPO_ROOT, "capabilities.json");
@@ -152,80 +154,8 @@ function finish(code) {
   process.exit(code);
 }
 
-/** An identifier-shaped code (or problem-type URL) — safe to print; anything else is not. */
-const SAFE_CODE = /^[A-Za-z0-9_.:/-]{1,160}$/;
-
-/**
- * The gateway's error code from a JSON body — `error.code` (WAVE envelope), `type` (problem+json),
- * or "x402" for a payment-required challenge — or undefined. Never any other part of the body.
- */
-function errorCodeOf(json) {
-  if (json === null || typeof json !== "object") return undefined;
-  const candidates = [json.error?.code, json.code, json.type];
-  const code = candidates.find((c) => typeof c === "string" && SAFE_CODE.test(c));
-  if (code !== undefined) return code;
-  return json.x402Version !== undefined ? "x402" : undefined;
-}
-
-/**
- * Classify a tools/call result into a smoke-table row. Tool handlers return
- * either the raw passthrough JSON (success) or the "Error <status>: <body>"
- * text errorContent() produces (non-2xx), which since 0.4.0 MUST carry
- * `isError: true`.
- *
- *   reachedGateway — the answer is the gateway's own: a 2xx JSON document, or a
- *                    non-2xx JSON error envelope with a code. (Not an HTML page,
- *                    not a transport failure.)
- *   pass           — the tool WORKS for this key: reachedGateway, the isError
- *                    flag is right, and the status is 2xx, 402 (served and
- *                    priced), or a 4xx validation answer from a served route
- *                    (e.g. a 404 about the NIL_UUID resource). 401/403 mean this
- *                    key cannot use the tool; 429 means it cannot use it right
- *                    now (rate-limited, after the client's own retries);
- *                    ROUTE_NOT_FOUND/ROUTE_NOT_MAPPED mean nothing serves the
- *                    route; 5xx is an outage. All fail.
- */
-function classify(call) {
-  if (call.error) {
-    const code = typeof call.error.code === "number" ? call.error.code : "?";
-    return { status: "ERR", marker: `jsonrpc-error ${code}`, pass: false, reachedGateway: false };
-  }
-  const text = call.result?.content?.[0]?.text ?? "";
-  const isError = call.result?.isError === true;
-  const m = /^Error (\d+): ([\s\S]*)$/.exec(text);
-  const numStatus = m ? Number(m[1]) : 200;
-  const status = m ? m[1] : "2xx";
-  const body = m ? m[2] : text;
-  const bytes = Buffer.byteLength(body);
-
-  let json;
-  try {
-    json = JSON.parse(body);
-  } catch {
-    json = undefined;
-  }
-  const isJson = json !== undefined && json !== null && typeof json === "object";
-  // Only an ERROR envelope's code is read; a 2xx document is the caller's data and is never mined.
-  const code = m && isJson ? errorCodeOf(json) : undefined;
-  const isHtml = /<!DOCTYPE|<html/i.test(body);
-  const unservedRoute = code === "ROUTE_NOT_FOUND" || code === "ROUTE_NOT_MAPPED";
-  const errorFlagWrong = m ? !isError : isError;
-
-  const reachedGateway = !isHtml && (m ? isJson && code !== undefined : isJson);
-  // A 4xx from a served route is a validation answer, except the ones that say this key cannot use
-  // the tool: 401/403 (not allowed) and 429 (rate-limited — a green run must not hide that).
-  const keyCannotUse = numStatus === 401 || numStatus === 403 || numStatus === 429;
-  const servedAnswer =
-    !m || numStatus === 402 || (numStatus >= 400 && numStatus < 500 && !keyCannotUse && !unservedRoute);
-  const pass = reachedGateway && !errorFlagWrong && servedAnswer;
-
-  const marker = errorFlagWrong
-    ? `isError=${isError} on a ${status} result`
-    : isHtml
-      ? "HTML page"
-      : `${code ?? (isJson ? "json" : "non-json")} (${bytes} bytes)`;
-  return { status, marker, pass, reachedGateway };
-}
+// classify() and errorCodeOf() live in ./smoke-classify.mjs (pure, unit-tested by
+// src/smoke-classify.test.ts); this file only drives the server and prints rows.
 
 async function callTool(rows, name, route, args) {
   const call = await rpc("tools/call", { name, arguments: args });
@@ -355,6 +285,12 @@ try {
     // regression this smoke exists to catch.
     if (call.error) {
       console.error("FAIL tools/call returned a JSON-RPC error");
+      finish(1);
+    }
+    // The tool failed before any HTTP answer existed (e.g. WAVE_API_KEY unset): say so, rather than
+    // the generic "does not show a gateway response" below.
+    if (c.status === "none") {
+      console.error(`FAIL tools/call ${toolName}: ${c.marker}`);
       finish(1);
     }
     if (c.marker.startsWith("isError=")) {

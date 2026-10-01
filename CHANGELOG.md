@@ -63,8 +63,11 @@ anonymous call with `404 ROUTE_NOT_FOUND` and has no product spoke or gateway-na
 - `capabilities.json` lists the 7 default tools in `exposes.mcpTools` and the 18 opt-in tools in
   `exposes.optInMcpTools` with their group and registration condition (its `version` was stuck at
   0.1.5). `scripts/check-capabilities-drift.ts` checks both lists against the registry.
-- `scripts/smoke-mcp.mjs` fails a run when a non-2xx result lacks `isError: true` (or a 2xx has
-  it), when an unserved tool appears in a default `tools/list`, or on `ROUTE_NOT_FOUND`. `--all`
+- `scripts/smoke-mcp.mjs` fails a run when a non-2xx result lacks `isError: true`, when an
+  unserved tool appears in a default `tools/list`, or on `ROUTE_NOT_FOUND`. A tool that fails before
+  any HTTP answer exists (for example with `WAVE_API_KEY` unset) is reported with status `none` and
+  fails the run; it is no longer printed as a 2xx. Row classification lives in
+  `scripts/smoke-classify.mjs` and is tested by `src/smoke-classify.test.ts`. `--all`
   now drives the 5 default gateway-backed tools; `--read-only` limits it to the 3 unbilled GETs.
   Every row that does not pass fails `--all`, a 401, 403 or 429 included, while a 402 or a
   validation answer from a served route passes. The opt-in set it checks is read from `capabilities.json`. Its
