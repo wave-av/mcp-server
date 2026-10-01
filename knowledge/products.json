@@ -50,7 +50,7 @@
       "name": "MoQ",
       "url": "https://moq.wave.online",
       "accent": "#00d4d5",
-      "status": "preview",
+      "status": "live",
       "blurb": "Media-over-QUIC low-latency transport edge",
       "cta": [
         "Stream over QUIC with sub-second latency",
@@ -86,7 +86,7 @@
       "name": "Dante",
       "url": "https://dante.wave.online",
       "accent": "#00d1e8",
-      "status": "preview",
+      "status": "live",
       "blurb": "Dante audio-over-IP transport",
       "cta": [
         "Move Dante audio over IP",
@@ -122,7 +122,7 @@
       "name": "Pulse",
       "url": "https://pulse.wave.online",
       "accent": "#81ce70",
-      "status": "preview",
+      "status": "live",
       "blurb": "real-time stream analytics",
       "cta": [
         "Watch your stream in real time",
@@ -147,7 +147,7 @@
       "name": "Voice",
       "url": "https://voice.wave.online",
       "accent": "#ff9858",
-      "status": "preview",
+      "status": "live",
       "blurb": "real-time and batch voice \u2014 transcription, synthesis, and voice cloning",
       "cta": [
         "Add real-time speech to your app",
@@ -159,7 +159,7 @@
       "name": "Captions",
       "url": "https://captions.wave.online",
       "accent": "#c579be",
-      "status": "preview",
+      "status": "live",
       "blurb": "live and on-demand captions \u2014 multi-language, broadcast-grade",
       "cta": [
         "Caption any stream live",
@@ -171,7 +171,7 @@
       "name": "Chapters",
       "url": "https://chapters.wave.online",
       "accent": "#df97f5",
-      "status": "preview",
+      "status": "live",
       "blurb": "auto-chaptering for any recording \u2014 segments, titles, and timestamps",
       "cta": [
         "Auto-chapter any recording",
@@ -231,7 +231,7 @@
       "name": "Transcribe",
       "url": "https://transcribe.wave.online",
       "accent": "#59d38c",
-      "status": "preview",
+      "status": "live",
       "blurb": "fast, accurate transcription \u2014 streaming and batch, any language",
       "cta": [
         "Transcribe streaming or batch audio",
@@ -255,7 +255,7 @@
       "name": "Search",
       "url": "https://search.wave.online",
       "accent": "#549de5",
-      "status": "preview",
+      "status": "live",
       "blurb": "semantic search across your media \u2014 transcripts, scenes, and clips",
       "cta": [
         "Search across your media",
@@ -267,7 +267,7 @@
       "name": "Acuity",
       "url": "https://acuity.wave.online",
       "accent": "#3fe6c0",
-      "status": "preview",
+      "status": "live",
       "blurb": "regression watchtower \u2014 catch a fix that made things worse before it ships",
       "cta": [
         "Watch a fix for regressions",
@@ -359,6 +359,18 @@
       ]
     },
     {
+      "id": "composer",
+      "name": "Composer",
+      "url": "https://api.wave.online/v1/compose",
+      "accent": "#bfce52",
+      "status": "preview",
+      "blurb": "describe a media outcome and get back a typed, priced plan across WAVE products",
+      "cta": [
+        "Turn an intent into a priced plan",
+        "Compose products into one pipeline"
+      ]
+    },
+    {
       "id": "crest",
       "name": "Crest",
       "url": "https://crest.wave.online",
@@ -375,7 +387,7 @@
       "name": "Decode",
       "url": "https://decode.wave.online",
       "accent": "#ec8b3b",
-      "status": "preview",
+      "status": "live",
       "blurb": "decode any input format to raw frames at the edge",
       "cta": [
         "Decode a source to frames",
@@ -423,7 +435,7 @@
       "name": "Encode",
       "url": "https://encode.wave.online",
       "accent": "#e2b53e",
-      "status": "preview",
+      "status": "live",
       "blurb": "encode to any delivery format \u2014 ladders, codecs, and packaging",
       "cta": [
         "Encode a rendition ladder",
@@ -447,7 +459,7 @@
       "name": "Enhance",
       "url": "https://enhance.wave.online",
       "accent": "#f2613c",
-      "status": "preview",
+      "status": "live",
       "blurb": "restore and upscale media \u2014 denoise, sharpen, and clean up",
       "cta": [
         "Upscale a source clip",
@@ -531,7 +543,7 @@
       "name": "Mesh",
       "url": "https://mesh.wave.online",
       "accent": "#e3af3e",
-      "status": "preview",
+      "status": "live",
       "blurb": "multi-region delivery mesh for live media",
       "cta": [
         "Deliver across regions",
@@ -603,7 +615,7 @@
       "name": "Sandbox",
       "url": "https://sandbox.wave.online",
       "accent": "#f2633c",
-      "status": "preview",
+      "status": "live",
       "blurb": "try WAVE against throwaway keys and sample media",
       "cta": [
         "Try the API with no commitment",
@@ -651,7 +663,7 @@
       "name": "Transcode",
       "url": "https://transcode.wave.online",
       "accent": "#23d1e3",
-      "status": "preview",
+      "status": "live",
       "blurb": "format-to-format conversion at the edge",
       "cta": [
         "Transcode a file by API",
@@ -687,7 +699,7 @@
       "name": "Visual QA",
       "url": "https://visual-qa.wave.online",
       "accent": "#62d38b",
-      "status": "preview",
+      "status": "live",
       "blurb": "automated visual checks on rendered output",
       "cta": [
         "Check a render for defects",
@@ -711,7 +723,7 @@
       "name": "Zoom",
       "url": "https://zoom.wave.online",
       "accent": "#f15c3e",
-      "status": "preview",
+      "status": "live",
       "blurb": "bring Zoom sessions into WAVE for recording and processing",
       "cta": [
         "Pull a Zoom session into WAVE",

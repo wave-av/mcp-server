@@ -25,117 +25,117 @@
   "capabilities": [
     {
       "id": "wave_list_streams",
-      "does": "List all streams in the WAVE account with pagination and status filtering.",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve GET /v1/streams today. List streams with pagination and status filtering.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_create_stream",
-      "does": "Create a new stream (protocol, recording, region options).",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve POST /v1/streams today. Create a new stream (protocol, recording, privacy).",
+      "status": "scaffolded"
     },
     {
       "id": "wave_start_stream",
-      "does": "Start a stream by ID, transitioning it to the active state.",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve POST /v1/streams/{id}/start today. Start a stream by ID.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_stop_stream",
-      "does": "Stop an active stream by ID.",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve POST /v1/streams/{id}/stop today. Stop an active stream by ID.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_get_stream_health",
-      "does": "Get real-time stream health metrics (bitrate, frame rate, latency).",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve GET /v1/streams/{id}/status today. Get a stream's current status document.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_list_productions",
-      "does": "List all studio productions in the WAVE account.",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve GET /v1/productions today. List multi-camera productions.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_create_production",
-      "does": "Create a new multi-camera studio production.",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve POST /v1/productions today. Create a new multi-camera production.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_get_viewers",
-      "does": "Get current viewer count and viewer demographics for a stream or account-wide.",
+      "does": "Get account-wide viewer engagement analytics over a date range (GET /v1/analytics/engagement).",
       "status": "preview"
     },
     {
       "id": "wave_get_stream_metrics",
-      "does": "Get detailed stream performance metrics (bitrate, latency, quality, error rates).",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve GET /v1/streams/{id}/analytics today. Get analytics for one stream over a date range.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_get_subscription",
-      "does": "Get current subscription plan, billing cycle, and feature entitlements.",
+      "does": "Get the current billing account: plan and subscription state (GET /v1/billing).",
       "status": "preview"
     },
     {
       "id": "wave_get_usage",
-      "does": "Get current billing-period usage (streaming minutes, storage, bandwidth).",
+      "does": "Get billed usage for a date range (GET /v1/billing/usage).",
       "status": "preview"
     },
     {
       "id": "wave_switch_camera",
-      "does": "Switch the live program output to a different camera/source in a Cloud Switcher session.",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve POST /v1/productions/{id}/camera today. Switch the program or preview bus to a camera index.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_create_clip",
-      "does": "Create a clip from a recorded stream, optionally exporting to social platforms.",
+      "does": "Create a clip from a recording (POST /v1/clips, priced).",
       "status": "preview"
     },
     {
       "id": "wave_show_graphic",
-      "does": "Show, hide, or update an HTML5 graphics overlay on a production.",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve POST /v1/productions/{id}/overlay today. Show or hide a graphics overlay in a production.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_control_camera",
-      "does": "Control a PTZ camera (pan, tilt, zoom, focus, preset recall/store).",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve POST /v1/cameras/{id}/control today. Send a control command to a managed camera.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_moderate_chat",
-      "does": "Moderate a chat message in a live stream (block, flag, or allow).",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); wave-gateway has no handler for POST /v1/moderate today. Moderate a chat message in a live stream (block, flag, or allow).",
+      "status": "scaffolded"
     },
     {
       "id": "wave_start_captions",
-      "does": "Start real-time captions/transcription on a stream.",
+      "does": "Transcribe one audio clip through the live pipeline and optionally run a fast-LLM step over the transcript (POST /v1/live/pipeline, priced).",
       "status": "preview"
     },
     {
       "id": "wave_mark_highlight",
-      "does": "Mark a moment in a stream as a highlight for later clipping.",
-      "status": "preview"
+      "does": "Opt-in (WAVE_MCP_EXPERIMENTAL=1); api.wave.online does not serve POST /v1/streams/{id}/highlights today. Mark a moment in a stream as a highlight.",
+      "status": "scaffolded"
     },
     {
       "id": "wave_voice_converse",
-      "does": "Drive a full headless conversation with the WAVE voice agent (WAV in, PCM reply out, no browser/WebRTC).",
+      "does": "WAVE-internal, registered only when WAVE_INTERNAL_SECRET is set. Drive a full headless conversation with the WAVE voice agent (WAV in, PCM reply out, no browser/WebRTC).",
       "status": "preview"
     },
     {
       "id": "wave_design_extract",
-      "does": "Run @wave-av/pen-extract's `all` pipeline on a .pen board; returns the manifest (files, sha256s, owed).",
+      "does": "WAVE-internal, registered only when @wave-av/pen-extract resolves on disk. Run its `all` pipeline on a .pen board; returns the manifest (files, sha256s, owed).",
       "status": "preview"
     },
     {
       "id": "wave_design_contract",
-      "does": "Compose and validate a design-contract.json from an extract dir; returns the validator line and key counts.",
+      "does": "WAVE-internal, registered only when @wave-av/pen-extract resolves on disk. Compose and validate a design-contract.json from an extract dir; returns the validator line and key counts.",
       "status": "preview"
     },
     {
       "id": "wave_design_measure",
-      "does": "Run @wave-av/loc-study's `measure` on an image (masked by geometry) or a rasterized plate SVG.",
+      "does": "WAVE-internal, registered only when @wave-av/loc-study resolves on disk. Run its `measure` on an image (masked by geometry) or a rasterized plate SVG.",
       "status": "preview"
     },
     {
       "id": "wave_design_contract_check",
-      "does": "Validate an existing design-contract.json against the schema and acceptance-tests catalogue, no compose.",
+      "does": "WAVE-internal, registered only when @wave-av/pen-extract resolves on disk. Validate an existing design-contract.json against the schema and acceptance-tests catalogue, no compose.",
       "status": "preview"
     },
     {
@@ -152,11 +152,11 @@
   "claims": [
     {
       "id": "claim-tool-count",
-      "text": "Exposes 25 MCP tools",
+      "text": "Exposes 7 MCP tools by default (18 more are opt-in, listed in capabilities.json optInMcpTools)",
       "resolver": {
         "type": "grep",
         "target": "capabilities.json",
-        "expect": "25-tools"
+        "expect": "7-tools"
       }
     },
     {
@@ -260,10 +260,10 @@
     },
     {
       "id": "claim-tool-stream-metrics",
-      "text": "wave_get_stream_metrics tool defined in src/tools/analytics.ts",
+      "text": "wave_get_stream_metrics tool defined in src/tools/streams.ts",
       "resolver": {
         "type": "grep",
-        "target": "src/tools/analytics.ts",
+        "target": "src/tools/streams.ts",
         "expect": "wave_get_stream_metrics"
       }
     },
@@ -341,10 +341,10 @@
     },
     {
       "id": "claim-tool-mark-highlight",
-      "text": "wave_mark_highlight tool defined in src/tools/production.ts",
+      "text": "wave_mark_highlight tool defined in src/tools/streams.ts",
       "resolver": {
         "type": "grep",
-        "target": "src/tools/production.ts",
+        "target": "src/tools/streams.ts",
         "expect": "wave_mark_highlight"
       }
     },
@@ -434,107 +434,66 @@
       "body": "### 1. Get an API key\n\n```bash\n# Via CLI\nwave auth login\n\n# Or create at https://console.wave.online/dashboard#keys\n```\n\n### 2. Configure your AI tool\n\nAdd to your `.mcp.json` (Claude Code, Cursor, Windsurf, etc.) \u2014 see the Quick start config above."
     },
     {
-      "kind": "table",
-      "heading": "Available tools \u2014 Streams",
-      "columns": [
-        "Tool",
-        "Description"
-      ],
-      "rows": [
-        [
-          "`wave_list_streams`",
-          "List all streams with pagination and status filtering"
-        ],
-        [
-          "`wave_create_stream`",
-          "Create a new stream with protocol and privacy options"
-        ],
-        [
-          "`wave_start_stream`",
-          "Start streaming on an existing stream"
-        ],
-        [
-          "`wave_stop_stream`",
-          "Stop an active stream"
-        ],
-        [
-          "`wave_get_stream_health`",
-          "Get real-time health metrics for a stream"
-        ]
-      ]
+      "kind": "prose",
+      "heading": "Tools",
+      "body": "With `WAVE_API_KEY` set and nothing else, `tools/list` returns **7 tools**. Each one calls a route `https://api.wave.online` serves, or proposes without calling anything. Other tools are registered only when their condition holds (see Opt-in tools).\n\nA tool call that the WAVE API answers with a non-2xx status comes back with `isError: true` and the text `Error <status>: <body>`. Treat it as a failed call, not as output. (Through 0.3.0 these came back as ordinary results.)"
     },
     {
       "kind": "table",
-      "heading": "Available tools \u2014 Studio",
+      "heading": "Analytics and billing",
       "columns": [
         "Tool",
-        "Description"
-      ],
-      "rows": [
-        [
-          "`wave_list_productions`",
-          "List studio production sessions"
-        ],
-        [
-          "`wave_create_production`",
-          "Create a new multi-camera production"
-        ]
-      ]
-    },
-    {
-      "kind": "table",
-      "heading": "Available tools \u2014 Analytics",
-      "columns": [
-        "Tool",
+        "Route",
         "Description"
       ],
       "rows": [
         [
           "`wave_get_viewers`",
-          "Get current viewer count and breakdown"
+          "`GET /v1/analytics/engagement`",
+          "Account-wide viewer engagement analytics over a date range"
         ],
         [
-          "`wave_get_stream_metrics`",
-          "Get detailed stream performance metrics"
-        ]
-      ]
-    },
-    {
-      "kind": "table",
-      "heading": "Available tools \u2014 Billing",
-      "columns": [
-        "Tool",
-        "Description"
-      ],
-      "rows": [
-        [
           "`wave_get_subscription`",
-          "Get current subscription plan and status"
+          "`GET /v1/billing`",
+          "The current billing account (plan, subscription state)"
         ],
         [
           "`wave_get_usage`",
-          "Get current period usage and limits"
+          "`GET /v1/billing/usage`",
+          "Billed usage for a date range"
         ]
       ]
     },
     {
       "kind": "table",
-      "heading": "Available tools \u2014 Voice",
+      "heading": "Media",
       "columns": [
         "Tool",
+        "Route",
         "Description"
       ],
       "rows": [
         [
-          "`wave_voice_converse`",
-          "Drive a full headless conversation with the WAVE voice agent: bind to a room, send a WAV of the caller's speech, receive the reply as raw PCM. No browser, no WebRTC. Requires WAVE_INTERNAL_SECRET."
+          "`wave_create_clip`",
+          "`POST /v1/clips`",
+          "Create a clip from a recording. Priced: expect a 402 (x402 challenge or spend cap) until the account can pay."
+        ],
+        [
+          "`wave_start_captions`",
+          "`POST /v1/live/pipeline`",
+          "Transcribe one audio clip (multipart) and optionally run a fast-LLM step over the transcript. Priced."
         ]
       ]
     },
     {
       "kind": "prose",
-      "heading": "Design tools",
-      "body": "Thin wrappers over the design-to-engineer pipeline's two standalone libraries (`@wave-av/pen-extract`, `@wave-av/loc-study`). Neither library is published to npm yet, so each tool resolves its library from a sibling checkout, $HOME-first, with an env override. Every path argument is confined to `$HOME/wave-av` or the OS temp dir — a call outside those roots is rejected before anything runs."
+      "heading": "Opt-in tools",
+      "body": "18 more tools ship in the package but are registered only when their condition holds. The server logs which opt-in groups are live on startup (group names and counts only, never a value). `capabilities.json` lists every one under `exposes.optInMcpTools`.\n\n- **`WAVE_MCP_EXPERIMENTAL=1`**: the 13 tools whose routes `https://api.wave.online` does not serve today (measured 2026-09-28: 404 ROUTE_NOT_FOUND): `wave_list_streams`, `wave_create_stream`, `wave_start_stream`, `wave_stop_stream`, `wave_get_stream_health`, `wave_get_stream_metrics`, `wave_mark_highlight`, `wave_list_productions`, `wave_create_production`, `wave_switch_camera`, `wave_show_graphic`, `wave_control_camera`, `wave_moderate_chat`. The same flag registers the `wave://streams/{id}` and `wave://productions/{id}` resource templates, which read the same unserved families. Without it the server registers no resources.\n- **`WAVE_INTERNAL_SECRET` is set**: `wave_voice_converse` (WAVE-internal edge auth, not a customer key).\n- **The unpublished design library resolves on disk** (`WAVE_PEN_EXTRACT_ROOT` / `WAVE_LOC_STUDY_ROOT`, or the `$HOME/wave-av/...` default): `wave_design_extract`, `wave_design_contract`, `wave_design_contract_check`, `wave_design_measure`."
+    },
+    {
+      "kind": "prose",
+      "heading": "Design tools (opt-in, WAVE-internal)",
+      "body": "Thin wrappers over the design-to-engineer pipeline's two standalone libraries (`@wave-av/pen-extract`, `@wave-av/loc-study`). Neither library is published to npm yet, so each tool resolves its library from a sibling checkout, $HOME-first, with an env override, and is registered only when that directory exists. A result with `ok: false` comes back with `isError: true`. Every path argument is confined to `$HOME/wave-av` or the OS temp dir — a call outside those roots is rejected before anything runs."
     },
     {
       "kind": "table",
@@ -564,8 +523,8 @@
     },
     {
       "kind": "prose",
-      "heading": "Resources",
-      "body": "Access WAVE entities directly via the `wave://` URI scheme:\n\n- `wave://streams/{id}` - Stream configuration and status\n- `wave://productions/{id}` - Studio production details"
+      "heading": "Resources (opt-in)",
+      "body": "With `WAVE_MCP_EXPERIMENTAL=1` the server registers two resource templates (`resources/templates/list`), which read the same families the unserved-route tools call:\n\n- `wave://streams/{id}` - `GET /v1/streams/{id}`\n- `wave://productions/{id}` - `GET /v1/productions/{id}`\n\nA non-2xx answer on `resources/read` is a JSON-RPC error, never an `Error 404` resource body. Without the flag the server registers no resources and does not advertise the resources capability."
     },
     {
       "kind": "table",
@@ -581,20 +540,38 @@
           "`WAVE_API_KEY`",
           "Yes",
           "-",
-          "Your WAVE API key"
+          "Your WAVE API key (`wave_live_...`)"
         ],
         [
           "`WAVE_BASE_URL`",
           "No",
           "`https://api.wave.online`",
           "API origin. Tool paths are `/v1/*` on the WAVE gateway."
+        ],
+        [
+          "`WAVE_MCP_EXPERIMENTAL`",
+          "No",
+          "unset",
+          "`1` or `true` registers the unserved-route tools and the `wave://` resources"
+        ],
+        [
+          "`WAVE_INTERNAL_SECRET`",
+          "No",
+          "unset",
+          "Registers `wave_voice_converse` (WAVE-internal)"
+        ],
+        [
+          "`WAVE_PEN_EXTRACT_ROOT` / `WAVE_LOC_STUDY_ROOT`",
+          "No",
+          "`$HOME/wave-av/...`",
+          "Register the design tools (WAVE-internal)"
         ]
       ]
     },
     {
       "kind": "prose",
       "heading": "In-process (Claude Agent SDK) mode",
-      "body": "For consumers already running inside a [Claude Agent SDK](https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk)\nsession, the same tools are available in-process \u2014 skipping the stdio subprocess\nhop (~50 ms vs ~500 ms cold start). The tool list is shared with the stdio\nserver (`src/tools/index.ts`), so the two transports never drift.\n\n`@anthropic-ai/claude-agent-sdk` is an **optional peer dependency**: stdio users\nnever need it. Install it only for this mode:\n\n```bash\nnpm install @wave-av/mcp-server @anthropic-ai/claude-agent-sdk\n```\n\n```ts\nimport { query } from \"@anthropic-ai/claude-agent-sdk\";\nimport { createWaveSdkMcpServer } from \"@wave-av/mcp-server/sdk-server\";\n\nconst wave = await createWaveSdkMcpServer();\nfor await (const message of query({\n  prompt: \"List my active streams\",\n  options: { mcpServers: { wave }, env: { WAVE_API_KEY: process.env.WAVE_API_KEY } },\n})) {\n  // handle messages\n}\n```"
+      "body": "For consumers already running inside a [Claude Agent SDK](https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk)\nsession, the same tools are available in-process \u2014 skipping the stdio subprocess\nhop (~50 ms vs ~500 ms cold start). The tool list is shared with the stdio\nserver (`src/tools/index.ts`), so the two transports never drift.\n\n`@anthropic-ai/claude-agent-sdk` is an **optional peer dependency**: stdio users\nnever need it. Install it only for this mode:\n\n```bash\nnpm install @wave-av/mcp-server @anthropic-ai/claude-agent-sdk\n```\n\n```ts\nimport { query } from \"@anthropic-ai/claude-agent-sdk\";\nimport { createWaveSdkMcpServer } from \"@wave-av/mcp-server/sdk-server\";\n\nconst wave = await createWaveSdkMcpServer();\nfor await (const message of query({\n  prompt: \"How much have I been billed this month?\",\n  options: { mcpServers: { wave }, env: { WAVE_API_KEY: process.env.WAVE_API_KEY } },\n})) {\n  // handle messages\n}\n```"
     },
     {
       "kind": "prose",

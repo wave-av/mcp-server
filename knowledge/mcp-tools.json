@@ -13,7 +13,7 @@
     "x402": "https://api.wave.online/.well-known/x402"
   },
   "vocabulary": "https://api.wave.online/.well-known/mcp-vocabulary.json",
-  "toolCount": 93,
+  "toolCount": 96,
   "tools": [
     {
       "name": "facilitator_status",
@@ -3377,6 +3377,150 @@
           }
         },
         "additionalProperties": false
+      }
+    },
+    {
+      "name": "wave_create_compose_proposal",
+      "description": "Compose a plan from a plain-language intent (POST /v1/compose. Requires the `composer:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/ComposeProposalCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "ComposeProposalCreate": {
+            "type": "object",
+            "description": "POST /v1/compose request body. Validated by parseComposeRequest (compose-route.ts).",
+            "required": [
+              "intent"
+            ],
+            "properties": {
+              "intent": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 280,
+                "description": "What the caller wants composed, in plain language. Sanitized and capped server side."
+              },
+              "budgetUsd": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Optional ceiling in USD. A proposal whose minimum total exceeds it is refused at run time."
+              },
+              "flowId": {
+                "type": "string",
+                "pattern": "^flw_[A-Za-z0-9_-]{4,64}$",
+                "description": "Optional id of an existing flow this proposal belongs to."
+              },
+              "context": {
+                "type": "object",
+                "description": "Optional retrieval hints. Ordering only: nothing here is rendered, logged or sent to a model.",
+                "properties": {
+                  "referer": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "wave_get_compose_proposal",
+      "description": "Read a stored proposal by id (GET /v1/compose/proposals/{proposalId}. Requires the `composer:read` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "proposal_id": {
+            "type": "string",
+            "pattern": "^prp_[A-Za-z0-9_-]+$"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "proposal_id"
+        ]
+      }
+    },
+    {
+      "name": "wave_run_compose_proposal",
+      "description": "Run a stored proposal once (POST /v1/compose/run. Requires the `composer:write` scope on your WAVE API key. Billed and authorized exactly as the HTTP route: this tool re-enters the same gateway pipeline, so scope, metering and x402 apply unchanged.)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/$defs/ComposeRunCreate"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "$defs": {
+          "ComposeRunCreate": {
+            "type": "object",
+            "description": "POST /v1/compose/run request body. Validated by parseRunRequest (compose-run-lib.ts).",
+            "required": [
+              "proposalId",
+              "input"
+            ],
+            "properties": {
+              "proposalId": {
+                "type": "string",
+                "pattern": "^prp_[A-Za-z0-9_-]+$",
+                "description": "A proposal the calling org owns."
+              },
+              "input": {
+                "$ref": "#/$defs/ComposeRunInput"
+              },
+              "budgetUsd": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Ceiling in USD for this run. Exceeded means 402, not a partial run."
+              },
+              "idempotencyKey": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.:-]{8,200}$",
+                "description": "Replay guard. The same key with a different input is a 409 COMPOSE_RUN_CONFLICT, never a second run."
+              }
+            }
+          },
+          "ComposeRunInput": {
+            "type": "object",
+            "description": "The caller's own input into stage 0. EXACTLY ONE of `url` or `uploadId`. `url` is validated (https only, no userinfo credentials, no private or metadata host) and hashed. It is never dereferenced, echoed or logged.",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "maxLength": 2048,
+                "description": "An https URL naming a public host."
+              },
+              "uploadId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{8,128}$"
+              }
+            },
+            "oneOf": [
+              {
+                "required": [
+                  "url"
+                ]
+              },
+              {
+                "required": [
+                  "uploadId"
+                ]
+              }
+            ]
+          }
+        }
       }
     }
   ]

@@ -1,13 +1,14 @@
 {
   "artifact": "products.json",
-  "fetchedAt": "2026-09-06T03:52:45Z",
+  "fetchedAt": "2026-09-28T22:30:00Z",
   "url": "https://api.wave.online/.well-known/wave-products.json",
-  "command": "curl -sS https://api.wave.online/.well-known/wave-products.json",
-  "sha256": "3cb3ece3baf9da22b26216d3b543d3a805111be64303f43b4ca10552ef649709",
+  "command": "curl -sS https://api.wave.online/.well-known/wave-products.json   # re-serialized with json.dumps(indent=2, ensure_ascii=True) + newline",
+  "sha256": "731276191cd2c83d00b35acbe787a165fb902fb58f79382284f30ff2df4c0d0c",
+  "rawResponseSha256": "42df6ad64462253323c991b8cb02a585e4d8bc6295c665ec9e2f14e63e6433e1",
   "counts": {
-    "total": 59,
-    "live": 9,
-    "preview": 50
+    "total": 60,
+    "live": 26,
+    "preview": 34
   },
-  "note": "Re-fetched 2026-09-06; 6 new preview products since the 2026-09-05T23:06:00Z snapshot: acuity, badge, codec, email, gpu, interchange (all status: preview; live count unchanged at 9). No products removed."
+  "note": "Re-fetched 2026-09-28; 1 new product since the 2026-09-06T03:52:45Z snapshot: composer. No products removed. 17 products moved preview -> live (live 9 -> 26)."
 }

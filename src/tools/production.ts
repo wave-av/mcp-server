@@ -2,33 +2,8 @@ import { z } from "zod";
 import { getAuthHeaders, getBaseUrl } from "../auth.js";
 import { defineTool, errorContent, textContent, waveFetch, type WaveToolDef } from "./shared.js";
 
+// Served routes: POST /v1/clips (a product spoke) and POST /v1/live/pipeline. Registered by default.
 export const productionTools: WaveToolDef[] = [
-  defineTool({
-    name: "wave_switch_camera",
-    description:
-      "Switch the program or preview bus to a different camera index in a multi-camera production (POST /v1/productions/{id}/camera)",
-    inputSchema: {
-      production_id: z.string().uuid().describe("The production ID"),
-      camera_index: z.number().int().min(0).max(15).describe("Camera index to switch to (0-15)"),
-      bus: z.enum(["program", "preview"]).describe("Which bus to switch"),
-      transition: z
-        .enum(["cut", "dissolve", "wipe", "fade"])
-        .optional()
-        .describe("Transition type (default: cut)"),
-    },
-    handler: async ({ production_id, camera_index, bus, transition }) => {
-      const payload: Record<string, unknown> = { cameraIndex: camera_index, bus };
-      if (transition !== undefined) payload["transition"] = transition;
-
-      const res = await waveFetch(`/v1/productions/${encodeURIComponent(production_id)}/camera`, {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) return errorContent(res.status, res.body);
-      return textContent(res.body);
-    },
-  }),
-
   defineTool({
     name: "wave_create_clip",
     description:
@@ -95,6 +70,104 @@ export const productionTools: WaveToolDef[] = [
       if (spritesheet_frames !== undefined) payload["spritesheetFrames"] = spritesheet_frames;
 
       const res = await waveFetch("/v1/clips", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) return errorContent(res.status, res.body);
+      return textContent(res.body);
+    },
+  }),
+
+  defineTool({
+    name: "wave_start_captions",
+    description:
+      "Transcribe an audio clip and optionally run a fast-LLM step over the transcript (POST /v1/live/pipeline, multipart). This processes ONE provided audio chunk through WAVE's live pipeline — it does not attach a persistent caption feed to a live stream. Requires the account's live pipeline feature to be enabled; a 404 means it is not armed for this account",
+    inputSchema: {
+      audio_base64: z.string().min(1).describe("Base64-encoded audio bytes to transcribe (max 25MB decoded)"),
+      filename: z.string().optional().describe('Filename hint for the audio (default: "audio.wav")'),
+      stream_id: z
+        .string()
+        // The charset the description promises, enforced here rather than left to the gateway.
+        .regex(/^[A-Za-z0-9._:-]{1,128}$/)
+        .optional()
+        .describe("Client correlation ID for this stream/session (letters, digits, . _ : -, 1-128 chars)"),
+      language: z.string().optional().describe("ISO 639 language hint for transcription (transcribe task only)"),
+      task: z.enum(["transcribe", "translate"]).optional().describe("Caption task (default: transcribe)"),
+      model: z
+        .enum(["whisper-large-v3-turbo", "whisper-large-v3"])
+        .optional()
+        .describe("Transcription model (default: whisper-large-v3-turbo; translate forces whisper-large-v3)"),
+      mode: z
+        .enum(["summarize", "moderate", "translate", "custom"])
+        .optional()
+        .describe("Fast-LLM step to run over the transcript (default: summarize)"),
+      instruction: z.string().max(500).optional().describe("Custom instruction for mode=custom"),
+      llm_model: z.string().min(1).describe("Fast LLM model ID to run the pipeline step"),
+      max_tokens: z.number().int().min(1).max(4096).optional().describe("Max tokens for the LLM step (default: 256)"),
+    },
+    handler: async ({
+      audio_base64,
+      filename,
+      stream_id,
+      language,
+      task,
+      model,
+      mode,
+      instruction,
+      llm_model,
+      max_tokens,
+    }) => {
+      const bytes = Buffer.from(audio_base64, "base64");
+      const form = new FormData();
+      form.set("file", new Blob([bytes]), filename ?? "audio.wav");
+      if (stream_id !== undefined) form.set("stream_id", stream_id);
+      if (language !== undefined) form.set("language", language);
+      if (task !== undefined) form.set("task", task);
+      if (model !== undefined) form.set("model", model);
+      if (mode !== undefined) form.set("mode", mode);
+      if (instruction !== undefined) form.set("instruction", instruction);
+      form.set("llm_model", llm_model);
+      if (max_tokens !== undefined) form.set("max_tokens", String(max_tokens));
+
+      const headers = getAuthHeaders();
+      delete (headers as Record<string, string>)["Content-Type"];
+
+      const res = await fetch(`${getBaseUrl()}/v1/live/pipeline`, {
+        method: "POST",
+        headers,
+        body: form,
+      });
+      const body = await res.text();
+      if (!res.ok) return errorContent(res.status, body);
+      return textContent(body);
+    },
+  }),
+];
+
+// UNSERVED routes. POST /v1/productions/{id}/camera, /v1/productions/{id}/overlay and
+// /v1/cameras/{id}/control belong to families the gateway's own ledger lists as advertised with no
+// destination (wave-gateway src/unserved-advertised-paths.ts, GA-CONTRACT-001), and POST /v1/moderate
+// has no product spoke and no gateway-native handler either. All four answer 404 ROUTE_NOT_FOUND on
+// api.wave.online, so ./index.ts registers them only when WAVE_MCP_EXPERIMENTAL=1.
+export const unservedProductionTools: WaveToolDef[] = [
+  defineTool({
+    name: "wave_switch_camera",
+    description:
+      "Switch the program or preview bus to a different camera index in a multi-camera production (POST /v1/productions/{id}/camera)",
+    inputSchema: {
+      production_id: z.string().uuid().describe("The production ID"),
+      camera_index: z.number().int().min(0).max(15).describe("Camera index to switch to (0-15)"),
+      bus: z.enum(["program", "preview"]).describe("Which bus to switch"),
+      transition: z
+        .enum(["cut", "dissolve", "wipe", "fade"])
+        .optional()
+        .describe("Transition type (default: cut)"),
+    },
+    handler: async ({ production_id, camera_index, bus, transition }) => {
+      const payload: Record<string, unknown> = { cameraIndex: camera_index, bus };
+      if (transition !== undefined) payload["transition"] = transition;
+
+      const res = await waveFetch(`/v1/productions/${encodeURIComponent(production_id)}/camera`, {
         method: "POST",
         body: JSON.stringify(payload),
       });
@@ -195,70 +268,6 @@ export const productionTools: WaveToolDef[] = [
       });
       if (!res.ok) return errorContent(res.status, res.body);
       return textContent(res.body);
-    },
-  }),
-
-  defineTool({
-    name: "wave_start_captions",
-    description:
-      "Transcribe an audio clip and optionally run a fast-LLM step over the transcript (POST /v1/live/pipeline, multipart). This processes ONE provided audio chunk through WAVE's live pipeline — it does not attach a persistent caption feed to a live stream. Requires the account's live pipeline feature to be enabled; a 404 means it is not armed for this account",
-    inputSchema: {
-      audio_base64: z.string().min(1).describe("Base64-encoded audio bytes to transcribe (max 25MB decoded)"),
-      filename: z.string().optional().describe('Filename hint for the audio (default: "audio.wav")'),
-      stream_id: z
-        .string()
-        .max(128)
-        .optional()
-        .describe("Client correlation ID for this stream/session (letters, digits, . _ : -, 1-128 chars)"),
-      language: z.string().optional().describe("ISO 639 language hint for transcription (transcribe task only)"),
-      task: z.enum(["transcribe", "translate"]).optional().describe("Caption task (default: transcribe)"),
-      model: z
-        .enum(["whisper-large-v3-turbo", "whisper-large-v3"])
-        .optional()
-        .describe("Transcription model (default: whisper-large-v3-turbo; translate forces whisper-large-v3)"),
-      mode: z
-        .enum(["summarize", "moderate", "translate", "custom"])
-        .optional()
-        .describe("Fast-LLM step to run over the transcript (default: summarize)"),
-      instruction: z.string().max(500).optional().describe("Custom instruction for mode=custom"),
-      llm_model: z.string().min(1).describe("Fast LLM model ID to run the pipeline step"),
-      max_tokens: z.number().int().min(1).max(4096).optional().describe("Max tokens for the LLM step (default: 256)"),
-    },
-    handler: async ({
-      audio_base64,
-      filename,
-      stream_id,
-      language,
-      task,
-      model,
-      mode,
-      instruction,
-      llm_model,
-      max_tokens,
-    }) => {
-      const bytes = Buffer.from(audio_base64, "base64");
-      const form = new FormData();
-      form.set("file", new Blob([bytes]), filename ?? "audio.wav");
-      if (stream_id !== undefined) form.set("stream_id", stream_id);
-      if (language !== undefined) form.set("language", language);
-      if (task !== undefined) form.set("task", task);
-      if (model !== undefined) form.set("model", model);
-      if (mode !== undefined) form.set("mode", mode);
-      if (instruction !== undefined) form.set("instruction", instruction);
-      form.set("llm_model", llm_model);
-      if (max_tokens !== undefined) form.set("max_tokens", String(max_tokens));
-
-      const headers = getAuthHeaders();
-      delete (headers as Record<string, string>)["Content-Type"];
-
-      const res = await fetch(`${getBaseUrl()}/v1/live/pipeline`, {
-        method: "POST",
-        headers,
-        body: form,
-      });
-      const body = await res.text();
-      if (!res.ok) return errorContent(res.status, body);
-      return textContent(body);
     },
   }),
 ];

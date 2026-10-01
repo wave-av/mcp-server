@@ -3,7 +3,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { compose } from "./compose.js";
-import { MCP_TOOL_NAMES, PRODUCT_IDS } from "../../knowledge.js";
+import {
+  HOSTED_MCP_URL,
+  MCP_TOOL_NAMES,
+  PRODUCT_IDS,
+  UNSERVED_MCP_TOOL_NAMES,
+  isUnservedRoute,
+  routeOfToolDescription,
+} from "../../knowledge.js";
 
 // ---------------------------------------------------------------------------
 // Snapshot-parity fixture — copied verbatim from
@@ -181,9 +188,52 @@ test("no signature's next[] duplicates the same rung category twice", () => {
   }
 });
 
+// Data-independent on purpose. This used to pin "turn a recording into a podcast" because the podcast
+// skill had `meter: null`; the 2026-09-28 snapshot gave podcast a real meter (wave_podcast_minutes), so
+// the rung now follows whatever the bundled snapshot says rather than a product that may gain a meter.
 test("a flat-rate priceRow is labeled by pricing shape, never claimed 'cheaper' without a comparison", () => {
-  const proposal = compose("turn a recording into a podcast"); // podcast skill has meter: null
-  const flatRung = proposal.next.find((n) => n.startsWith("flat-priced route:"));
-  assert.ok(flatRung, "expected a flat-priced route suggestion");
-  assert.ok(!proposal.next.some((n) => n.startsWith("cheaper route:")));
+  for (const question of SEEDED_INTENTS) {
+    const proposal = compose(question);
+    const hasFlatRow = proposal.priceRows.some((row) => row.meter === null);
+    const flatRung = proposal.next.find((n) => n.startsWith("flat-priced route:"));
+    assert.equal(Boolean(flatRung), hasFlatRow, `"${question}": flat-priced rung iff a priceRow has no meter`);
+    assert.ok(!proposal.next.some((n) => n.startsWith("cheaper route:")));
+  }
+});
+
+test("toolsServer names the hosted WAVE MCP server, and the MCP rung sends the agent there", () => {
+  for (const question of SEEDED_INTENTS) {
+    const proposal = compose(question);
+    assert.equal(proposal.toolsServer, HOSTED_MCP_URL);
+    const rung = proposal.next.find((n) => n.startsWith("agent path via MCP:"));
+    if (proposal.tools.length === 0) {
+      assert.equal(rung, undefined, `"${question}" has no tools but still suggests an MCP call`);
+    } else {
+      assert.ok(rung?.includes(`on the hosted WAVE MCP server (${HOSTED_MCP_URL})`), `"${question}": ${rung}`);
+    }
+  }
+  assert.equal(HOSTED_MCP_URL, "https://api.wave.online/mcp");
+});
+
+test("no proposal names a hosted tool whose route the gateway lists as unserved", () => {
+  for (const question of [...SEEDED_INTENTS, "turn a recording into a podcast", "open a shared control room"]) {
+    for (const tool of compose(question).tools) {
+      assert.ok(!UNSERVED_MCP_TOOL_NAMES.has(tool), `"${question}" proposed unserved tool ${tool}`);
+    }
+  }
+});
+
+test("UNSERVED_MCP_TOOL_NAMES is derived from the snapshot's own route strings (38 of 96, 2026-09-28)", () => {
+  assert.equal(UNSERVED_MCP_TOOL_NAMES.size, 38);
+  for (const name of ["wave_list_streams", "wave_create_collab_room", "wave_create_podcast_show", "wave_create_enhancement"]) {
+    assert.ok(UNSERVED_MCP_TOOL_NAMES.has(name), name);
+  }
+  for (const name of ["wave_create_clip", "wave_create_transcription", "wave_create_compose_proposal", "identity_resolve"]) {
+    assert.ok(!UNSERVED_MCP_TOOL_NAMES.has(name), name);
+  }
+  assert.equal(routeOfToolDescription("Compose a plan (POST /v1/compose. Requires the scope)"), "/v1/compose");
+  assert.equal(isUnservedRoute("/v1/streams"), true);
+  assert.equal(isUnservedRoute("/v1/streams/abc/start"), true);
+  assert.equal(isUnservedRoute("/v1/streaming"), false, "segment-boundary safe");
+  assert.equal(isUnservedRoute("/v1/stream"), false, "the served singular /v1/stream is not the dead plural family");
 });

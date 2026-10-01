@@ -16,7 +16,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 
 import { buildServer } from "./server.js";
 import { PKG_VERSION } from "./version.js";
-import { PRODUCT_IDS, MCP_TOOL_NAMES, METER_NAMES } from "./knowledge.js";
+import { HOSTED_MCP_URL, PRODUCT_IDS, MCP_TOOL_NAMES, METER_NAMES } from "./knowledge.js";
 
 const PriceRowSchema = z
   .object({
@@ -33,6 +33,7 @@ const AskProposalSchema = z
     stages: z.array(z.string()),
     productIds: z.array(z.string()),
     tools: z.array(z.string()),
+    toolsServer: z.literal(HOSTED_MCP_URL),
     meters: z.array(z.string()),
     priceRows: z.array(PriceRowSchema),
     executes: z.literal(false),
@@ -244,7 +245,7 @@ test("e2e: tools/call wave_compose with no WAVE_API_KEY set returns a valid snap
   }
 });
 
-test("e2e: tools/call wave_compose with a stubbed 200 gateway response returns the gateway object as-is, tagged grounding: gateway", async () => {
+test("e2e: tools/call wave_compose with a stubbed 200 gateway response returns the gateway object, tagged grounding: gateway, with toolsServer", async () => {
   process.env["WAVE_API_KEY"] = "test-key-not-real";
   const gatewayBody = {
     intent: "live captions from my mic",
@@ -281,6 +282,8 @@ test("e2e: tools/call wave_compose with a stubbed 200 gateway response returns t
     assert.deepEqual(parsed["next"], gatewayBody.next);
     assert.equal(parsed["executes"], false);
     assert.equal(parsed["fallbackReason"], undefined);
+    // A live answer carries the same toolsServer a snapshot answer does (normalizeLiveProposal).
+    assert.equal(parsed["toolsServer"], HOSTED_MCP_URL);
     assert.equal(fetchCalls, 1);
     assert.match(capturedUrl, /\/v1\/compose$/);
     assert.equal(capturedAuth, "Bearer test-key-not-real");

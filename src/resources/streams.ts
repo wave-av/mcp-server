@@ -1,44 +1,17 @@
 // cspell:ignore modelcontextprotocol
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getAuthHeaders, getBaseUrl } from "../auth.js";
+import { registerEntityResource } from "./entity.js";
 
+/**
+ * `wave://streams/{id}` → GET /v1/streams/{id}. The /v1/streams family is unserved on
+ * api.wave.online (see ../tools/index.ts), so ../server.ts registers this only when
+ * WAVE_MCP_EXPERIMENTAL=1.
+ */
 export function registerStreamResources(server: McpServer): void {
-  server.resource(
-    "stream",
-    "wave://streams/{id}",
-    {
-      description: "A WAVE stream with its configuration and status",
-      mimeType: "application/json",
-    },
-    async (uri) => {
-      const id = uri.pathname.split("/").pop();
-      if (!id) {
-        return {
-          contents: [{ uri: uri.href, text: "Error: Missing stream ID", mimeType: "text/plain" }],
-        };
-      }
-
-      const res = await fetch(`${getBaseUrl()}/v1/streams/${encodeURIComponent(id)}`, {
-        headers: getAuthHeaders(),
-      });
-      if (!res.ok) {
-        return {
-          contents: [
-            {
-              uri: uri.href,
-              text: `Error ${res.status}: ${await res.text()}`,
-              mimeType: "text/plain",
-            },
-          ],
-        };
-      }
-
-      const data = await res.json();
-      return {
-        contents: [
-          { uri: uri.href, text: JSON.stringify(data, null, 2), mimeType: "application/json" },
-        ],
-      };
-    },
-  );
+  registerEntityResource(server, {
+    name: "stream",
+    uriTemplate: "wave://streams/{id}",
+    apiPath: "/v1/streams",
+    description: "A WAVE stream with its configuration and status (GET /v1/streams/{id})",
+  });
 }

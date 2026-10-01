@@ -11,13 +11,14 @@
 // module-resolution crash at startup.
 import type { McpSdkServerConfigWithInstance } from "@anthropic-ai/claude-agent-sdk";
 import { assertConfigValid } from "./auth.js";
-import { allTools } from "./tools/index.js";
+import { registeredTools } from "./tools/index.js";
 import { PKG_VERSION } from "./version.js";
 
 const AGENT_SDK_MODULE = "@anthropic-ai/claude-agent-sdk";
 
 /**
- * Build an in-process MCP server config exposing every WAVE tool, suitable for
+ * Build an in-process MCP server config exposing the WAVE tools registered for this process's
+ * environment (the public group plus any opt-in group whose condition holds), suitable for
  * the Agent SDK's `mcpServers` option:
  *
  *   import { query } from "@anthropic-ai/claude-agent-sdk";
@@ -44,7 +45,8 @@ export async function createWaveSdkMcpServer(): Promise<McpSdkServerConfigWithIn
     );
   }
 
-  const tools = allTools.map((def) =>
+  // The SAME env-gated selection the stdio server registers (src/tools/index.ts registeredTools).
+  const tools = registeredTools().map((def) =>
     sdk.tool(def.name, def.description, def.inputSchema, async (args) =>
       def.handler(args as unknown as Record<string, unknown>),
     ),
