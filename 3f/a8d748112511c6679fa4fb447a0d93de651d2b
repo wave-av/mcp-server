@@ -1,0 +1,28 @@
+scripts/smoke-mcp.mjs
+  s_13ccc7d9001218::t_3898a720519a87 290-295
+  s_13ccc7d9001218::t_0316d66d0ec29c 54-55,157-158
+src/smoke-classify.test.ts
+  s_13ccc7d9001218::t_f21a07bf786228 1-83,85-103,105-161
+  s_13ccc7d9001218::t_a19a85c65aa503 104
+  s_13ccc7d9001218::t_d7e0e5139dc883 84
+scripts/smoke-classify.mjs
+  s_13ccc7d9001218::t_56814a5ac8f209 1-103
+CHANGELOG.md
+  s_13ccc7d9001218::t_3d270e8382f89c 66-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "3fa8d748112511c6679fa4fb447a0d93de651d2b",
+  "prompts": {},
+  "sessions": {
+    "s_13ccc7d9001218": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "11229abc-f617-4541-b5d7-d693c6ae4d9d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
