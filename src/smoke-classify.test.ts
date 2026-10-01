@@ -11,7 +11,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -127,13 +127,17 @@ test("smoke classify: errorCodeOf reads only identifier-shaped codes", () => {
 
 function runSmoke(args: readonly string[]): { status: number | null; out: string } {
   const home = mkdtempSync(join(tmpdir(), "wave-mcp-smoke-home-"));
-  // Only PATH and an empty HOME: no WAVE_API_KEY, no internal secret, no sibling design library.
-  const res = spawnSync(process.execPath, [SMOKE, SERVER_ENTRY, ...args], {
-    env: { PATH: process.env["PATH"] ?? "", HOME: home },
-    encoding: "utf8",
-    timeout: 60_000,
-  });
-  return { status: res.status, out: `${res.stdout}\n${res.stderr}` };
+  try {
+    // Only PATH and an empty HOME: no WAVE_API_KEY, no internal secret, no sibling design library.
+    const res = spawnSync(process.execPath, [SMOKE, SERVER_ENTRY, ...args], {
+      env: { PATH: process.env["PATH"] ?? "", HOME: home },
+      encoding: "utf8",
+      timeout: 60_000,
+    });
+    return { status: res.status, out: `${res.stdout}\n${res.stderr}` };
+  } finally {
+    rmSync(home, { recursive: true, force: true });
+  }
 }
 
 test("smoke end to end, no key, --all --read-only: every row is a local failure and the run fails", () => {
