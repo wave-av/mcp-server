@@ -1,0 +1,20 @@
+src/smoke-classify.test.ts
+  s_13ccc7d9001218::t_34e7fedcc7aaf9 130-140
+  s_13ccc7d9001218::t_ad447fbf4f46b0 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "2f73e2e6500570cc7ee136bf4529056bbe664011",
+  "prompts": {},
+  "sessions": {
+    "s_13ccc7d9001218": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "11229abc-f617-4541-b5d7-d693c6ae4d9d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jake Fineman <jakefineman@gmail.com>"
+    }
+  }
+}
