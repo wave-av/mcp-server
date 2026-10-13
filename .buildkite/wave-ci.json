@@ -1,5 +1,5 @@
 {
-  "$comment": "wave-ci settings for wave-av/mcp-server (wave-ci#57), PUBLIC. Template node-lib: lint, typecheck and test are wave-ci built-ins on node 20 (as lint.yml pins); the rest are this repo's .buildkite/scripts. No step holds a secret. Parked jobs (release/publish, event bots, secret-bearing legs, governance-enforce) are in .buildkite/wave-ci.deferred.json with reasons; see .buildkite/README.md.",
+  "$comment": "Pipeline settings for wave-av/mcp-server, PUBLIC. Template node-lib: lint, typecheck and test are built-in steps on node 20 (as lint.yml pins); the rest are this repo's .buildkite/scripts. No step holds a secret. Parked jobs (release/publish, event bots, secret-bearing legs, governance-enforce) are in .buildkite/parked.json with reasons; see .buildkite/README.md.",
   "wave_ci": "296cc0cf4faf1f06d0acd4c2a767d6c111d2adf3",
   "repo": "wave-av/mcp-server",
   "pipeline": "mcp-server",
@@ -17,12 +17,17 @@
     },
     "typecheck": {
       "label": ":typescript: type-check (lint.yml, node 20)",
-      "scripts": ["type-check"],
+      "scripts": [
+        "type-check"
+      ],
       "timeout": 10
     },
     "test": {
       "label": ":test_tube: test + CAP-001 capabilities drift (lint.yml, node 20)",
-      "scripts": ["test", "check:capabilities"],
+      "scripts": [
+        "test",
+        "check:capabilities"
+      ],
       "timeout": 15
     }
   },

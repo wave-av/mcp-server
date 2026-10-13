@@ -1,52 +1,71 @@
 {
-  "$comment": "NOT RENDERED. wave-ci reads only .buildkite/wave-ci.json. This file records every GitHub Actions job (or secret-bearing leg of a ported job) that is parked, with the reason and what unblocks it, so nothing is dropped silently. Classes: publish (deploy-class, waits for Jake to name it), event-bot (waits on the GitHub-event bridge, RUN-231 / wave-ci #132), secret (a main-only step needing a secret name that no allowlist row grants a public repository yet), registry (waits on the self-hosted npm registry, ruling WGL-0928-18). No GH schedule exists in this repository.",
+  "$comment": "NOT RENDERED: the pipeline renderer reads only the settings file. This file records every GitHub Actions job (or secret-bearing leg of a ported job) that is parked, with the reason and what unblocks it, so nothing is dropped silently. Classes: publish (deploy-class, waits for an explicit owner decision), event-bot (waits on a GitHub-event bridge for Buildkite), secret (a main-only step needing a secret that is not granted to a public repository yet), registry (waits on a self-hosted npm registry). deferred_schedules lists GH schedule legs whose job is parked; ported schedules live in the settings `schedules`.",
   "deferred_schedules": [],
   "parked": [
     {
       "workflow": "release.yml",
-      "jobs": ["secret-scan", "verify", "publish", "verify-publish", "release", "sbom"],
+      "jobs": [
+        "secret-scan",
+        "verify",
+        "publish",
+        "verify-publish",
+        "release",
+        "sbom"
+      ],
       "class": "publish",
-      "reason": "Tag-triggered (v*) npm publish with NPM_TOKEN, a live registry verify with WAVE_GATEWAY_API_KEY, a GitHub Release and an SBOM asset (contents: write). Deploy-class; ruling WGL-0928-00 allows public SDK publishing but it is not enabled. The check content already runs on every build: secret-scan = secrets-content-policy, verify = lint + typecheck + test + smoke-install-node-20/22.",
-      "blocked_on": "Jake names the publish crossing; then main_only, tag-gated steps with a publish credential or OIDC federation"
+      "reason": "Tag-triggered (v*) npm publish with NPM_TOKEN, a live registry verify with WAVE_GATEWAY_API_KEY, a GitHub Release and an SBOM asset (contents: write). Deploy-class; not enabled. The check content already runs on every build: secret-scan = secrets-content-policy, verify = lint + typecheck + test + smoke-install-node-20/22.",
+      "blocked_on": "the owner explicitly enables publishing; then main_only, tag-gated steps with a publish credential or OIDC federation"
     },
     {
       "workflow": "governance-enforce.yml",
-      "jobs": ["enforce"],
+      "jobs": [
+        "enforce"
+      ],
       "class": "registry",
       "reason": "Installs @wave-av/governance from GitHub Packages, which returns 403 (billing) for every install, and needs a packages read credential this public pipeline does not hold. Not worked around.",
-      "blocked_on": "self-hosted registry (ruling WGL-0928-18), then a governance-enforce step that diffs against the PR merge-base"
+      "blocked_on": "the self-hosted npm registry, then a governance-enforce step that diffs against the PR merge-base"
     },
     {
       "workflow": "smoke-install.yml",
-      "jobs": ["smoke: live --all against the gateway"],
+      "jobs": [
+        "smoke: live --all against the gateway"
+      ],
       "class": "secret",
       "reason": "The last smoke step calls the live gateway with WAVE_GATEWAY_API_KEY. GH skips it without the key; the ported smoke steps always take that skip.",
       "blocked_on": "secret decision: WAVE_GATEWAY_API_KEY for a main-only live-smoke step"
     },
     {
       "workflow": "public-repo-guard.yml",
-      "jobs": ["guard: private-repo-name rule"],
+      "jobs": [
+        "guard: private-repo-name rule"
+      ],
       "class": "secret",
       "reason": "content-policy.sh checks private repository names only when GUARD_PRIVATE_REPOS is set (an org Actions variable on GH). Here it would be a job secret; the ported secrets-content-policy step runs without it, as a fork PR does on GH.",
       "blocked_on": "secret decision: GUARD_PRIVATE_REPOS for a main-only content-policy step"
     },
     {
       "workflow": "public-repo-guard-body.yml",
-      "jobs": ["body-guard"],
+      "jobs": [
+        "body-guard"
+      ],
       "class": "event-bot",
       "reason": "Scans PR, issue, comment and review TEXT read from the GitHub event payload. Buildkite has no such trigger.",
-      "blocked_on": "GitHub-event bridge (RUN-231, wave-ci #132)"
+      "blocked_on": "GitHub-event bridge"
     },
     {
       "workflow": "issue-ops-triage.yml",
-      "jobs": ["triage"],
+      "jobs": [
+        "triage"
+      ],
       "class": "event-bot",
       "reason": "Triggered by issues events; uses ISSUE_OPS_PAT, BOT_ISSUE_OPS_APP_ID, BOT_ISSUE_OPS_PRIVATE_KEY.",
-      "blocked_on": "GitHub-event bridge (RUN-231, wave-ci #132)"
+      "blocked_on": "GitHub-event bridge"
     },
     {
       "workflow": "governance-enforce.yml, public-repo-guard.yml",
-      "jobs": ["merge_group trigger"],
+      "jobs": [
+        "merge_group trigger"
+      ],
       "class": "event-bot",
       "reason": "GitHub merge queue events have no Buildkite equivalent while GitHub's merge queue gates merges.",
       "blocked_on": "a required-check swap decision"

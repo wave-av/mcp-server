@@ -12,7 +12,7 @@
 #   - GUARD_PRIVATE_REPOS is NOT provided. On GH it is an org-level Actions variable; here it would be a
 #     job secret, and this public repository's steps hold none. content-policy.sh skips that one rule
 #     when the variable is unset (the same behaviour as a fork PR on GH). The rule's main-only leg is
-#     parked in .buildkite/wave-ci.deferred.json until a secrets-allowlist row is decided.
+#     parked in .buildkite/parked.json until a secrets-allowlist row is decided.
 #   - The body scan of PR, issue, comment and review TEXT (the workflow's event-driven body guard) has
 #     no Buildkite trigger; it waits on the GitHub-event bridge (see README, "Parked").
 set -euo pipefail
