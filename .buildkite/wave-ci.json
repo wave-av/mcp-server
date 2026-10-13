@@ -1,0 +1,73 @@
+{
+  "$comment": "wave-ci settings for wave-av/mcp-server (wave-ci#57), PUBLIC. Template node-lib: lint, typecheck and test are wave-ci built-ins on node 20 (as lint.yml pins); the rest are this repo's .buildkite/scripts. No step holds a secret. Parked jobs (release/publish, event bots, secret-bearing legs, governance-enforce) are in .buildkite/wave-ci.deferred.json with reasons; see .buildkite/README.md.",
+  "wave_ci": "296cc0cf4faf1f06d0acd4c2a767d6c111d2adf3",
+  "repo": "wave-av/mcp-server",
+  "pipeline": "mcp-server",
+  "template": "node-lib",
+  "visibility": "public",
+  "default_branch": "main",
+  "node": {
+    "version": "20",
+    "package_manager": "npm"
+  },
+  "overrides": {
+    "lint": {
+      "label": ":eslint: lint (lint.yml, node 20)",
+      "timeout": 10
+    },
+    "typecheck": {
+      "label": ":typescript: type-check (lint.yml, node 20)",
+      "scripts": ["type-check"],
+      "timeout": 10
+    },
+    "test": {
+      "label": ":test_tube: test + CAP-001 capabilities drift (lint.yml, node 20)",
+      "scripts": ["test", "check:capabilities"],
+      "timeout": 15
+    }
+  },
+  "extra_steps": [
+    {
+      "key": "gate-checks",
+      "label": ":lock: gate / checks: secret scan + file size + verify-routes",
+      "script": ".buildkite/scripts/gate-checks.sh",
+      "timeout": 10
+    },
+    {
+      "key": "gate-skill-validate",
+      "label": ":scroll: gate / skill-validate (SKILL.md frontmatter)",
+      "script": ".buildkite/scripts/gate-skill-validate.sh",
+      "timeout": 5
+    },
+    {
+      "key": "secrets-content-policy",
+      "label": ":closed_lock_with_key: secrets + content policy (gitleaks, content-policy, body fixtures)",
+      "script": ".buildkite/scripts/secrets-content-policy.sh",
+      "timeout": 10
+    },
+    {
+      "key": "smoke-install-node-20",
+      "label": ":package: smoke install: tarball, --version, stdio tools/list (node 20)",
+      "script": ".buildkite/scripts/smoke-install.sh",
+      "timeout": 15
+    },
+    {
+      "key": "smoke-install-node-22",
+      "label": ":package: smoke install: tarball, --version, stdio tools/list (node 22)",
+      "script": ".buildkite/scripts/smoke-install.sh",
+      "timeout": 15
+    },
+    {
+      "key": "version-surfaces-node-20",
+      "label": ":label: version surfaces agree with package.json (node 20)",
+      "script": ".buildkite/scripts/version-surfaces.sh",
+      "timeout": 15
+    },
+    {
+      "key": "version-surfaces-node-22",
+      "label": ":label: version surfaces agree with package.json (node 22)",
+      "script": ".buildkite/scripts/version-surfaces.sh",
+      "timeout": 15
+    }
+  ]
+}
