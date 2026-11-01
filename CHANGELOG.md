@@ -8,6 +8,14 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- Optional `WAVE_INSTALL_CHANNEL` environment variable, forwarded as an
+  `X-Wave-Install-Channel` request header on every call. Lets a Skill/manifest-
+  generated onboarding config self-declare its install channel apart from a
+  hand-written docs install, for WAVE's usage-attribution reporting. The value
+  must be a bare token (`[A-Za-z0-9._-]`, 1-64 chars) — it is attached verbatim
+  to an outbound header, so anything else is dropped rather than sent, and an
+  unrecognised label is recorded as untagged. Unset by default — no behavior
+  change for anyone who doesn't set it.
 - `wave_compose` (25th tool): the registered successor to `wave.ask`. When `WAVE_API_KEY` is
   configured, calls the live gateway `POST /v1/compose` and returns its answer as-is
   (`grounding: "gateway"`); when no key is configured, or the call fails, errors, or does not

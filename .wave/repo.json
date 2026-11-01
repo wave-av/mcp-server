@@ -588,6 +588,12 @@
           "No",
           "`https://api.wave.online`",
           "API origin. Tool paths are `/v1/*` on the WAVE gateway."
+        ],
+        [
+          "`WAVE_INSTALL_CHANNEL`",
+          "No",
+          "-",
+          "Self-declared install-channel label sent as `X-Wave-Install-Channel` (usage-attribution reporting; safe to leave unset)"
         ]
       ]
     },
