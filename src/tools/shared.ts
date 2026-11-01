@@ -16,6 +16,12 @@ import { getAuthHeaders, getBaseUrl } from "../auth.js";
  */
 export interface ToolResult {
   content: Array<{ type: "text"; text: string }>;
+  /**
+   * MCP's tool-level failure flag. `isError: true` tells the calling agent the tool FAILED and the
+   * text is the reason, instead of handing it an error string dressed up as valid output. Set only
+   * through {@link errorContent} / {@link failureContent}.
+   */
+  isError?: boolean;
   // MCP's `Result` base (which `CallToolResult` extends) carries an open index
   // signature; declaring it here keeps `ToolResult` assignable to both SDKs.
   [key: string]: unknown;
@@ -25,8 +31,21 @@ export function textContent(text: string): ToolResult {
   return { content: [{ type: "text", text }] };
 }
 
+/**
+ * A tool call that failed for a reason other than an upstream HTTP status: a missing local
+ * dependency, an unset credential, a subprocess that exited non-zero. Always `isError: true`.
+ */
+export function failureContent(text: string): ToolResult {
+  return { content: [{ type: "text", text }], isError: true };
+}
+
+/**
+ * A non-2xx answer from the WAVE API. Always `isError: true`. Through 0.3.0 this returned a plain
+ * text block, so an agent read `Error 404: {"error":{"code":"ROUTE_NOT_FOUND",...}}` as a successful
+ * tool result and carried on as if the call had worked.
+ */
 export function errorContent(status: number, body: string): ToolResult {
-  return textContent(`Error ${status}: ${body}`);
+  return failureContent(`Error ${status}: ${body}`);
 }
 
 /** Authenticated fetch against the WAVE API, returning the raw text body. */

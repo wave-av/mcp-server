@@ -285,7 +285,9 @@ async function checkUserAgent() {
     try {
       await handshake(server);
       server.notify("notifications/initialized", {});
-      const call = await server.rpc("tools/call", { name: "wave_list_streams", arguments: {} });
+      // wave_get_subscription (GET /v1/billing) is registered for every caller. Through 0.3.0
+      // this drove wave_list_streams, which 0.4.0 registers only under WAVE_MCP_EXPERIMENTAL=1.
+      const call = await server.rpc("tools/call", { name: "wave_get_subscription", arguments: {} });
       if (call.__exited) throw new Error(`server exited during tools/call (${call.__exited})`);
     } finally {
       server.close();

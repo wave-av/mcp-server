@@ -1,12 +1,13 @@
 {
   "artifact": "mcp-tools.json",
-  "fetchedAt": "2026-09-06T03:52:45Z",
+  "fetchedAt": "2026-09-28T22:30:00Z",
   "url": "https://api.wave.online/mcp",
-  "command": "curl -sS https://api.wave.online/mcp   # plain GET returns the full manifest incl. toolCount + tools[]; no JSON-RPC initialize/tools.list body was needed",
-  "sha256": "782ef83e72613378f540fd3d45e6e07fc47fb3d561ca2af54c0f79777ecc586c",
+  "command": "curl -sS https://api.wave.online/mcp   # plain GET returns the full manifest incl. toolCount + tools[]; re-serialized with json.dumps(indent=2, ensure_ascii=True) + newline",
+  "sha256": "c8ce710dfdcdfdc372b03cc3354adce46043dd36a231f8c67cc5976277991b6e",
+  "rawResponseSha256": "3c70f6bf8ca7d2788c7b5823a0ca2a6dae5ff3ecaab7cc6f52eb43a779e58bee",
   "counts": {
-    "toolCount": 93,
-    "toolsLength": 93
+    "toolCount": 96,
+    "toolsLength": 96
   },
-  "note": "24 new tools since the 2026-09-05T23:06:00Z snapshot (69 -> 93): wave_control_camera, wave_create_production, wave_create_stream, wave_get_analytics_engagement, wave_get_analytics_overview, wave_get_analytics_top_content, wave_get_billing, wave_get_billing_usage, wave_get_production, wave_get_stream, wave_get_stream_analytics, wave_get_stream_status, wave_get_usage, wave_list_cameras, wave_list_productions, wave_list_stream_highlights, wave_list_streams, wave_mark_stream_highlight, wave_moderate_content, wave_register_camera, wave_set_production_overlay, wave_start_stream, wave_stop_stream, wave_switch_production_camera. New coverage groups: cameras, productions, streams, analytics, billing, usage, moderation. No tools removed."
+  "note": "3 new tools since the 2026-09-06T03:52:45Z snapshot (93 -> 96): wave_create_compose_proposal, wave_get_compose_proposal, wave_run_compose_proposal (the composer product). No tools removed. These are the HOSTED server's tools (mcpServers.wave.url), NOT this stdio package's: 38 of the 96 name a route in a family the gateway itself lists as unserved (wave-gateway src/unserved-advertised-paths.ts at 63372049: streams 9, productions 5, editor/projects 6, collab/rooms 4, phone 4, podcast/shows 4, cameras 3, studio-ai 3); GA-CONTRACT-001 stops generating them once deployed, and src/knowledge.ts UNSERVED_MCP_TOOL_NAMES keeps the composer from proposing them meanwhile. sha256 is of the bundled (re-serialized) file; rawResponseSha256 is of the bytes the GET returned."
 }

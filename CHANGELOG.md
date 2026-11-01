@@ -6,11 +6,99 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-29
+
+A default install now lists only tools that can succeed. Measured live on 2026-09-28 against
+`https://api.wave.online` with a real `wave_live_*` key: 13 of 0.3.0's 18 HTTP tools, and both
+`wave://` resources, could never succeed for anyone. Twelve of them (the streams, productions and
+cameras families) call routes that answer `404 ROUTE_NOT_FOUND` ("No WAVE capability is served at
+this path") with and without a key, while the served control routes `GET /v1/network/surface` and
+`GET /v1/x402/facilitator/supported` answered 200 in the same run. wave-gateway's own ledger lists
+those families as advertised with no destination (wave-gateway `src/unserved-advertised-paths.ts`,
+GA-CONTRACT-001). The thirteenth, `wave_moderate_chat`, calls `POST /v1/moderate`, which answers an
+anonymous call with `404 ROUTE_NOT_FOUND` and has no product spoke or gateway-native handler.
+
+### Fixed
+
+- **A non-2xx WAVE API answer is now a failed tool call.** `errorContent()` returned
+  `Error <status>: <body>` as an ordinary result, so an agent read `Error 404: ROUTE_NOT_FOUND` as
+  valid output. It now sets `isError: true`, on both the stdio server and the in-process Agent SDK
+  server. `wave_voice_converse` failures and design-tool results with `ok: false` set it too.
+- **`wave://streams/{id}` and `wave://productions/{id}` are real resource templates.** They were
+  registered with a plain string, which the MCP SDK treats as one fixed resource whose URI
+  literally contains `{id}`: `resources/templates/list` came back empty and `resources/read` of
+  any real id failed with `-32602 Resource ... not found`. They now use `ResourceTemplate`, read
+  the `{id}` variable, and turn a non-2xx upstream answer into a JSON-RPC error instead of an
+  `Error 404: ...` resource body.
+- `wave.ask` / `wave_compose` no longer propose hosted tools whose route the gateway lists as
+  unserved (38 of the 96 hosted tools), and every proposal now carries `toolsServer` (the hosted
+  WAVE MCP server, `https://api.wave.online/mcp`) so an agent calls `tools[]` where they exist
+  rather than on this stdio package, where most are not registered. A live `POST /v1/compose`
+  answer is held to the same contract as a snapshot one: unserved tools are dropped from `tools[]`
+  and `toolsServer` is always the bundled endpoint, never a value the responder supplied.
+- The bundled `toolsServer` must be `https://api.wave.online/mcp` or `https://mcp.wave.online/mcp`
+  exactly (https, no port, userinfo, query or fragment). A snapshot that names any other endpoint
+  stops the package from loading instead of steering agents elsewhere.
+- A failed `resources/read` names the status, the gateway's error code and its `request_id`, never
+  the raw upstream body. A 2xx that is not JSON is an error, not an `application/json` resource.
+  The read refuses redirects, because the request carries the bearer key.
+- `wave_voice_converse` reads `WAVE_INTERNAL_SECRET` and `WAVE_REALTIME_EDGE` when it is called,
+  not when the module loads, so a tool registered because the secret is set can use it. A failed
+  bind reports its HTTP status only, and the bind request refuses redirects.
+- `WAVE_REALTIME_EDGE` is validated like `WAVE_BASE_URL` (one shared check, `parseSecureOrigin` in
+  `src/auth.ts`): a bare `https://` origin, `http://` only for a loopback host, no path, query or
+  fragment. The bind carries the edge-internal secret, so a refused value fails the call with
+  `isError: true` before any request, and the error never echoes the configured value.
+- `buildServer()` and the startup log line use one group selection, computed once, so the log never
+  describes a different tool set from the one registered.
+
+### Changed
+
+- **Tools are registered by the condition they can work under** (`TOOL_GROUPS` in
+  `src/tools/index.ts`; both transports register the same `registeredTools()` selection). With
+  only `WAVE_API_KEY` set, `tools/list` returns 7 tools: `wave_get_viewers`,
+  `wave_get_subscription`, `wave_get_usage`, `wave_create_clip`, `wave_start_captions`,
+  `wave_compose` and `wave.ask`. The startup log line names the opt-in groups that are live
+  (group ids and counts only, never a value).
+- `capabilities.json` lists the 7 default tools in `exposes.mcpTools` and the 18 opt-in tools in
+  `exposes.optInMcpTools` with their group and registration condition (its `version` was stuck at
+  0.1.5). `scripts/check-capabilities-drift.ts` checks both lists against the registry.
+- `scripts/smoke-mcp.mjs` fails a run when a non-2xx result lacks `isError: true`, when an
+  unserved tool appears in a default `tools/list`, or on `ROUTE_NOT_FOUND`. A tool that fails before
+  any HTTP answer exists (for example with `WAVE_API_KEY` unset) is reported with status `none` and
+  fails the run; it is no longer printed as a 2xx. Row classification lives in
+  `scripts/smoke-classify.mjs` and is tested by `src/smoke-classify.test.ts`. `--all`
+  now drives the 5 default gateway-backed tools; `--read-only` limits it to the 3 unbilled GETs.
+  Every row that does not pass fails `--all`, a 401, 403 or 429 included, while a 402 or a
+  validation answer from a served route passes. The opt-in set it checks is read from `capabilities.json`. Its
+  output carries the status, the gateway's error code and a byte count, never a response body.
+- Bundled `knowledge/` snapshot refreshed to the 2026-09-28 measurement: `mcp-tools.json` 93→96,
+  `products.json` 59→60, `skills.json` 179→180 (see `knowledge/SOURCES.md`).
+
+### Breaking
+
+- These tools are no longer registered by default. Set `WAVE_MCP_EXPERIMENTAL=1` to register them,
+  with a note at the start of each description that `api.wave.online` does not serve the route:
+  `wave_list_streams`, `wave_create_stream`, `wave_start_stream`, `wave_stop_stream`,
+  `wave_get_stream_health`, `wave_get_stream_metrics`, `wave_mark_highlight`,
+  `wave_list_productions`, `wave_create_production`, `wave_switch_camera`, `wave_show_graphic`,
+  `wave_control_camera` and `wave_moderate_chat`. The same flag registers the two `wave://`
+  resource templates; without it the server does not advertise the resources capability.
+- `wave_voice_converse` is registered only when `WAVE_INTERNAL_SECRET` is set. It authenticates
+  with the edge-internal secret, not a customer key, so it failed on every customer machine.
+- The four `wave_design_*` tools are registered only when their unpublished library is on disk
+  (`WAVE_PEN_EXTRACT_ROOT` / `WAVE_LOC_STUDY_ROOT`, or the `$HOME/wave-av/...` default) with
+  exactly the files each one runs: `wave_design_extract` needs pen-extract's `src/cli.mjs`,
+  `wave_design_contract_check` the contract validator, schema and catalogue, and
+  `wave_design_contract` both. An empty directory or a regular file registers nothing; a partial
+  checkout registers only the tools it can run. On a customer machine they failed with
+  `@wave-av/pen-extract not found`.
+
 ### Added
 
 - `wave_compose` (25th tool): the registered successor to `wave.ask`. When `WAVE_API_KEY` is
-  configured, calls the live gateway `POST /v1/compose` and returns its answer as-is
-  (`grounding: "gateway"`); when no key is configured, or the call fails, errors, or does not
+  configured, calls the live gateway `POST /v1/compose` and returns its answer
+  (`grounding: "gateway"`, with `tools[]` and `toolsServer` normalized as described under Fixed); when no key is configured, or the call fails, errors, or does not
   answer within 3 seconds, falls back to the same deterministic composition `wave.ask` already
   shipped (`grounding: "snapshot"`) — never a dead end. The `WAVE_API_KEY` is sent only to that
   one gateway request and is never logged or echoed into the tool's output.
@@ -225,7 +313,8 @@ tool call — those installs stay broken until `0.2.1` ships and consumers upgra
   the stdio transport (Model Context Protocol). `0.1.0` and `0.1.1` reached the
   registry on 2026-04-01 ahead of this tagged release and carry the same code line.
 
-[Unreleased]: https://github.com/wave-av/mcp-server/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/wave-av/mcp-server/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/wave-av/mcp-server/releases/tag/v0.4.0
 [0.3.0]: https://github.com/wave-av/mcp-server/releases/tag/v0.3.0
 [0.2.1]: https://github.com/wave-av/mcp-server/releases/tag/v0.2.1
 [0.2.0]: https://github.com/wave-av/mcp-server/releases/tag/v0.2.0

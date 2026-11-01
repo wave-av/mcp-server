@@ -4,6 +4,9 @@
     "path": "/v1/accessibility-studio",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE accessibility-studio API",
     "auth": {
       "scheme": "bearer",
@@ -24,6 +27,9 @@
     "path": "/v1/acp",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE acp API",
     "auth": {
       "scheme": "bearer",
@@ -44,6 +50,9 @@
     "path": "/v1/aegis",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE aegis API",
     "auth": {
       "scheme": "bearer",
@@ -64,6 +73,9 @@
     "path": "/v1/agentic-media",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE agentic-media API",
     "auth": {
       "scheme": "bearer",
@@ -84,6 +96,9 @@
     "path": "/v1/agents",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE agents API",
     "auth": {
       "scheme": "bearer",
@@ -92,7 +107,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_agents_runs",
       "currency": "USDC",
       "network": "base"
     },
@@ -104,6 +119,9 @@
     "path": "/v1/ai",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE ai API",
     "auth": {
       "scheme": "bearer",
@@ -126,6 +144,85 @@
       "GET"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": null,
+      "output": {
+        "schema": null,
+        "fields": [
+          "organizationId",
+          "period",
+          "engagement"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1analytics~1engagement/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/analytics/engagement",
+          "operation_id": "getAnalyticsEngagement",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": [
+              "organizationId",
+              "period",
+              "engagement"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1analytics~1engagement/get"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/analytics/overview",
+          "operation_id": "getAnalyticsOverview",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": [
+              "organizationId",
+              "period",
+              "summary"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1analytics~1overview/get"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/analytics/top-content",
+          "operation_id": "getAnalyticsTopContent",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "limit"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "organizationId",
+              "period",
+              "topContent"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1analytics~1top-content/get"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE analytics API",
     "auth": {
       "scheme": "bearer",
@@ -146,6 +243,9 @@
     "path": "/v1/api-gateway",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE api-gateway API",
     "auth": {
       "scheme": "bearer",
@@ -166,6 +266,9 @@
     "path": "/v1/archive",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE archive API",
     "auth": {
       "scheme": "bearer",
@@ -186,6 +289,9 @@
     "path": "/v1/argus",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE argus API",
     "auth": {
       "scheme": "bearer",
@@ -206,6 +312,9 @@
     "path": "/v1/audience-engagement",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE audience-engagement API",
     "auth": {
       "scheme": "bearer",
@@ -226,6 +335,9 @@
     "path": "/v1/audio-mastering",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE audio-mastering API",
     "auth": {
       "scheme": "bearer",
@@ -246,6 +358,9 @@
     "path": "/v1/auth",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE auth API",
     "auth": {
       "scheme": "bearer",
@@ -266,6 +381,9 @@
     "path": "/v1/autopilot",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE autopilot API",
     "auth": {
       "scheme": "bearer",
@@ -288,6 +406,97 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/AvDemuxRequest",
+        "required": [
+          "sourceUrl"
+        ],
+        "fields": [
+          "sourceUrl",
+          "videoOutputUrl",
+          "audioOutputUrl"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/AvTransformResult",
+        "fields": [
+          "ok",
+          "container",
+          "durationSeconds",
+          "syncOffsetMs"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1av~1demux/post"
+      },
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/v1/av/demux",
+          "operation_id": "avDemux",
+          "input": {
+            "schema": "#/components/schemas/AvDemuxRequest",
+            "required": [
+              "sourceUrl"
+            ],
+            "fields": [
+              "sourceUrl",
+              "videoOutputUrl",
+              "audioOutputUrl"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/AvTransformResult",
+            "fields": [
+              "ok",
+              "container",
+              "durationSeconds",
+              "syncOffsetMs"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1av~1demux/post"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/av/remux",
+          "operation_id": "avRemux",
+          "input": {
+            "schema": "#/components/schemas/AvRemuxRequest",
+            "required": [
+              "videoUrl",
+              "audioUrl",
+              "container"
+            ],
+            "fields": [
+              "videoUrl",
+              "audioUrl",
+              "container",
+              "outputUrl"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/AvTransformResult",
+            "fields": [
+              "ok",
+              "container",
+              "durationSeconds",
+              "syncOffsetMs"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1av~1remux/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE av API",
     "auth": {
       "scheme": "bearer",
@@ -308,6 +517,9 @@
     "path": "/v1/behavioral-intelligence",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE behavioral-intelligence API",
     "auth": {
       "scheme": "bearer",
@@ -328,6 +540,9 @@
     "path": "/v1/benchmark",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE benchmark API",
     "auth": {
       "scheme": "bearer",
@@ -350,6 +565,71 @@
       "GET"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": null,
+      "output": {
+        "schema": "#/components/schemas/BillingAccount",
+        "fields": [
+          "organizationId",
+          "billingAccount",
+          "plan",
+          "subscription"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1billing/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/billing",
+          "operation_id": "getBilling",
+          "input": null,
+          "output": {
+            "schema": "#/components/schemas/BillingAccount",
+            "fields": [
+              "organizationId",
+              "billingAccount",
+              "plan",
+              "subscription"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1billing/get"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/billing/usage",
+          "operation_id": "getBillingUsage",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "from",
+              "to"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/BillingUsageResponse",
+            "fields": [
+              "organizationId",
+              "period",
+              "usage",
+              "total"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1billing~1usage/get"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE billing API",
     "auth": {
       "scheme": "bearer",
@@ -357,7 +637,7 @@
       "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
     },
     "pricing": {
-      "model": "x402",
+      "model": "free",
       "meter": null,
       "currency": "USDC",
       "network": "base"
@@ -370,6 +650,9 @@
     "path": "/v1/bmd",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE bmd API",
     "auth": {
       "scheme": "bearer",
@@ -390,6 +673,9 @@
     "path": "/v1/bridge",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE bridge API",
     "auth": {
       "scheme": "bearer",
@@ -410,6 +696,9 @@
     "path": "/v1/broadcast",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE broadcast API",
     "auth": {
       "scheme": "bearer",
@@ -430,6 +719,9 @@
     "path": "/v1/camera-control",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE camera-control API",
     "auth": {
       "scheme": "bearer",
@@ -453,6 +745,129 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/RegisterCameraRequest",
+        "required": [
+          "name",
+          "manufacturer",
+          "ipAddress",
+          "controlProtocol"
+        ],
+        "fields": [
+          "name",
+          "manufacturer",
+          "model",
+          "ipAddress",
+          "controlProtocol"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/Camera",
+        "fields": [
+          "id",
+          "organization_id",
+          "name",
+          "manufacturer",
+          "control_protocol",
+          "address",
+          "status",
+          "presets",
+          "metadata",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1cameras/post"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/cameras",
+          "operation_id": "listCameras",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": [
+              "cameras",
+              "total"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1cameras/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/cameras",
+          "operation_id": "registerCamera",
+          "input": {
+            "schema": "#/components/schemas/RegisterCameraRequest",
+            "required": [
+              "name",
+              "manufacturer",
+              "ipAddress",
+              "controlProtocol"
+            ],
+            "fields": [
+              "name",
+              "manufacturer",
+              "model",
+              "ipAddress",
+              "controlProtocol"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Camera",
+            "fields": [
+              "id",
+              "organization_id",
+              "name",
+              "manufacturer",
+              "control_protocol",
+              "address",
+              "status",
+              "presets",
+              "metadata",
+              "created_at",
+              "updated_at"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1cameras/post"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/cameras/{cameraId}/control",
+          "operation_id": "controlCamera",
+          "input": {
+            "schema": "#/components/schemas/ControlCameraRequest",
+            "required": [],
+            "fields": []
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "cameraId",
+              "commandId",
+              "command",
+              "status"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1cameras~1{cameraId}~1control/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE cameras API",
     "auth": {
       "scheme": "bearer",
@@ -473,6 +888,9 @@
     "path": "/v1/campus",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE campus API",
     "auth": {
       "scheme": "bearer",
@@ -497,6 +915,188 @@
       "DELETE"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/CaptionJobCreate",
+        "required": [
+          "videoId"
+        ],
+        "fields": [
+          "videoId",
+          "sourceLanguage",
+          "targetLanguages",
+          "style",
+          "speakerLabels"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/CaptionJob",
+        "fields": [
+          "id",
+          "videoId",
+          "sourceLanguage",
+          "targetLanguages",
+          "status",
+          "progress",
+          "outputs",
+          "errorMessage",
+          "organizationId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1captions/post"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/captions",
+          "operation_id": "listCaptions",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "videoId",
+              "status"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1captions/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/captions",
+          "operation_id": "createCaptionJob",
+          "input": {
+            "schema": "#/components/schemas/CaptionJobCreate",
+            "required": [
+              "videoId"
+            ],
+            "fields": [
+              "videoId",
+              "sourceLanguage",
+              "targetLanguages",
+              "style",
+              "speakerLabels"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/CaptionJob",
+            "fields": [
+              "id",
+              "videoId",
+              "sourceLanguage",
+              "targetLanguages",
+              "status",
+              "progress",
+              "outputs",
+              "errorMessage",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1captions/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/captions/{jobId}",
+          "operation_id": "getCaptionJob",
+          "input": {
+            "schema": null,
+            "required": [
+              "jobId"
+            ],
+            "fields": [
+              "jobId"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/CaptionJob",
+            "fields": [
+              "id",
+              "videoId",
+              "sourceLanguage",
+              "targetLanguages",
+              "status",
+              "progress",
+              "outputs",
+              "errorMessage",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1captions~1{jobId}/get"
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/captions/{jobId}",
+          "operation_id": "deleteCaptionJob",
+          "input": {
+            "schema": null,
+            "required": [
+              "jobId"
+            ],
+            "fields": [
+              "jobId"
+            ]
+          },
+          "output": null,
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1captions~1{jobId}/delete"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/captions/{jobId}/download",
+          "operation_id": "downloadCaptions",
+          "input": {
+            "schema": null,
+            "required": [
+              "jobId",
+              "language"
+            ],
+            "fields": [
+              "jobId",
+              "language",
+              "format"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "url",
+              "content"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1captions~1{jobId}~1download/get"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE captions API",
     "auth": {
       "scheme": "bearer",
@@ -517,6 +1117,9 @@
     "path": "/v1/challenge",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE challenge API",
     "auth": {
       "scheme": "bearer",
@@ -537,6 +1140,9 @@
     "path": "/v1/chapters",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE chapters API",
     "auth": {
       "scheme": "bearer",
@@ -557,6 +1163,9 @@
     "path": "/v1/ci",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE ci API",
     "auth": {
       "scheme": "bearer",
@@ -582,6 +1191,248 @@
       "DELETE"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/ClipCreate",
+        "required": [
+          "source",
+          "in"
+        ],
+        "fields": [
+          "source",
+          "sourceType",
+          "visibility",
+          "in",
+          "out",
+          "duration",
+          "width",
+          "height",
+          "fit",
+          "formats",
+          "quality",
+          "spritesheetFrames"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/ClipCreateResponse",
+        "fields": [
+          "ok",
+          "clipId",
+          "org",
+          "visibility",
+          "source",
+          "in",
+          "duration",
+          "quality",
+          "assets"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1clips/post"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/clips",
+          "operation_id": "listClips",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "videoId",
+              "status",
+              "category"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1clips/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/clips",
+          "operation_id": "createClip",
+          "input": {
+            "schema": "#/components/schemas/ClipCreate",
+            "required": [
+              "source",
+              "in"
+            ],
+            "fields": [
+              "source",
+              "sourceType",
+              "visibility",
+              "in",
+              "out",
+              "duration",
+              "width",
+              "height",
+              "fit",
+              "formats",
+              "quality",
+              "spritesheetFrames"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/ClipCreateResponse",
+            "fields": [
+              "ok",
+              "clipId",
+              "org",
+              "visibility",
+              "source",
+              "in",
+              "duration",
+              "quality",
+              "assets"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1clips/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/clips/{clipId}",
+          "operation_id": "getClip",
+          "input": {
+            "schema": null,
+            "required": [
+              "clipId"
+            ],
+            "fields": [
+              "clipId"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Clip",
+            "fields": [
+              "id",
+              "videoId",
+              "startTime",
+              "endTime",
+              "duration",
+              "title",
+              "description",
+              "score",
+              "category",
+              "thumbnailUrl",
+              "previewUrl",
+              "status",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1clips~1{clipId}/get"
+          }
+        },
+        {
+          "method": "PATCH",
+          "path": "/v1/clips/{clipId}",
+          "operation_id": "updateClip",
+          "input": {
+            "schema": "#/components/schemas/ClipUpdate",
+            "required": [],
+            "fields": [
+              "title",
+              "description",
+              "startTime",
+              "endTime"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Clip",
+            "fields": [
+              "id",
+              "videoId",
+              "startTime",
+              "endTime",
+              "duration",
+              "title",
+              "description",
+              "score",
+              "category",
+              "thumbnailUrl",
+              "previewUrl",
+              "status",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1clips~1{clipId}/patch"
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/clips/{clipId}",
+          "operation_id": "deleteClip",
+          "input": {
+            "schema": null,
+            "required": [
+              "clipId"
+            ],
+            "fields": [
+              "clipId"
+            ]
+          },
+          "output": null,
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1clips~1{clipId}/delete"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/clips/detect",
+          "operation_id": "detectClips",
+          "input": {
+            "schema": "#/components/schemas/ClipDetectRequest",
+            "required": [
+              "videoId"
+            ],
+            "fields": [
+              "videoId",
+              "minDuration",
+              "maxDuration",
+              "categories",
+              "sensitivity",
+              "maxClips"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/DetectionJob",
+            "fields": [
+              "id",
+              "status",
+              "progress",
+              "createdAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1clips~1detect/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE clips API",
     "auth": {
       "scheme": "bearer",
@@ -602,6 +1453,9 @@
     "path": "/v1/cloud-switcher",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE cloud-switcher API",
     "auth": {
       "scheme": "bearer",
@@ -626,6 +1480,145 @@
       "DELETE"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": null,
+        "required": [],
+        "fields": [
+          "status"
+        ]
+      },
+      "output": {
+        "schema": null,
+        "fields": [
+          "data",
+          "pagination"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1collab~1rooms/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/collab/rooms",
+          "operation_id": "listCollabRooms",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "status"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1collab~1rooms/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/collab/rooms",
+          "operation_id": "createCollabRoom",
+          "input": {
+            "schema": "#/components/schemas/CollabRoomCreate",
+            "required": [
+              "name",
+              "type"
+            ],
+            "fields": [
+              "name",
+              "type",
+              "maxParticipants",
+              "scheduledStart",
+              "settings"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/CollabRoom",
+            "fields": [
+              "id",
+              "name",
+              "type",
+              "status",
+              "maxParticipants",
+              "currentParticipants",
+              "scheduledStart",
+              "joinUrl",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1collab~1rooms/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/collab/rooms/{roomId}",
+          "operation_id": "getCollabRoom",
+          "input": {
+            "schema": null,
+            "required": [
+              "roomId"
+            ],
+            "fields": [
+              "roomId"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/CollabRoom",
+            "fields": [
+              "id",
+              "name",
+              "type",
+              "status",
+              "maxParticipants",
+              "currentParticipants",
+              "scheduledStart",
+              "joinUrl",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1collab~1rooms~1{roomId}/get"
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/collab/rooms/{roomId}",
+          "operation_id": "deleteCollabRoom",
+          "input": {
+            "schema": null,
+            "required": [
+              "roomId"
+            ],
+            "fields": [
+              "roomId"
+            ]
+          },
+          "output": null,
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1collab~1rooms~1{roomId}/delete"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE collab API",
     "auth": {
       "scheme": "bearer",
@@ -634,7 +1627,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_collab_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -646,6 +1639,9 @@
     "path": "/v1/companion",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE companion API",
     "auth": {
       "scheme": "bearer",
@@ -666,6 +1662,9 @@
     "path": "/v1/competitive-intel",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE competitive-intel API",
     "auth": {
       "scheme": "bearer",
@@ -686,6 +1685,9 @@
     "path": "/v1/compliance",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE compliance API",
     "auth": {
       "scheme": "bearer",
@@ -702,10 +1704,202 @@
     "skill_url": "/.well-known/wave-skills/compliance.json"
   },
   {
+    "name": "composer",
+    "path": "/v1/compose",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/ComposeProposalCreate",
+        "required": [
+          "intent"
+        ],
+        "fields": [
+          "intent",
+          "budgetUsd",
+          "flowId",
+          "context"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/ComposeProposal",
+        "fields": [
+          "id",
+          "intent",
+          "why",
+          "stages",
+          "productIds",
+          "tools",
+          "scopes",
+          "priceRows",
+          "callShape",
+          "candidates",
+          "retrieval",
+          "next",
+          "typing",
+          "executes",
+          "grounding",
+          "groundedAt",
+          "manifestHash",
+          "engine",
+          "flowId"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1compose/post"
+      },
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/v1/compose",
+          "operation_id": "createComposeProposal",
+          "input": {
+            "schema": "#/components/schemas/ComposeProposalCreate",
+            "required": [
+              "intent"
+            ],
+            "fields": [
+              "intent",
+              "budgetUsd",
+              "flowId",
+              "context"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/ComposeProposal",
+            "fields": [
+              "id",
+              "intent",
+              "why",
+              "stages",
+              "productIds",
+              "tools",
+              "scopes",
+              "priceRows",
+              "callShape",
+              "candidates",
+              "retrieval",
+              "next",
+              "typing",
+              "executes",
+              "grounding",
+              "groundedAt",
+              "manifestHash",
+              "engine",
+              "flowId"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1compose/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/compose/proposals/{proposalId}",
+          "operation_id": "getComposeProposal",
+          "input": {
+            "schema": null,
+            "required": [
+              "proposalId"
+            ],
+            "fields": [
+              "proposalId"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/ComposeProposal",
+            "fields": [
+              "id",
+              "intent",
+              "why",
+              "stages",
+              "productIds",
+              "tools",
+              "scopes",
+              "priceRows",
+              "callShape",
+              "candidates",
+              "retrieval",
+              "next",
+              "typing",
+              "executes",
+              "grounding",
+              "groundedAt",
+              "manifestHash",
+              "engine",
+              "flowId"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1compose~1proposals~1{proposalId}/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/compose/run",
+          "operation_id": "runComposeProposal",
+          "input": {
+            "schema": "#/components/schemas/ComposeRunCreate",
+            "required": [
+              "proposalId",
+              "input"
+            ],
+            "fields": [
+              "proposalId",
+              "input",
+              "budgetUsd",
+              "idempotencyKey"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/ComposeRunReplay",
+            "fields": [
+              "runId",
+              "proposalId",
+              "status",
+              "code",
+              "replayed",
+              "createdAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1compose~1run/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
+    "summary": "WAVE composer API",
+    "auth": {
+      "scheme": "bearer",
+      "scope": "composer:write",
+      "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
+    },
+    "pricing": {
+      "model": "x402",
+      "meter": "wave_compose_builds",
+      "currency": "USDC",
+      "network": "base"
+    },
+    "doc_url": "https://gateway.wave.online/openapi.json",
+    "skill_url": "/.well-known/wave-skills/composer.json"
+  },
+  {
     "name": "connect",
     "path": "/v1/connect",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE connect API",
     "auth": {
       "scheme": "bearer",
@@ -726,6 +1920,9 @@
     "path": "/v1/cookie-consent",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE cookie-consent API",
     "auth": {
       "scheme": "bearer",
@@ -746,6 +1943,9 @@
     "path": "/v1/cost",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE cost API",
     "auth": {
       "scheme": "bearer",
@@ -766,6 +1966,10 @@
     "path": "/v1/creator",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "unrouted",
+    "unrouted_reason": "The gateway has no handler bound for this prefix: every request to it answers 404 ROUTE_NOT_MAPPED before authentication or payment is evaluated. The scope pair is vocabulary an existing key may carry, not a callable contract. Do not call this route and do not pay for it.",
     "summary": "WAVE creator API",
     "auth": {
       "scheme": "bearer",
@@ -786,6 +1990,10 @@
     "path": "/v1/creator-economy",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "unrouted",
+    "unrouted_reason": "The gateway has no handler bound for this prefix: every request to it answers 404 ROUTE_NOT_MAPPED before authentication or payment is evaluated. The scope pair is vocabulary an existing key may carry, not a callable contract. Do not call this route and do not pay for it.",
     "summary": "WAVE creator-economy API",
     "auth": {
       "scheme": "bearer",
@@ -806,6 +2014,10 @@
     "path": "/v1/creator-storefront",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "unrouted",
+    "unrouted_reason": "The gateway has no handler bound for this prefix: every request to it answers 404 ROUTE_NOT_MAPPED before authentication or payment is evaluated. The scope pair is vocabulary an existing key may carry, not a callable contract. Do not call this route and do not pay for it.",
     "summary": "WAVE creator-storefront API",
     "auth": {
       "scheme": "bearer",
@@ -826,6 +2038,9 @@
     "path": "/v1/crest",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE crest API",
     "auth": {
       "scheme": "bearer",
@@ -846,6 +2061,9 @@
     "path": "/v1/cro",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE cro API",
     "auth": {
       "scheme": "bearer",
@@ -866,6 +2084,9 @@
     "path": "/v1/data-exchange",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE data-exchange API",
     "auth": {
       "scheme": "bearer",
@@ -886,6 +2107,9 @@
     "path": "/v1/director",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE director API",
     "auth": {
       "scheme": "bearer",
@@ -906,6 +2130,9 @@
     "path": "/v1/discovery",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE discovery API",
     "auth": {
       "scheme": "bearer",
@@ -926,6 +2153,9 @@
     "path": "/v1/dispatch",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE dispatch API",
     "auth": {
       "scheme": "bearer",
@@ -946,6 +2176,9 @@
     "path": "/v1/dmca",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE dmca API",
     "auth": {
       "scheme": "bearer",
@@ -966,6 +2199,9 @@
     "path": "/v1/dsar",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE dsar API",
     "auth": {
       "scheme": "bearer",
@@ -986,6 +2222,9 @@
     "path": "/v1/dub",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE dub API",
     "auth": {
       "scheme": "bearer",
@@ -1006,6 +2245,9 @@
     "path": "/v1/echo",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE echo API",
     "auth": {
       "scheme": "bearer",
@@ -1026,6 +2268,9 @@
     "path": "/v1/edge",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE edge API",
     "auth": {
       "scheme": "bearer",
@@ -1051,6 +2296,207 @@
       "DELETE"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": null,
+        "required": [],
+        "fields": [
+          "status"
+        ]
+      },
+      "output": {
+        "schema": null,
+        "fields": [
+          "data",
+          "pagination"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1editor~1projects/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/editor/projects",
+          "operation_id": "listProjects",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "status"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1editor~1projects/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/editor/projects",
+          "operation_id": "createProject",
+          "input": {
+            "schema": "#/components/schemas/EditorProjectCreate",
+            "required": [
+              "name"
+            ],
+            "fields": [
+              "name",
+              "description",
+              "resolution",
+              "frameRate",
+              "aspectRatio"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/EditorProject",
+            "fields": [
+              "id",
+              "name",
+              "description",
+              "status",
+              "duration",
+              "resolution",
+              "frameRate",
+              "thumbnailUrl",
+              "exportUrl",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1editor~1projects/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/editor/projects/{projectId}",
+          "operation_id": "getProject",
+          "input": {
+            "schema": null,
+            "required": [
+              "projectId"
+            ],
+            "fields": [
+              "projectId"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/EditorProject",
+            "fields": [
+              "id",
+              "name",
+              "description",
+              "status",
+              "duration",
+              "resolution",
+              "frameRate",
+              "thumbnailUrl",
+              "exportUrl",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1editor~1projects~1{projectId}/get"
+          }
+        },
+        {
+          "method": "PATCH",
+          "path": "/v1/editor/projects/{projectId}",
+          "operation_id": "updateProject",
+          "input": {
+            "schema": "#/components/schemas/EditorProjectUpdate",
+            "required": [],
+            "fields": [
+              "name",
+              "description"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/EditorProject",
+            "fields": [
+              "id",
+              "name",
+              "description",
+              "status",
+              "duration",
+              "resolution",
+              "frameRate",
+              "thumbnailUrl",
+              "exportUrl",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1editor~1projects~1{projectId}/patch"
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/editor/projects/{projectId}",
+          "operation_id": "deleteProject",
+          "input": {
+            "schema": null,
+            "required": [
+              "projectId"
+            ],
+            "fields": [
+              "projectId"
+            ]
+          },
+          "output": null,
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1editor~1projects~1{projectId}/delete"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/editor/projects/{projectId}/export",
+          "operation_id": "exportProject",
+          "input": {
+            "schema": "#/components/schemas/ExportRequest",
+            "required": [],
+            "fields": [
+              "format",
+              "resolution",
+              "quality"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/ExportJob",
+            "fields": [
+              "id",
+              "status",
+              "progress",
+              "outputUrl"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1editor~1projects~1{projectId}~1export/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE editor API",
     "auth": {
       "scheme": "bearer",
@@ -1059,7 +2505,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_editor_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -1071,6 +2517,9 @@
     "path": "/v1/engagement",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE engagement API",
     "auth": {
       "scheme": "bearer",
@@ -1091,6 +2540,9 @@
     "path": "/v1/example",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE example API",
     "auth": {
       "scheme": "bearer",
@@ -1111,6 +2563,9 @@
     "path": "/v1/experiments",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE experiments API",
     "auth": {
       "scheme": "bearer",
@@ -1131,6 +2586,9 @@
     "path": "/v1/fleet",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE fleet API",
     "auth": {
       "scheme": "bearer",
@@ -1151,6 +2609,9 @@
     "path": "/v1/forecast",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE forecast API",
     "auth": {
       "scheme": "bearer",
@@ -1171,6 +2632,9 @@
     "path": "/v1/geo",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE geo API",
     "auth": {
       "scheme": "bearer",
@@ -1191,6 +2655,9 @@
     "path": "/v1/ghost-producer",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE ghost-producer API",
     "auth": {
       "scheme": "bearer",
@@ -1211,6 +2678,9 @@
     "path": "/v1/graphics-engine",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE graphics-engine API",
     "auth": {
       "scheme": "bearer",
@@ -1231,6 +2701,9 @@
     "path": "/v1/integrations",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE integrations API",
     "auth": {
       "scheme": "bearer",
@@ -1251,6 +2724,9 @@
     "path": "/v1/intel",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE intel API",
     "auth": {
       "scheme": "bearer",
@@ -1271,6 +2747,9 @@
     "path": "/v1/internal",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE internal API",
     "auth": {
       "scheme": "bearer",
@@ -1291,6 +2770,9 @@
     "path": "/v1/live-annotation",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE live-annotation API",
     "auth": {
       "scheme": "bearer",
@@ -1311,6 +2793,9 @@
     "path": "/v1/live-commerce",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE live-commerce API",
     "auth": {
       "scheme": "bearer",
@@ -1331,6 +2816,9 @@
     "path": "/v1/local-ai",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE local-ai API",
     "auth": {
       "scheme": "bearer",
@@ -1351,6 +2839,9 @@
     "path": "/v1/me",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE me API",
     "auth": {
       "scheme": "bearer",
@@ -1371,6 +2862,9 @@
     "path": "/v1/memory",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE memory API",
     "auth": {
       "scheme": "bearer",
@@ -1391,6 +2885,9 @@
     "path": "/v1/mesh",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE mesh API",
     "auth": {
       "scheme": "bearer",
@@ -1411,6 +2908,9 @@
     "path": "/v1/mobile-producer",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE mobile-producer API",
     "auth": {
       "scheme": "bearer",
@@ -1433,6 +2933,75 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/ModerateRequest",
+        "required": [
+          "content",
+          "contentType"
+        ],
+        "fields": [
+          "content",
+          "contentType",
+          "context",
+          "options"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/ModerateResponse",
+        "fields": [
+          "allowed",
+          "action",
+          "violations",
+          "confidence",
+          "reasoning",
+          "suggestedAction",
+          "metadata"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1moderate/post"
+      },
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/v1/moderate",
+          "operation_id": "moderateContent",
+          "input": {
+            "schema": "#/components/schemas/ModerateRequest",
+            "required": [
+              "content",
+              "contentType"
+            ],
+            "fields": [
+              "content",
+              "contentType",
+              "context",
+              "options"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/ModerateResponse",
+            "fields": [
+              "allowed",
+              "action",
+              "violations",
+              "confidence",
+              "reasoning",
+              "suggestedAction",
+              "metadata"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1moderate/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE moderate API",
     "auth": {
       "scheme": "bearer",
@@ -1453,6 +3022,9 @@
     "path": "/v1/monetization",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE monetization API",
     "auth": {
       "scheme": "bearer",
@@ -1473,6 +3045,9 @@
     "path": "/v1/monitoring",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE monitoring API",
     "auth": {
       "scheme": "bearer",
@@ -1493,6 +3068,9 @@
     "path": "/v1/mpp",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE mpp API",
     "auth": {
       "scheme": "bearer",
@@ -1513,6 +3091,9 @@
     "path": "/v1/ndi",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE ndi API",
     "auth": {
       "scheme": "bearer",
@@ -1533,6 +3114,9 @@
     "path": "/v1/nvr",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE nvr API",
     "auth": {
       "scheme": "bearer",
@@ -1553,6 +3137,9 @@
     "path": "/v1/orbit",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE orbit API",
     "auth": {
       "scheme": "bearer",
@@ -1573,6 +3160,9 @@
     "path": "/v1/organizations",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE organizations API",
     "auth": {
       "scheme": "bearer",
@@ -1593,6 +3183,9 @@
     "path": "/v1/outliers",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE outliers API",
     "auth": {
       "scheme": "bearer",
@@ -1613,6 +3206,9 @@
     "path": "/v1/payments",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE payments API",
     "auth": {
       "scheme": "bearer",
@@ -1636,6 +3232,144 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": null,
+        "required": [],
+        "fields": [
+          "lineId",
+          "direction"
+        ]
+      },
+      "output": {
+        "schema": null,
+        "fields": [
+          "data",
+          "pagination"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1phone~1calls/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/phone/calls",
+          "operation_id": "listCalls",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "lineId",
+              "direction"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1phone~1calls/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/phone/calls",
+          "operation_id": "makeCall",
+          "input": {
+            "schema": "#/components/schemas/CallCreate",
+            "required": [
+              "fromLineId",
+              "toNumber"
+            ],
+            "fields": [
+              "fromLineId",
+              "toNumber",
+              "record",
+              "transcribe",
+              "webhookUrl"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Call",
+            "fields": [
+              "id",
+              "lineId",
+              "direction",
+              "fromNumber",
+              "toNumber",
+              "status",
+              "duration",
+              "recordingUrl",
+              "transcript",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1phone~1calls/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/phone/lines",
+          "operation_id": "listPhoneLines",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1phone~1lines/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/phone/lines",
+          "operation_id": "provisionPhoneLine",
+          "input": {
+            "schema": "#/components/schemas/PhoneLineProvision",
+            "required": [],
+            "fields": [
+              "areaCode",
+              "country",
+              "capabilities",
+              "name"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/PhoneLine",
+            "fields": [
+              "id",
+              "number",
+              "name",
+              "status",
+              "capabilities",
+              "monthlyCost",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1phone~1lines/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE phone API",
     "auth": {
       "scheme": "bearer",
@@ -1659,6 +3393,147 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": null,
+      "output": {
+        "schema": null,
+        "fields": [
+          "data",
+          "pagination"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1podcast~1shows/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/podcast/shows",
+          "operation_id": "listPodcastShows",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1podcast~1shows/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/podcast/shows",
+          "operation_id": "createPodcastShow",
+          "input": {
+            "schema": "#/components/schemas/PodcastShowCreate",
+            "required": [
+              "name"
+            ],
+            "fields": [
+              "name",
+              "description",
+              "category",
+              "language",
+              "explicit",
+              "coverUrl"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/PodcastShow",
+            "fields": [
+              "id",
+              "name",
+              "description",
+              "coverUrl",
+              "rssUrl",
+              "category",
+              "language",
+              "explicit",
+              "episodeCount",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1podcast~1shows/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/podcast/shows/{showId}/episodes",
+          "operation_id": "listPodcastEpisodes",
+          "input": {
+            "schema": null,
+            "required": [
+              "showId"
+            ],
+            "fields": [
+              "showId"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1podcast~1shows~1{showId}~1episodes/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/podcast/shows/{showId}/episodes",
+          "operation_id": "createPodcastEpisode",
+          "input": {
+            "schema": "#/components/schemas/PodcastEpisodeCreate",
+            "required": [
+              "title",
+              "audioUrl"
+            ],
+            "fields": [
+              "title",
+              "description",
+              "audioUrl",
+              "episodeNumber",
+              "seasonNumber",
+              "publishedAt"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/PodcastEpisode",
+            "fields": [
+              "id",
+              "showId",
+              "title",
+              "description",
+              "audioUrl",
+              "duration",
+              "episodeNumber",
+              "seasonNumber",
+              "publishedAt",
+              "status",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1podcast~1shows~1{showId}~1episodes/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE podcast API",
     "auth": {
       "scheme": "bearer",
@@ -1667,7 +3542,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_podcast_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -1679,6 +3554,9 @@
     "path": "/v1/preferences",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE preferences API",
     "auth": {
       "scheme": "bearer",
@@ -1699,6 +3577,9 @@
     "path": "/v1/presence",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE presence API",
     "auth": {
       "scheme": "bearer",
@@ -1719,6 +3600,9 @@
     "path": "/v1/privy",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE privy API",
     "auth": {
       "scheme": "bearer",
@@ -1739,6 +3623,9 @@
     "path": "/v1/production",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE production API",
     "auth": {
       "scheme": "bearer",
@@ -1759,6 +3646,9 @@
     "path": "/v1/production-graph",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE production-graph API",
     "auth": {
       "scheme": "bearer",
@@ -1782,6 +3672,220 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/CreateProductionRequest",
+        "required": [
+          "title"
+        ],
+        "fields": [
+          "title",
+          "description",
+          "layout",
+          "stream_ids",
+          "record"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/Production",
+        "fields": [
+          "id",
+          "organization_id",
+          "user_id",
+          "title",
+          "description",
+          "status",
+          "layout",
+          "stream_ids",
+          "record",
+          "program_camera_index",
+          "preview_camera_index",
+          "last_transition",
+          "overlays",
+          "settings",
+          "started_at",
+          "ended_at",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1productions/post"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/productions",
+          "operation_id": "listProductions",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "limit",
+              "offset",
+              "status"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "productions",
+              "total",
+              "limit",
+              "offset"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1productions/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/productions",
+          "operation_id": "createProduction",
+          "input": {
+            "schema": "#/components/schemas/CreateProductionRequest",
+            "required": [
+              "title"
+            ],
+            "fields": [
+              "title",
+              "description",
+              "layout",
+              "stream_ids",
+              "record"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Production",
+            "fields": [
+              "id",
+              "organization_id",
+              "user_id",
+              "title",
+              "description",
+              "status",
+              "layout",
+              "stream_ids",
+              "record",
+              "program_camera_index",
+              "preview_camera_index",
+              "last_transition",
+              "overlays",
+              "settings",
+              "started_at",
+              "ended_at",
+              "created_at",
+              "updated_at"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1productions/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/productions/{productionId}",
+          "operation_id": "getProduction",
+          "input": null,
+          "output": {
+            "schema": "#/components/schemas/Production",
+            "fields": [
+              "id",
+              "organization_id",
+              "user_id",
+              "title",
+              "description",
+              "status",
+              "layout",
+              "stream_ids",
+              "record",
+              "program_camera_index",
+              "preview_camera_index",
+              "last_transition",
+              "overlays",
+              "settings",
+              "started_at",
+              "ended_at",
+              "created_at",
+              "updated_at"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1productions~1{productionId}/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/productions/{productionId}/camera",
+          "operation_id": "switchProductionCamera",
+          "input": {
+            "schema": "#/components/schemas/SwitchCameraRequest",
+            "required": [
+              "cameraIndex",
+              "bus"
+            ],
+            "fields": [
+              "cameraIndex",
+              "bus",
+              "transition"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "productionId",
+              "bus",
+              "cameraIndex",
+              "transition",
+              "switchedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1productions~1{productionId}~1camera/post"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/productions/{productionId}/overlay",
+          "operation_id": "setProductionOverlay",
+          "input": {
+            "schema": null,
+            "required": [
+              "graphic_id",
+              "action"
+            ],
+            "fields": [
+              "graphic_id",
+              "action",
+              "data"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "productionId",
+              "graphicId",
+              "action",
+              "data",
+              "updatedAt",
+              "overlays"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1productions~1{productionId}~1overlay/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE productions API",
     "auth": {
       "scheme": "bearer",
@@ -1802,6 +3906,9 @@
     "path": "/v1/products",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE products API",
     "auth": {
       "scheme": "bearer",
@@ -1824,6 +3931,9 @@
       "GET"
     ],
     "methods_source": "gateway",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE pulse API",
     "auth": {
       "scheme": "bearer",
@@ -1844,6 +3954,9 @@
     "path": "/v1/qr-system",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE qr-system API",
     "auth": {
       "scheme": "bearer",
@@ -1864,6 +3977,9 @@
     "path": "/v1/quality-scorecard",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE quality-scorecard API",
     "auth": {
       "scheme": "bearer",
@@ -1884,6 +4000,9 @@
     "path": "/v1/radar",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE radar API",
     "auth": {
       "scheme": "bearer",
@@ -1904,6 +4023,9 @@
     "path": "/v1/rate-limit",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE rate-limit API",
     "auth": {
       "scheme": "bearer",
@@ -1924,6 +4046,9 @@
     "path": "/v1/recommend",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE recommend API",
     "auth": {
       "scheme": "bearer",
@@ -1947,6 +4072,89 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/RenderBrief",
+        "required": [
+          "template",
+          "props"
+        ],
+        "fields": [
+          "template",
+          "props"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/RenderResult",
+        "fields": []
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1render/post"
+      },
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/v1/render",
+          "operation_id": "renderVideo",
+          "input": {
+            "schema": "#/components/schemas/RenderBrief",
+            "required": [
+              "template",
+              "props"
+            ],
+            "fields": [
+              "template",
+              "props"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/RenderResult",
+            "fields": []
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1render/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/render/{jobId}",
+          "operation_id": "renderPoll",
+          "input": null,
+          "output": {
+            "schema": "#/components/schemas/RenderJobView",
+            "fields": [
+              "jobId",
+              "status",
+              "url",
+              "expiresAtSec",
+              "sha256",
+              "bytes",
+              "meters",
+              "error"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1render~1{jobId}/get"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/render/{jobId}/events",
+          "operation_id": "renderEvents",
+          "input": null,
+          "output": null,
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1render~1{jobId}~1events/get"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE render API",
     "auth": {
       "scheme": "bearer",
@@ -1967,6 +4175,9 @@
     "path": "/v1/remotion",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE remotion API",
     "auth": {
       "scheme": "bearer",
@@ -1987,6 +4198,9 @@
     "path": "/v1/renders",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE renders API",
     "auth": {
       "scheme": "bearer",
@@ -2007,6 +4221,9 @@
     "path": "/v1/replay",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE replay API",
     "auth": {
       "scheme": "bearer",
@@ -2027,6 +4244,9 @@
     "path": "/v1/replay-engine",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE replay-engine API",
     "auth": {
       "scheme": "bearer",
@@ -2047,6 +4267,9 @@
     "path": "/v1/routes",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE routes API",
     "auth": {
       "scheme": "bearer",
@@ -2067,6 +4290,9 @@
     "path": "/v1/runtime",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE runtime API",
     "auth": {
       "scheme": "bearer",
@@ -2087,6 +4313,9 @@
     "path": "/v1/sandbox",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE sandbox API",
     "auth": {
       "scheme": "bearer",
@@ -2107,6 +4336,9 @@
     "path": "/v1/scene",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE scene API",
     "auth": {
       "scheme": "bearer",
@@ -2131,6 +4363,138 @@
       "DELETE"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/SearchRequest",
+        "required": [
+          "query"
+        ],
+        "fields": [
+          "query",
+          "namespace",
+          "topK"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/SearchResponse",
+        "fields": [
+          "results",
+          "metadata"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1search/post"
+      },
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/v1/search",
+          "operation_id": "search",
+          "input": {
+            "schema": "#/components/schemas/SearchRequest",
+            "required": [
+              "query"
+            ],
+            "fields": [
+              "query",
+              "namespace",
+              "topK"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/SearchResponse",
+            "fields": [
+              "results",
+              "metadata"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1search/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/search/analytics",
+          "operation_id": "searchAnalytics",
+          "input": null,
+          "output": {
+            "schema": "#/components/schemas/SearchAnalyticsResponse",
+            "fields": [
+              "org",
+              "generated_at",
+              "insights"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1search~1analytics/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/search/index",
+          "operation_id": "searchIndex",
+          "input": {
+            "schema": "#/components/schemas/SearchIndexRequest",
+            "required": [
+              "id",
+              "namespace",
+              "text"
+            ],
+            "fields": [
+              "id",
+              "namespace",
+              "title",
+              "text",
+              "metadata",
+              "docs"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/SearchIndexResponse",
+            "fields": [
+              "indexed",
+              "ids"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1search~1index/post"
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/search/index/{id}",
+          "operation_id": "searchDelete",
+          "input": {
+            "schema": null,
+            "required": [
+              "id",
+              "namespace"
+            ],
+            "fields": [
+              "id",
+              "namespace"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/SearchDeleteResponse",
+            "fields": [
+              "deleted",
+              "id"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1search~1index~1{id}/delete"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE search API",
     "auth": {
       "scheme": "bearer",
@@ -2154,6 +4518,142 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/SentimentAnalysisCreate",
+        "required": [
+          "sourceId",
+          "sourceType"
+        ],
+        "fields": [
+          "sourceId",
+          "sourceType",
+          "text",
+          "includeEmotions",
+          "includeTopics",
+          "includeSummary",
+          "segmentAnalysis"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/SentimentAnalysis",
+        "fields": [
+          "id",
+          "sourceId",
+          "sourceType",
+          "status",
+          "overallSentiment",
+          "overallScore",
+          "confidence",
+          "summary",
+          "organizationId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1sentiment/post"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/sentiment",
+          "operation_id": "listSentimentAnalyses",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "status"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1sentiment/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/sentiment",
+          "operation_id": "createSentimentAnalysis",
+          "input": {
+            "schema": "#/components/schemas/SentimentAnalysisCreate",
+            "required": [
+              "sourceId",
+              "sourceType"
+            ],
+            "fields": [
+              "sourceId",
+              "sourceType",
+              "text",
+              "includeEmotions",
+              "includeTopics",
+              "includeSummary",
+              "segmentAnalysis"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/SentimentAnalysis",
+            "fields": [
+              "id",
+              "sourceId",
+              "sourceType",
+              "status",
+              "overallSentiment",
+              "overallScore",
+              "confidence",
+              "summary",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1sentiment/post"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/sentiment/analyze",
+          "operation_id": "analyzeText",
+          "input": {
+            "schema": null,
+            "required": [
+              "text"
+            ],
+            "fields": [
+              "text",
+              "includeEmotions",
+              "includeTopics"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "sentiment",
+              "score",
+              "confidence",
+              "emotions",
+              "topics"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1sentiment~1analyze/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE sentiment API",
     "auth": {
       "scheme": "bearer",
@@ -2162,7 +4662,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_sentiment_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -2174,6 +4674,9 @@
     "path": "/v1/signal",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE signal API",
     "auth": {
       "scheme": "bearer",
@@ -2194,6 +4697,9 @@
     "path": "/v1/signal-generator",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE signal-generator API",
     "auth": {
       "scheme": "bearer",
@@ -2214,6 +4720,9 @@
     "path": "/v1/signal-verifier",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE signal-verifier API",
     "auth": {
       "scheme": "bearer",
@@ -2234,6 +4743,9 @@
     "path": "/v1/slides-to-video",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE slides-to-video API",
     "auth": {
       "scheme": "bearer",
@@ -2254,6 +4766,9 @@
     "path": "/v1/social-distribution",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE social-distribution API",
     "auth": {
       "scheme": "bearer",
@@ -2274,6 +4789,9 @@
     "path": "/v1/sports-data",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE sports-data API",
     "auth": {
       "scheme": "bearer",
@@ -2294,6 +4812,9 @@
     "path": "/v1/srt",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE srt API",
     "auth": {
       "scheme": "bearer",
@@ -2302,7 +4823,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_srt_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -2314,6 +4835,9 @@
     "path": "/v1/stream-router",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE stream-router API",
     "auth": {
       "scheme": "bearer",
@@ -2334,6 +4858,9 @@
     "path": "/v1/streamdeck",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE streamdeck API",
     "auth": {
       "scheme": "bearer",
@@ -2354,6 +4881,9 @@
     "path": "/v1/streaming",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE streaming API",
     "auth": {
       "scheme": "bearer",
@@ -2377,6 +4907,296 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/CreateStreamRequest",
+        "required": [
+          "title"
+        ],
+        "fields": [
+          "title",
+          "description",
+          "protocol",
+          "recording",
+          "privacy",
+          "metadata"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/Stream",
+        "fields": [
+          "id",
+          "title",
+          "description",
+          "protocol",
+          "status",
+          "privacy",
+          "viewer_count",
+          "peak_viewer_count",
+          "ingest_url",
+          "playback_url",
+          "cloudflare_live_input_uid",
+          "metadata",
+          "started_at",
+          "ended_at",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1streams/post"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/streams",
+          "operation_id": "listStreams",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "limit",
+              "offset",
+              "status"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "streams",
+              "total",
+              "limit",
+              "offset"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1streams/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/streams",
+          "operation_id": "createStream",
+          "input": {
+            "schema": "#/components/schemas/CreateStreamRequest",
+            "required": [
+              "title"
+            ],
+            "fields": [
+              "title",
+              "description",
+              "protocol",
+              "recording",
+              "privacy",
+              "metadata"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Stream",
+            "fields": [
+              "id",
+              "title",
+              "description",
+              "protocol",
+              "status",
+              "privacy",
+              "viewer_count",
+              "peak_viewer_count",
+              "ingest_url",
+              "playback_url",
+              "cloudflare_live_input_uid",
+              "metadata",
+              "started_at",
+              "ended_at",
+              "created_at",
+              "updated_at"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1streams/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/streams/{streamId}",
+          "operation_id": "getStream",
+          "input": null,
+          "output": {
+            "schema": "#/components/schemas/Stream",
+            "fields": [
+              "id",
+              "title",
+              "description",
+              "protocol",
+              "status",
+              "privacy",
+              "viewer_count",
+              "peak_viewer_count",
+              "ingest_url",
+              "playback_url",
+              "cloudflare_live_input_uid",
+              "metadata",
+              "started_at",
+              "ended_at",
+              "created_at",
+              "updated_at"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1streams~1{streamId}/get"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/streams/{streamId}/analytics",
+          "operation_id": "getStreamAnalytics",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "from",
+              "to"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "stream_id",
+              "metrics",
+              "timeseries"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1streams~1{streamId}~1analytics/get"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/streams/{streamId}/highlights",
+          "operation_id": "listStreamHighlights",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "limit"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "highlights",
+              "stream_id",
+              "limit"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1streams~1{streamId}~1highlights/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/streams/{streamId}/highlights",
+          "operation_id": "markStreamHighlight",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "label",
+              "timestamp",
+              "confidence",
+              "duration_seconds"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Highlight",
+            "fields": [
+              "id",
+              "stream_id",
+              "organization_id",
+              "title",
+              "settings",
+              "created_at"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1streams~1{streamId}~1highlights/post"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/streams/{streamId}/start",
+          "operation_id": "startStream",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": [
+              "stream_id",
+              "session_id",
+              "status",
+              "ingest_url",
+              "started_at",
+              "message"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1streams~1{streamId}~1start/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/streams/{streamId}/status",
+          "operation_id": "getStreamStatus",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": [
+              "stream_id",
+              "status",
+              "current_viewers",
+              "protocol_active",
+              "created_at",
+              "updated_at"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1streams~1{streamId}~1status/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/streams/{streamId}/stop",
+          "operation_id": "stopStream",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": [
+              "stream_id",
+              "session_id",
+              "status",
+              "ended_at",
+              "duration_minutes",
+              "viewer_count_peak",
+              "message"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1streams~1{streamId}~1stop/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE streams API",
     "auth": {
       "scheme": "bearer",
@@ -2397,6 +5217,9 @@
     "path": "/v1/studio",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE studio API",
     "auth": {
       "scheme": "bearer",
@@ -2405,7 +5228,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_studio_ai_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -2420,6 +5243,123 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": null,
+        "required": [],
+        "fields": [
+          "type",
+          "status"
+        ]
+      },
+      "output": {
+        "schema": null,
+        "fields": [
+          "data",
+          "pagination"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1studio-ai~1enhancements/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/studio-ai/enhancements",
+          "operation_id": "listEnhancements",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "type",
+              "status"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1studio-ai~1enhancements/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/studio-ai/enhancements",
+          "operation_id": "createEnhancement",
+          "input": {
+            "schema": "#/components/schemas/EnhancementCreate",
+            "required": [
+              "videoId",
+              "type"
+            ],
+            "fields": [
+              "videoId",
+              "type",
+              "settings",
+              "priority"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Enhancement",
+            "fields": [
+              "id",
+              "videoId",
+              "type",
+              "status",
+              "progress",
+              "inputUrl",
+              "outputUrl",
+              "settings",
+              "creditsUsed",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1studio-ai~1enhancements/post"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/studio-ai/preview",
+          "operation_id": "previewEnhancement",
+          "input": {
+            "schema": "#/components/schemas/EnhancementPreviewRequest",
+            "required": [
+              "videoId",
+              "type"
+            ],
+            "fields": [
+              "videoId",
+              "type",
+              "timestamp",
+              "settings"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "beforeUrl",
+              "afterUrl"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1studio-ai~1preview/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE studio-ai API",
     "auth": {
       "scheme": "bearer",
@@ -2428,7 +5368,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_studio_ai_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -2440,6 +5380,9 @@
     "path": "/v1/studio-automation",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE studio-automation API",
     "auth": {
       "scheme": "bearer",
@@ -2460,6 +5403,9 @@
     "path": "/v1/switcher",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE switcher API",
     "auth": {
       "scheme": "bearer",
@@ -2480,6 +5426,9 @@
     "path": "/v1/tempo",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE tempo API",
     "auth": {
       "scheme": "bearer",
@@ -2500,6 +5449,9 @@
     "path": "/v1/transcode",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE transcode API",
     "auth": {
       "scheme": "bearer",
@@ -2524,6 +5476,168 @@
       "DELETE"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/TranscriptionCreate",
+        "required": [
+          "sourceId",
+          "sourceType"
+        ],
+        "fields": [
+          "sourceId",
+          "sourceType",
+          "language",
+          "speakerLabels",
+          "wordTimestamps",
+          "punctuation",
+          "model"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/Transcription",
+        "fields": [
+          "id",
+          "sourceId",
+          "sourceType",
+          "status",
+          "language",
+          "text",
+          "duration",
+          "wordCount",
+          "confidence",
+          "organizationId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1transcribe/post"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/transcribe",
+          "operation_id": "listTranscriptions",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "status"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "data",
+              "pagination"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1transcribe/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/transcribe",
+          "operation_id": "createTranscription",
+          "input": {
+            "schema": "#/components/schemas/TranscriptionCreate",
+            "required": [
+              "sourceId",
+              "sourceType"
+            ],
+            "fields": [
+              "sourceId",
+              "sourceType",
+              "language",
+              "speakerLabels",
+              "wordTimestamps",
+              "punctuation",
+              "model"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Transcription",
+            "fields": [
+              "id",
+              "sourceId",
+              "sourceType",
+              "status",
+              "language",
+              "text",
+              "duration",
+              "wordCount",
+              "confidence",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1transcribe/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/transcribe/{transcriptionId}",
+          "operation_id": "getTranscription",
+          "input": {
+            "schema": null,
+            "required": [
+              "transcriptionId"
+            ],
+            "fields": [
+              "transcriptionId"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Transcription",
+            "fields": [
+              "id",
+              "sourceId",
+              "sourceType",
+              "status",
+              "language",
+              "text",
+              "duration",
+              "wordCount",
+              "confidence",
+              "organizationId",
+              "createdAt",
+              "updatedAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1transcribe~1{transcriptionId}/get"
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/transcribe/{transcriptionId}",
+          "operation_id": "deleteTranscription",
+          "input": {
+            "schema": null,
+            "required": [
+              "transcriptionId"
+            ],
+            "fields": [
+              "transcriptionId"
+            ]
+          },
+          "output": null,
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1transcribe~1{transcriptionId}/delete"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE transcribe API",
     "auth": {
       "scheme": "bearer",
@@ -2544,6 +5658,9 @@
     "path": "/v1/twilio",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE twilio API",
     "auth": {
       "scheme": "bearer",
@@ -2564,6 +5681,9 @@
     "path": "/v1/unsubscribe",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE unsubscribe API",
     "auth": {
       "scheme": "bearer",
@@ -2584,6 +5704,9 @@
     "path": "/v1/usb-relay",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE usb-relay API",
     "auth": {
       "scheme": "bearer",
@@ -2604,6 +5727,9 @@
     "path": "/v1/vault",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE vault API",
     "auth": {
       "scheme": "bearer",
@@ -2624,6 +5750,9 @@
     "path": "/v1/video-gen",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE video-gen API",
     "auth": {
       "scheme": "bearer",
@@ -2644,6 +5773,9 @@
     "path": "/v1/viewer",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE viewer API",
     "auth": {
       "scheme": "bearer",
@@ -2664,6 +5796,9 @@
     "path": "/v1/virtual-studio",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE virtual-studio API",
     "auth": {
       "scheme": "bearer",
@@ -2684,6 +5819,9 @@
     "path": "/v1/vision",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE vision API",
     "auth": {
       "scheme": "bearer",
@@ -2704,6 +5842,9 @@
     "path": "/v1/visual-programming",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE visual-programming API",
     "auth": {
       "scheme": "bearer",
@@ -2724,6 +5865,9 @@
     "path": "/v1/vod",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE vod API",
     "auth": {
       "scheme": "bearer",
@@ -2747,6 +5891,126 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/VoiceCloneRequest",
+        "required": [
+          "name",
+          "audioFiles"
+        ],
+        "fields": [
+          "name",
+          "audioFiles",
+          "description",
+          "labels"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/Voice",
+        "fields": [
+          "id",
+          "name",
+          "description",
+          "previewUrl",
+          "category",
+          "labels"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1voice~1clone/post"
+      },
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/v1/voice/clone",
+          "operation_id": "cloneVoice",
+          "input": {
+            "schema": "#/components/schemas/VoiceCloneRequest",
+            "required": [
+              "name",
+              "audioFiles"
+            ],
+            "fields": [
+              "name",
+              "audioFiles",
+              "description",
+              "labels"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Voice",
+            "fields": [
+              "id",
+              "name",
+              "description",
+              "previewUrl",
+              "category",
+              "labels"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1voice~1clone/post"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/voice/generate",
+          "operation_id": "generateSpeech",
+          "input": {
+            "schema": "#/components/schemas/VoiceGenerateRequest",
+            "required": [
+              "voiceId",
+              "text"
+            ],
+            "fields": [
+              "voiceId",
+              "text",
+              "stability",
+              "similarityBoost",
+              "style",
+              "model",
+              "outputFormat",
+              "timestamps"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": []
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1voice~1generate/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/voice/voices",
+          "operation_id": "listVoices",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "category",
+              "language"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "voices"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1voice~1voices/get"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE voice API",
     "auth": {
       "scheme": "bearer",
@@ -2767,6 +6031,9 @@
     "path": "/v1/wave-console",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE wave-console API",
     "auth": {
       "scheme": "bearer",
@@ -2787,6 +6054,9 @@
     "path": "/v1/wave-node",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE wave-node API",
     "auth": {
       "scheme": "bearer",
@@ -2807,6 +6077,9 @@
     "path": "/v1/wave-sdk",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE wave-sdk API",
     "auth": {
       "scheme": "bearer",
@@ -2827,6 +6100,9 @@
     "path": "/v1/wave-tokens",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE wave-tokens API",
     "auth": {
       "scheme": "bearer",
@@ -2847,6 +6123,9 @@
     "path": "/v1/webrtc",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE webrtc API",
     "auth": {
       "scheme": "bearer",
@@ -2867,6 +6146,9 @@
     "path": "/v1/workflow-engine",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE workflow-engine API",
     "auth": {
       "scheme": "bearer",
@@ -2887,6 +6169,9 @@
     "path": "/v1/x402",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE x402 API",
     "auth": {
       "scheme": "bearer",
@@ -2907,6 +6192,9 @@
     "path": "/v1/zero-trust-vault",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE zero-trust-vault API",
     "auth": {
       "scheme": "bearer",
@@ -2927,6 +6215,9 @@
     "path": "/v1/zoom",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE zoom API",
     "auth": {
       "scheme": "bearer",
@@ -2947,6 +6238,9 @@
     "path": "/v1/zoom-integration",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE zoom-integration API",
     "auth": {
       "scheme": "bearer",
@@ -2967,6 +6261,9 @@
     "path": "/v1/rtmp",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE rtmp API",
     "auth": {
       "scheme": "bearer",
@@ -2987,6 +6284,9 @@
     "path": "/v1/dante",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE dante API",
     "auth": {
       "scheme": "bearer",
@@ -3007,6 +6307,9 @@
     "path": "/v1/omt",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE omt API",
     "auth": {
       "scheme": "bearer",
@@ -3015,7 +6318,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_omt_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -3030,6 +6333,91 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": null,
+        "required": [],
+        "fields": [
+          "x-wave-declare-protocol"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/MoqJoinToken",
+        "fields": [
+          "ok",
+          "relayWsUrl",
+          "joinToken",
+          "expiresIn",
+          "ns",
+          "track",
+          "role",
+          "scope",
+          "protocol"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1moq~1publish~1{ns}~1{track}/post"
+      },
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/v1/moq/publish/{ns}/{track}",
+          "operation_id": "mintMoqPublishToken",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "x-wave-declare-protocol"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/MoqJoinToken",
+            "fields": [
+              "ok",
+              "relayWsUrl",
+              "joinToken",
+              "expiresIn",
+              "ns",
+              "track",
+              "role",
+              "scope",
+              "protocol"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1moq~1publish~1{ns}~1{track}/post"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/v1/moq/subscribe/{ns}/{track}",
+          "operation_id": "mintMoqSubscribeToken",
+          "input": null,
+          "output": {
+            "schema": "#/components/schemas/MoqJoinToken",
+            "fields": [
+              "ok",
+              "relayWsUrl",
+              "joinToken",
+              "expiresIn",
+              "ns",
+              "track",
+              "role",
+              "scope",
+              "protocol"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1moq~1subscribe~1{ns}~1{track}/get"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE moq API",
     "auth": {
       "scheme": "bearer",
@@ -3050,6 +6438,9 @@
     "path": "/v1/mxl",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE mxl API",
     "auth": {
       "scheme": "bearer",
@@ -3070,6 +6461,9 @@
     "path": "/v1/rist",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE rist API",
     "auth": {
       "scheme": "bearer",
@@ -3090,6 +6484,9 @@
     "path": "/v1/aes67",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE aes67 API",
     "auth": {
       "scheme": "bearer",
@@ -3098,7 +6495,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_aes67_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -3110,6 +6507,9 @@
     "path": "/v1/st2110",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE st2110 API",
     "auth": {
       "scheme": "bearer",
@@ -3118,7 +6518,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_st2110_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -3130,6 +6530,9 @@
     "path": "/v1/volumetric",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE volumetric API",
     "auth": {
       "scheme": "bearer",
@@ -3152,6 +6555,57 @@
       "GET"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": null,
+        "required": [],
+        "fields": [
+          "from",
+          "to"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/UsageResponse",
+        "fields": [
+          "org",
+          "range",
+          "totals"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1usage/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/usage",
+          "operation_id": "getUsage",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "from",
+              "to"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/UsageResponse",
+            "fields": [
+              "org",
+              "range",
+              "totals"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1usage/get"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE usage API",
     "auth": {
       "scheme": "bearer",
@@ -3159,7 +6613,7 @@
       "acquire": "https://gateway.wave.online/.well-known/wave-scopes.json"
     },
     "pricing": {
-      "model": "x402",
+      "model": "free",
       "meter": null,
       "currency": "USDC",
       "network": "base"
@@ -3172,6 +6626,9 @@
     "path": "/v1/stream",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE stream API",
     "auth": {
       "scheme": "bearer",
@@ -3192,6 +6649,9 @@
     "path": "/v1/perception",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE perception API",
     "auth": {
       "scheme": "bearer",
@@ -3212,6 +6672,9 @@
     "path": "/v1/embeddings",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE embeddings API",
     "auth": {
       "scheme": "bearer",
@@ -3232,6 +6695,9 @@
     "path": "/v1/pipelines",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE pipelines API",
     "auth": {
       "scheme": "bearer",
@@ -3252,6 +6718,9 @@
     "path": "/v1/router",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE router API",
     "auth": {
       "scheme": "bearer",
@@ -3274,6 +6743,57 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": null,
+        "required": [
+          "operations"
+        ],
+        "fields": [
+          "operations"
+        ]
+      },
+      "output": {
+        "schema": null,
+        "fields": [
+          "operations",
+          "results"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1batch/post"
+      },
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/v1/batch",
+          "operation_id": "batchOperations",
+          "input": {
+            "schema": null,
+            "required": [
+              "operations"
+            ],
+            "fields": [
+              "operations"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "operations",
+              "results"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1batch/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE batch API",
     "auth": {
       "scheme": "bearer",
@@ -3294,6 +6814,9 @@
     "path": "/v1/realtime",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE realtime API",
     "auth": {
       "scheme": "bearer",
@@ -3314,6 +6837,10 @@
     "path": "/v1/mux",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "unrouted",
+    "unrouted_reason": "The gateway has no handler bound for this prefix: every request to it answers 404 ROUTE_NOT_MAPPED before authentication or payment is evaluated. The scope pair is vocabulary an existing key may carry, not a callable contract. Do not call this route and do not pay for it.",
     "summary": "WAVE mux API",
     "auth": {
       "scheme": "bearer",
@@ -3336,6 +6863,35 @@
       "GET"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": null,
+      "output": {
+        "schema": null,
+        "fields": []
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1engine~1capabilities/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/engine/capabilities",
+          "operation_id": "engineCapabilities",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": []
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1engine~1capabilities/get"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE engine API",
     "auth": {
       "scheme": "bearer",
@@ -3344,7 +6900,7 @@
     },
     "pricing": {
       "model": "x402",
-      "meter": null,
+      "meter": "wave_engine_minutes",
       "currency": "USDC",
       "network": "base"
     },
@@ -3356,6 +6912,9 @@
     "path": "/v1/acuity",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE acuity API",
     "auth": {
       "scheme": "bearer",
@@ -3376,6 +6935,9 @@
     "path": "/v1/whip",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE whip API",
     "auth": {
       "scheme": "bearer",
@@ -3396,6 +6958,9 @@
     "path": "/v1/whep",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE whep API",
     "auth": {
       "scheme": "bearer",
@@ -3419,6 +6984,56 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": null,
+      "output": {
+        "schema": null,
+        "fields": []
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1gpu~1infer/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/gpu/infer",
+          "operation_id": "gpuStatus",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": []
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1gpu~1infer/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/gpu/infer",
+          "operation_id": "gpuInfer",
+          "input": {
+            "schema": null,
+            "required": [],
+            "fields": [
+              "model",
+              "input"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": []
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1gpu~1infer/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE gpu API",
     "auth": {
       "scheme": "bearer",
@@ -3439,6 +7054,9 @@
     "path": "/v1/visual-qa",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE visual-qa API",
     "auth": {
       "scheme": "bearer",
@@ -3461,6 +7079,54 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": null,
+      "output": {
+        "schema": null,
+        "fields": []
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1live~1caption/post"
+      },
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/v1/live/caption",
+          "operation_id": "transcribeLiveAudio",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": []
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1live~1caption/post"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/live/pipeline",
+          "operation_id": "startLivePipeline",
+          "input": null,
+          "output": {
+            "schema": null,
+            "fields": [
+              "transcript",
+              "duration",
+              "llm",
+              "stream_id"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1live~1pipeline/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE live API",
     "auth": {
       "scheme": "bearer",
@@ -3481,6 +7147,9 @@
     "path": "/v1/listen",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE listen API",
     "auth": {
       "scheme": "bearer",
@@ -3504,6 +7173,101 @@
       "DELETE"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": "#/components/schemas/BraidPublishRequest",
+        "required": [
+          "ns",
+          "sources"
+        ],
+        "fields": [
+          "ns",
+          "sources",
+          "windowMs",
+          "sampleRate"
+        ]
+      },
+      "output": {
+        "schema": "#/components/schemas/BraidPublishResult",
+        "fields": [
+          "ns",
+          "track",
+          "channels",
+          "windowMs",
+          "objectBytes",
+          "machineId",
+          "status"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1braid~1publish/post"
+      },
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/v1/braid/publish",
+          "operation_id": "publishBraidAudio",
+          "input": {
+            "schema": "#/components/schemas/BraidPublishRequest",
+            "required": [
+              "ns",
+              "sources"
+            ],
+            "fields": [
+              "ns",
+              "sources",
+              "windowMs",
+              "sampleRate"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/BraidPublishResult",
+            "fields": [
+              "ns",
+              "track",
+              "channels",
+              "windowMs",
+              "objectBytes",
+              "machineId",
+              "status"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1braid~1publish/post"
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/braid/publish/{ns}",
+          "operation_id": "stopBraidAudio",
+          "input": {
+            "schema": null,
+            "required": [
+              "ns"
+            ],
+            "fields": [
+              "ns"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/BraidStopResult",
+            "fields": [
+              "ns",
+              "machineId",
+              "status"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1braid~1publish~1{ns}/delete"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE braid API",
     "auth": {
       "scheme": "bearer",
@@ -3524,6 +7288,9 @@
     "path": "/v1/enhance",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE enhance API",
     "auth": {
       "scheme": "bearer",
@@ -3544,6 +7311,9 @@
     "path": "/v1/review",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE review API",
     "auth": {
       "scheme": "bearer",
@@ -3564,6 +7334,9 @@
     "path": "/v1/encode",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE encode API",
     "auth": {
       "scheme": "bearer",
@@ -3584,6 +7357,9 @@
     "path": "/v1/decode",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE decode API",
     "auth": {
       "scheme": "bearer",
@@ -3604,6 +7380,9 @@
     "path": "/v1/mlvc",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "served",
     "summary": "WAVE mlvc API",
     "auth": {
       "scheme": "bearer",
@@ -3624,6 +7403,10 @@
     "path": "/v1/ops",
     "methods": [],
     "methods_source": "unknown",
+    "io": null,
+    "io_source": "undeclared",
+    "status": "unrouted",
+    "unrouted_reason": "The gateway has no handler bound for this prefix: every request to it answers 404 ROUTE_NOT_MAPPED before authentication or payment is evaluated. The scope pair is vocabulary an existing key may carry, not a callable contract. Do not call this route and do not pay for it.",
     "summary": "WAVE ops API",
     "auth": {
       "scheme": "bearer",
@@ -3647,6 +7430,118 @@
       "POST"
     ],
     "methods_source": "openapi",
+    "io": {
+      "input": {
+        "schema": null,
+        "required": [
+          "videoId"
+        ],
+        "fields": [
+          "videoId"
+        ]
+      },
+      "output": {
+        "schema": null,
+        "fields": [
+          "chapters"
+        ]
+      },
+      "source": {
+        "url": "https://gateway.wave.online/openapi.json",
+        "path": "#/paths/~1videos~1{videoId}~1chapters/get"
+      },
+      "operations": [
+        {
+          "method": "GET",
+          "path": "/v1/videos/{videoId}/chapters",
+          "operation_id": "listChapters",
+          "input": {
+            "schema": null,
+            "required": [
+              "videoId"
+            ],
+            "fields": [
+              "videoId"
+            ]
+          },
+          "output": {
+            "schema": null,
+            "fields": [
+              "chapters"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1videos~1{videoId}~1chapters/get"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/videos/{videoId}/chapters",
+          "operation_id": "createChapter",
+          "input": {
+            "schema": "#/components/schemas/ChapterCreate",
+            "required": [
+              "title",
+              "startTime",
+              "endTime"
+            ],
+            "fields": [
+              "title",
+              "description",
+              "startTime",
+              "endTime"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/Chapter",
+            "fields": [
+              "id",
+              "videoId",
+              "title",
+              "description",
+              "startTime",
+              "endTime",
+              "thumbnailUrl"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1videos~1{videoId}~1chapters/post"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/v1/videos/{videoId}/chapters/detect",
+          "operation_id": "detectChapters",
+          "input": {
+            "schema": "#/components/schemas/ChapterDetectRequest",
+            "required": [],
+            "fields": [
+              "minDuration",
+              "maxChapters",
+              "includeDescriptions",
+              "includeThumbnails"
+            ]
+          },
+          "output": {
+            "schema": "#/components/schemas/DetectionJob",
+            "fields": [
+              "id",
+              "status",
+              "progress",
+              "createdAt"
+            ]
+          },
+          "source": {
+            "url": "https://gateway.wave.online/openapi.json",
+            "path": "#/paths/~1videos~1{videoId}~1chapters~1detect/post"
+          }
+        }
+      ]
+    },
+    "io_source": "openapi",
+    "status": "served",
     "summary": "WAVE videos API",
     "auth": {
       "scheme": "bearer",

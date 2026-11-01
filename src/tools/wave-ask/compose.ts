@@ -15,7 +15,14 @@
 //
 // This module makes NO network calls and calls NO other tool — `executes` is
 // always the literal `false`, never derived from input.
-import { MCP_TOOL_NAMES, METER_NAMES, PRODUCT_IDS, SKILLS_BY_NAME } from "../../knowledge.js";
+import {
+  HOSTED_MCP_URL,
+  MCP_TOOL_NAMES,
+  METER_NAMES,
+  PRODUCT_IDS,
+  SKILLS_BY_NAME,
+  UNSERVED_MCP_TOOL_NAMES,
+} from "../../knowledge.js";
 
 export interface PriceRow {
   readonly productId: string;
@@ -44,8 +51,19 @@ export interface AskProposal {
   readonly stages: readonly string[];
   /** Product ids for the flow, checked against the bundled `knowledge/products.json` snapshot; an id not found there is dropped, never rendered. */
   readonly productIds: readonly string[];
-  /** MCP tool names for the flow, checked against the bundled `knowledge/mcp-tools.json` snapshot; a name not found there is dropped, never rendered. */
+  /**
+   * MCP tool names for the flow, checked against the bundled `knowledge/mcp-tools.json` snapshot; a
+   * name not found there, or one whose route the gateway lists as unserved, is dropped, never
+   * rendered. These are the HOSTED WAVE MCP server's names (see {@link AskProposal.toolsServer}).
+   */
   readonly tools: readonly string[];
+  /**
+   * The MCP server that serves `tools[]` — the hosted WAVE MCP server (`mcpServers.wave.url` in the
+   * bundled snapshot), NOT this stdio package. Most of those names are not registered here, and the
+   * two default-registered tools this package shares a name with (`wave_create_clip`, `wave_get_usage`)
+   * take different arguments or call a different route here, so an agent must call them on that server.
+   */
+  readonly toolsServer: string;
   /** Deduplicated, non-null `pricing.meter` values from `priceRows`, checked against the bundled `knowledge/skills.json` snapshot. */
   readonly meters: readonly string[];
   /** One row per grounded productId with a matching skill entry — see {@link PriceRow}. */
@@ -66,9 +84,10 @@ interface GoalSignature {
 }
 
 // Every productId/tool below is a real, measured id/name from
-// knowledge/products.json (59 products) and knowledge/mcp-tools.json (93 live
-// gateway tools) — see the module-load assertion at the bottom of this file,
-// which throws if any of them ever drift out of the bundled snapshot.
+// knowledge/products.json (60 products) and knowledge/mcp-tools.json (96 hosted
+// MCP tools, measured 2026-09-28) — see the module-load assertion below, which
+// throws if any of them ever drift out of the bundled snapshot or name a tool
+// whose route the gateway lists as unserved (knowledge.ts UNSERVED_ROUTE_PREFIXES).
 const GOAL_SIGNATURES: readonly GoalSignature[] = [
   {
     id: "captions",
@@ -110,7 +129,9 @@ const GOAL_SIGNATURES: readonly GoalSignature[] = [
     // "dub a podcast into Spanish" chip and "turn a recording into a podcast"
     // resolve to the same transcribe -> voice -> podcast pipeline.
     productIds: ["transcribe", "voice", "podcast"],
-    tools: ["wave_create_transcription", "wave_generate_speech", "wave_create_podcast_episode", "wave_create_podcast_show"],
+    // wave_create_podcast_show / wave_create_podcast_episode are dropped: /v1/podcast/shows is an
+    // unserved family (knowledge.ts UNSERVED_ROUTE_PREFIXES), so both 404 ROUTE_NOT_FOUND.
+    tools: ["wave_create_transcription", "wave_generate_speech"],
     adjacent: "chapters generated from the same transcript for the episode description",
   },
   {
@@ -159,7 +180,9 @@ const GOAL_SIGNATURES: readonly GoalSignature[] = [
     id: "collab",
     triggers: ["control room", "shared control room", "remote crew"],
     productIds: ["collab"],
-    tools: ["wave_create_collab_room", "wave_get_collab_room", "wave_list_collab_rooms"],
+    // No tool: /v1/collab/rooms is an unserved family (knowledge.ts UNSERVED_ROUTE_PREFIXES), so the
+    // hosted wave_*_collab_room tools 404 ROUTE_NOT_FOUND. Same shape as studio-ai above.
+    tools: [],
     adjacent: "record the shared control room session for later editing",
   },
   {
@@ -172,8 +195,8 @@ const GOAL_SIGNATURES: readonly GoalSignature[] = [
   {
     id: "identity",
     triggers: ["resolve identity", "verify identity", "identity resolution", "verify a wallet", "who is this caller"],
-    // No dedicated "identity" product exists in knowledge/products.json today (verified against
-    // the 53-entry snapshot) — grounded via the real identity_resolve MCP tool only, never a
+    // No dedicated "identity" product exists in knowledge/products.json today (re-verified against
+    // the 60-entry 2026-09-28 snapshot) — grounded via the real identity_resolve MCP tool only, never a
     // fabricated product id. See skills/wave-ask/SKILL.md's note on this.
     productIds: [],
     tools: ["identity_resolve"],
@@ -212,6 +235,12 @@ function assertGrounded(signature: GoalSignature): void {
           "knowledge/mcp-tools.json snapshot — fix the signature or refresh the snapshot",
       );
     }
+    if (UNSERVED_MCP_TOOL_NAMES.has(tool)) {
+      throw new Error(
+        `wave.ask goal signature "${signature.id}" names tool "${tool}", whose route is in an unserved ` +
+          "family (knowledge.ts UNSERVED_ROUTE_PREFIXES) — drop it from the signature",
+      );
+    }
   }
 }
 
@@ -235,7 +264,7 @@ function groundProductIds(ids: readonly string[]): string[] {
 }
 
 function groundTools(names: readonly string[]): string[] {
-  return names.filter((name) => MCP_TOOL_NAMES.has(name));
+  return names.filter((name) => MCP_TOOL_NAMES.has(name) && !UNSERVED_MCP_TOOL_NAMES.has(name));
 }
 
 function buildPriceRows(productIds: readonly string[]): PriceRow[] {
@@ -285,7 +314,10 @@ function buildNext(
     );
   }
   if (tools.length > 0) {
-    rungs.push(`agent path via MCP: call ${tools[0]} directly once you're ready to execute this yourself`);
+    rungs.push(
+      `agent path via MCP: call ${tools[0]} on the hosted WAVE MCP server (${HOSTED_MCP_URL}) once you're ` +
+        "ready to execute this yourself — tools[] are that server's tool names, not this stdio package's",
+    );
   }
   rungs.push("saved-flow signup: keep this composition for next time (post-GA)");
   return rungs;
@@ -309,6 +341,7 @@ export function compose(question: string, budgetUsd?: number): AskProposal {
     stages: productIds,
     productIds,
     tools,
+    toolsServer: HOSTED_MCP_URL,
     meters,
     priceRows,
     executes: false,

@@ -11,11 +11,15 @@ import { PKG_VERSION } from "./version.js";
  * `https://wave.online` is the marketing/app origin — it 404s on the API surface, so every one of
  * this package's tools failed with the previous default. `https://api.wave.online` is the public
  * API origin, and its public path space is `/v1/*` — NOT `/api/v1/*`, which is an internal path
- * shape that is not routable by a client on any host. Measured 2026-08-07:
- *   POST https://api.wave.online/v1/streams      → 402 (route exists, priced)
- *   POST https://api.wave.online/api/v1/streams  → 404 (not a routable API path)
- *   POST https://wave.online/api/v1/streams      → 404 (wrong origin entirely)
- * A 402 is the CORRECT unauthenticated answer here — it proves the route exists and is priced.
+ * shape that is not routable by a client on any host. Re-measured 2026-09-28, unauthenticated, on a
+ * route this package's default tools call:
+ *   GET https://api.wave.online/v1/billing      → 401 AUTH_REQUIRED   (route served, needs a key)
+ *   GET https://api.wave.online/api/v1/billing  → 404 ROUTE_NOT_FOUND (not a routable API path)
+ *   GET https://wave.online/api/v1/billing      → 404 ROUTE_NOT_FOUND (wrong origin entirely)
+ * A 401 (or a 402 on a priced route such as POST /v1/clips) is the CORRECT anonymous answer: it
+ * proves the route is served. The 2026-08-07 version of this note used POST /v1/streams → 402 as
+ * its proof; that family has since lost its backend and now 404s ROUTE_NOT_FOUND for every caller,
+ * which is why src/tools/index.ts no longer registers the streams tools by default.
  */
 
 const DEFAULT_BASE_URL = "https://api.wave.online";
@@ -40,6 +44,31 @@ function isLoopback(hostname: string): boolean {
   return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]" || hostname === "::1";
 }
 
+/** Why a configured origin was refused by {@link parseSecureOrigin}. */
+export type OriginRejection = "invalid-url" | "not-http" | "cleartext-remote" | "not-origin-only";
+
+/**
+ * Validate a configured origin that a credential will be sent to: an absolute http(s) URL, `https:`
+ * unless the host is loopback, and nothing beyond scheme+host+port. Returns the normalized origin
+ * or the reason it was refused; the caller words the error, so a value that must not be echoed
+ * (it could carry userinfo) never has to be. Shared by {@link getBaseUrl} (the bearer key) and
+ * the voice tool's WAVE_REALTIME_EDGE (the edge-internal seal).
+ */
+export function parseSecureOrigin(
+  raw: string,
+): { ok: true; origin: string } | { ok: false; reason: OriginRejection } {
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    return { ok: false, reason: "invalid-url" };
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return { ok: false, reason: "not-http" };
+  if (parsed.protocol === "http:" && !isLoopback(parsed.hostname)) return { ok: false, reason: "cleartext-remote" };
+  if (parsed.pathname !== "/" || parsed.search !== "" || parsed.hash !== "") return { ok: false, reason: "not-origin-only" };
+  return { ok: true, origin: parsed.origin };
+}
+
 /**
  * Resolve the API origin. An explicitly-set WAVE_BASE_URL is validated rather than trusted: a malformed
  * value would otherwise surface far downstream as an opaque fetch failure inside every tool call.
@@ -61,29 +90,25 @@ export function getBaseUrl(): string {
   const raw = configured.trim();
 
   const expected = `Expected a bare origin like ${DEFAULT_BASE_URL} (no path, query or fragment). Unset it to use the default.`;
-  let parsed: URL;
-  try {
-    parsed = new URL(raw);
-  } catch {
-    throw new Error(`WAVE_BASE_URL is not a valid absolute URL: ${JSON.stringify(configured)}. ${expected}`);
+  const result = parseSecureOrigin(raw);
+  if (result.ok) return result.origin;
+  switch (result.reason) {
+    case "invalid-url":
+      throw new Error(`WAVE_BASE_URL is not a valid absolute URL: ${JSON.stringify(configured)}. ${expected}`);
+    case "not-http":
+      throw new Error(`WAVE_BASE_URL must be an http(s) URL, got ${JSON.stringify(configured)}. ${expected}`);
+    case "cleartext-remote":
+      throw new Error(
+        `WAVE_BASE_URL must use https for a remote host, got ${JSON.stringify(configured)}. ` +
+          "Every request sends your WAVE_API_KEY as a bearer token, which http would transmit in cleartext. " +
+          "Use https://, or a loopback host (localhost / 127.0.0.1) for local development.",
+      );
+    case "not-origin-only":
+      throw new Error(
+        `WAVE_BASE_URL must be an origin only — got ${JSON.stringify(configured)}, which carries a ` +
+          `path/query/fragment. Tool paths (\`/v1/...\`) are appended to this value. ${expected}`,
+      );
   }
-  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
-    throw new Error(`WAVE_BASE_URL must be an http(s) URL, got ${JSON.stringify(configured)}. ${expected}`);
-  }
-  if (parsed.protocol === "http:" && !isLoopback(parsed.hostname)) {
-    throw new Error(
-      `WAVE_BASE_URL must use https for a remote host, got ${JSON.stringify(configured)}. ` +
-        "Every request sends your WAVE_API_KEY as a bearer token, which http would transmit in cleartext. " +
-        "Use https://, or a loopback host (localhost / 127.0.0.1) for local development.",
-    );
-  }
-  if (parsed.pathname !== "/" || parsed.search !== "" || parsed.hash !== "") {
-    throw new Error(
-      `WAVE_BASE_URL must be an origin only — got ${JSON.stringify(configured)}, which carries a ` +
-        `path/query/fragment. Tool paths (\`/v1/...\`) are appended to this value. ${expected}`,
-    );
-  }
-  return parsed.origin;
 }
 
 /**

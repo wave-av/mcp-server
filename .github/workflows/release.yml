@@ -391,14 +391,17 @@ jobs:
 
       - name: Live tools/call reaches api.wave.online, never wave.online
         env:
-          WAVE_API_KEY: ${{ secrets.WAVE_GATEWAY_API_KEY }}
+          WAVE_API_KEY: ${{ secrets.WAVE_SMOKE_API_KEY }}
         run: |
           if [ -z "$WAVE_API_KEY" ]; then
-            echo "skipped: WAVE_GATEWAY_API_KEY absent (fork or unset)"
+            echo "skipped: WAVE_SMOKE_API_KEY absent (fork or unset)"
             exit 0
           fi
           cd "$RUNNER_TEMP/verify"
-          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js capabilities wave_list_streams '{}'
+          # wave_get_subscription (GET /v1/billing) is served for every key; the
+          # 0.3.0 probe here, wave_list_streams, calls a route api.wave.online no
+          # longer serves and is not registered by default since 0.4.0.
+          node "$GITHUB_WORKSPACE/scripts/smoke-mcp.mjs" node_modules/@wave-av/mcp-server/dist/index.js capabilities wave_get_subscription '{}'
 
   # ---------------------------------------------------------------------------
   # Gate 5 — VER-001. Create the GitHub Release for the tag once the artifact is

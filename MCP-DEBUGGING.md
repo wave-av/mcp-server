@@ -27,8 +27,29 @@ Your `.mcp.json` is missing the `env` block. Add `WAVE_API_KEY` as shown above.
 ### Tools don't appear in Claude/Cursor
 
 1. Restart your AI tool after editing `.mcp.json`
-2. Check the server started: look for `[wave-mcp-server] Connected via stdio transport` in logs
-3. Verify `npx @wave-av/mcp-server` runs without errors in a terminal
+2. Check the server started: look for `[wave-mcp-server] Connected via stdio transport — 7 tools (opt-in groups: none)` in logs
+3. Verify `npx -y @wave-av/mcp-server --version` runs without errors in a terminal
+
+### A tool I expected is not in `tools/list`
+
+Since 0.4.0 a default `tools/list` has 7 tools. Five of them call a route `api.wave.online` serves:
+`wave_get_viewers`, `wave_get_subscription`, `wave_get_usage`, `wave_create_clip` and
+`wave_start_captions`. The other two propose compositions: `wave.ask` makes no API request at all,
+and `wave_compose` calls `POST /v1/compose` when `WAVE_API_KEY` is set and falls back to the bundled
+snapshot otherwise. The streams, productions, cameras and moderation tools are registered only with
+`WAVE_MCP_EXPERIMENTAL=1`, because `api.wave.online` serves none of their routes (an anonymous call
+answers `404 ROUTE_NOT_FOUND`). `wave_voice_converse` needs `WAVE_INTERNAL_SECRET`, and the design
+tools need their unpublished library on disk with the files they run. The startup log line names the
+opt-in groups that are live. See the README's "Opt-in tools" section.
+
+### Tool results and `isError`
+
+Any non-2xx answer from the WAVE API comes back as a failed tool call: `isError: true`, with the text
+`Error <status>: <body>`. Through 0.3.0 the same text came back as a successful result.
+
+A failed `resources/read` of `wave://streams/{id}` or `wave://productions/{id}` is a JSON-RPC error
+that names the status, the gateway's error code and its `request_id` (for example
+`WAVE API 404 ROUTE_NOT_FOUND (request_id ...)`), never the raw upstream body.
 
 ### "Error 401: Unauthorized"
 
@@ -36,7 +57,8 @@ Your API key is invalid or expired. Generate a new one at [console.wave.online/d
 
 ### "Error 429: Rate limited"
 
-You hit the API rate limit. The server auto-retries twice with backoff. If persistent, check your plan's rate limits in the console at [console.wave.online/dashboard](https://console.wave.online/dashboard).
+You hit the API rate limit. The server does not retry for you, so wait and call again. If it keeps
+happening, check your plan's rate limits in the console at [console.wave.online/dashboard](https://console.wave.online/dashboard).
 
 ### "Error 402: payment required"
 
@@ -44,12 +66,17 @@ The route exists and is priced, but the request carried no accepted credential o
 `api.wave.online` is proof the path is correct — check `WAVE_API_KEY` is set and holds the scope the
 route requires (`<resource>:read` for GET, `<resource>:write` for mutating verbs).
 
+### "Error 404: ROUTE_NOT_FOUND"
+
+`{"error":{"code":"ROUTE_NOT_FOUND","message":"No WAVE capability is served at this path."}}` means
+the gateway serves nothing at that path, for any key. On `api.wave.online` today that is the answer for
+every opt-in `WAVE_MCP_EXPERIMENTAL=1` tool (a key without the family's scope gets
+`403 SCOPE_INSUFFICIENT` first). From a default tool, check that `WAVE_BASE_URL` is a WAVE API origin.
+
 ### Tools work but return empty results
 
-Check your WAVE account has data. Create a test stream first:
-```
-wave_create_stream({ title: "Test stream", protocol: "webrtc" })
-```
+Check your WAVE account has data, for example with `wave_get_usage` over a date range you know had
+activity.
 
 ## Pointing at a different API origin
 
@@ -61,26 +88,25 @@ at startup instead of failing inside every tool call.
 WAVE_BASE_URL=https://api.wave.online npx @wave-av/mcp-server
 ```
 
-## Available tools (18)
+## Available tools (7 by default)
 
-### Streams (5)
+### Analytics and billing (3)
+`wave_get_viewers` `wave_get_subscription` `wave_get_usage`
+
+### Media (2)
+`wave_create_clip` `wave_start_captions`
+
+### Compose (2)
+`wave_compose` `wave.ask` (deprecated)
+
+### Opt-in: `WAVE_MCP_EXPERIMENTAL=1` (13, routes unserved on api.wave.online)
 `wave_list_streams` `wave_create_stream` `wave_start_stream` `wave_stop_stream` `wave_get_stream_health`
+`wave_get_stream_metrics` `wave_mark_highlight` `wave_list_productions` `wave_create_production`
+`wave_switch_camera` `wave_show_graphic` `wave_control_camera` `wave_moderate_chat`
 
-### Studio (2)
-`wave_list_productions` `wave_create_production`
-
-### Analytics (2)
-`wave_get_viewers` `wave_get_stream_metrics`
-
-### Billing (2)
-`wave_get_subscription` `wave_get_usage`
-
-### Production (7)
-`wave_switch_camera` `wave_create_clip` `wave_show_graphic` `wave_control_camera` `wave_moderate_chat` `wave_start_captions` `wave_mark_highlight`
-
-### Resources
-- `wave://streams/{id}` — stream configuration and status
-- `wave://productions/{id}` — studio production details
+### Opt-in resource templates (same flag)
+- `wave://streams/{id}` — `GET /v1/streams/{id}`
+- `wave://productions/{id}` — `GET /v1/productions/{id}`
 
 ## API origin
 
