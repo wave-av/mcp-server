@@ -66,8 +66,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0",
-    "zod": "^4.4.3"
+    "@modelcontextprotocol/sdk": "^1.32.0",
+    "zod": "^4.6.0"
   },
   "peerDependencies": {
     "@anthropic-ai/claude-agent-sdk": ">=0.3.0"
@@ -88,6 +88,7 @@
     "typescript-eslint": "^8.60.1"
   },
   "overrides": {
-    "qs": "^6.16.0"
+    "qs": "^6.16.0",
+    "raw-body@<4.0.0": "4.0.0"
   }
 }
